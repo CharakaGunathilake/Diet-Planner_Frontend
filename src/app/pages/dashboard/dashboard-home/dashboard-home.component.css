@@ -1,0 +1,28 @@
+.pill{
+    border: 2px #D1DCCB solid;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardColor{
+    background-color: #E5E5E8;
+}
+
+.centered{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.progressBody{
+    background-color: #ff928a7b;
+    border: 2px #ff928a solid;
+}
+
+.progressWeight{
+    background-color: #14e011bb;
+    border: 2px #0eac0e solid;
+}
