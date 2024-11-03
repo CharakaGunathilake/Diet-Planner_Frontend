@@ -1,10 +1,10 @@
-<div class="container p-0 m-0">
+<div class="m-0">
     <div class="row p-0">
         <div class="col-12 col-lg">
             <div class="row p-1">
                 <div class="pill flex-column">
-                    <p class="fw-bold px-2 w-100">Search your Favourites</p>
-                    <div class="input-group mb-3">
+                    <p class="fw-bold px-3 w-100 m-0">Search your Favourites</p>
+                    <div class="input-group p-0 px-3">
                         <input type="text" class="form-control" placeholder="Enter Ingredient or Meal name"
                             aria-label="Recipient's username" aria-describedby="button-addon2">
                         <button class="btn btn-success1 rounded-end-5" type="button" id="button-addon2">Search</button>
@@ -12,68 +12,118 @@
                 </div>
             </div>
             <div class="row p-1">
+                <div class="pill p-0">
+                    <div class="">
+                        <canvas id="nutritionChart">{{chart}}</canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="row p-1">
                 <div class="pill flex-column">
+                    <p class="fw-bold px-2 w-100 m-0">Suggestions</p>
                     <div class="col-12 card border-0 border-bottom">
-                        <div class="card-body d-flex align-items-center">
+                        <div class="card-body d-flex py-1 align-items-center">
                             <div class="rounded-circle border p-2 col-2">
                                 <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
                             </div>
                             <div class="d-block px-4">
-                                <p class="fw-bold fs-4 m-0">Breakfast</p>
+                                <p class="fw-bold fs-5 m-0">Meal Name</p>
                                 <p class="text-dark-emphasis">
-                                    This is some text within a card body.
+                                    Ingredients, Ingredients, Ingredients, Ingredients
                                 </p>
+                                <button class="btn d-flex align-items-center"><span
+                                        class="m-0 me-2 text-da-emphasis">How to Cook</span><img height="10px"
+                                        width="10px" src="/icons/right-arrow.png" alt="arrowhead png"></button>
                             </div>
-                            <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px" src="/icons/right-arrow.png" class="img-fluid" alt="arrowhead png"></button>
                         </div>
-                        <p class="end-0 bottom-0 me-5 position-absolute">240kcal</p>
                     </div>
                     <div class="col-12 card border-0 border-bottom">
-                        <div class="card-body d-flex align-items-center">
+                        <div class="card-body d-flex py-1 align-items-center">
                             <div class="rounded-circle border p-2 col-2">
                                 <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
                             </div>
                             <div class="d-block px-4">
-                                <p class="fw-bold fs-4 m-0">Lunch</p>
+                                <p class="fw-bold fs-5 m-0">Meal Name</p>
                                 <p class="text-dark-emphasis">
-                                    This is some text within a card body.
+                                    Ingredients, Ingredients, Ingredients, Ingredients
                                 </p>
+                                <button class="btn d-flex align-items-center"><span
+                                        class="m-0 me-2 text-da-emphasis">How to Cook</span><img height="10px"
+                                        width="10px" src="/icons/right-arrow.png" alt="arrowhead png"></button>
                             </div>
-                            <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px" src="/icons/right-arrow.png" class="img-fluid" alt="arrowhead png"></button>
                         </div>
-                        <p class="end-0 bottom-0 me-5 position-absolute">240kcal</p>
                     </div>
-                    <div class="col-12 card border-0 border-bottom">
-                        <div class="card-body d-flex align-items-center">
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg">
+            <div class="row p-1 ">
+                <div class="pill flex-column">
+                    <div class="col-12 card border-0  border-bottom">
+                        <div class="card-body d-flex py-1 align-items-center">
                             <div class="rounded-circle border p-2 col-2">
                                 <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
                             </div>
                             <div class="d-block px-4">
-                                <p class="fw-bold fs-4 m-0">Snack</p>
+                                <p class="fw-bold fs-5 m-0">Breakfast</p>
                                 <p class="text-dark-emphasis">
                                     This is some text within a card body.
                                 </p>
                             </div>
-                            <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px" src="/icons/right-arrow.png" class="img-fluid" alt="arrowhead png"></button>
+                            <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px"
+                                    src="/icons/right-arrow.png" class="img-fluid" alt="arrowhead png"></button>
                         </div>
                         <p class="end-0 bottom-0 me-5 position-absolute">240kcal</p>
                     </div>
                     <div class="col-12 card border-0 border-bottom">
-                        <div class="card-body d-flex align-items-center">
+                        <div class="card-body d-flex py-1 align-items-center">
                             <div class="rounded-circle border p-2 col-2">
                                 <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
                             </div>
                             <div class="d-block px-4">
-                                <p class="fw-bold fs-4 m-0">Dinner</p>
+                                <p class="fw-bold fs-5 m-0">Lunch</p>
                                 <p class="text-dark-emphasis">
                                     This is some text within a card body.
                                 </p>
                             </div>
-                            <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px" src="/icons/right-arrow.png" class="img-fluid" alt="arrowhead png"></button>
+                            <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px"
+                                    src="/icons/right-arrow.png" class="img-fluid" alt="arrowhead png"></button>
                         </div>
                         <p class="end-0 bottom-0 me-5 position-absolute">240kcal</p>
                     </div>
-                   
+                    <div class="col-12 card border-0 border-bottom">
+                        <div class="card-body d-flex py-1 align-items-center">
+                            <div class="rounded-circle border p-2 col-2">
+                                <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
+                            </div>
+                            <div class="d-block px-4">
+                                <p class="fw-bold fs-5 m-0">Snack</p>
+                                <p class="text-dark-emphasis">
+                                    This is some text within a card body.
+                                </p>
+                            </div>
+                            <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px"
+                                    src="/icons/right-arrow.png" class="img-fluid" alt="arrowhead png"></button>
+                        </div>
+                        <p class="end-0 bottom-0 me-5 position-absolute">240kcal</p>
+                    </div>
+                    <div class="col-12 card border-0 border-bottom">
+                        <div class="card-body d-flex py-1 align-items-center">
+                            <div class="rounded-circle border p-2 col-2">
+                                <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
+                            </div>
+                            <div class="d-block px-4">
+                                <p class="fw-bold fs-5 m-0">Dinner</p>
+                                <p class="text-dark-emphasis">
+                                    This is some text within a card body.
+                                </p>
+                            </div>
+                            <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px"
+                                    src="/icons/right-arrow.png" class="img-fluid" alt="arrowhead png"></button>
+                        </div>
+                        <p class="end-0 bottom-0 me-5 position-absolute">240kcal</p>
+                    </div>
+
                 </div>
             </div>
             <div class="row p-1">
@@ -91,49 +141,6 @@
                     iure
                     voluptatem tempore accusantium adipisci quidem voluptas, suscipit atque a qui vel explicabo autem
                     nobis.
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg">
-            <div class="row p-1">
-                <div class="pill h-75">
-                    <div class="container">
-                        <canvas id="nutritionChart" style="position: relative; height: 20vh; width: 100vh;">{{chart}}</canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="row p-1">
-                <div class="pill flex-column">
-                    <p class="fw-bold px-2 w-100">Suggestions</p>
-
-                    <div class="col-12 card border-0 border-bottom">
-                        <div class="card-body d-flex align-items-center">
-                            <div class="rounded-circle border p-2 col-2">
-                                <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
-                            </div>
-                            <div class="d-block px-4">
-                                <p class="fw-bold fs-4 m-0">Meal Name</p>
-                                <p class="text-dark-emphasis">
-                                    Ingredients, Ingredients, Ingredients, Ingredients
-                                </p>
-                                 <button class="btn d-flex align-items-center"><span class="m-0 me-2 text-da-emphasis">How to Cook</span><img height="10px" width="10px" src="/icons/right-arrow.png"  alt="arrowhead png"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 card border-0 border-bottom">
-                        <div class="card-body d-flex align-items-center">
-                            <div class="rounded-circle border p-2 col-2">
-                                <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
-                            </div>
-                            <div class="d-block px-4">
-                                <p class="fw-bold fs-4 m-0">Meal Name</p>
-                                <p class="text-dark-emphasis">
-                                    Ingredients, Ingredients, Ingredients, Ingredients
-                                </p>
-                                 <button class="btn d-flex align-items-center"><span class="m-0 me-2 text-da-emphasis">How to Cook</span><img height="10px" width="10px" src="/icons/right-arrow.png"  alt="arrowhead png"></button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

@@ -41,6 +41,8 @@ export class MealsComponent implements OnInit {
       type: 'polarArea',
       data: data,
       options: {
+        mainAspectRation: false,
+        responsive: true,
       },
     };
   

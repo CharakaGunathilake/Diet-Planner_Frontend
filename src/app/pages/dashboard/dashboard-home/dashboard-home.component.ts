@@ -90,6 +90,7 @@ export class DashboardHomeComponent {
 
   options = {
     responsive: true,
+    mainAspectRatio: false,
     plugins: {
       legend: {
         position: 'top',

@@ -6,9 +6,12 @@
     justify-content: center;
 }
 
-.cardColor{
+.cardColor:hover{
     background-color: #E5E5E8;
+    
 }
+
+
 
 .centered{
     display: flex;

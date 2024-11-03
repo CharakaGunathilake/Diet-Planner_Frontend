@@ -1,12 +1,22 @@
-<div class="row bgColor">
-    <div class="col-2"><app-dashboardnav></app-dashboardnav></div>
-    <div class="col-10">
-        <div class="row my-2">
-            <app-header></app-header>
+<div class="container-fluid ps-0">
+    <div class="row p-0">
+        <div class="col-2">
+            <div class="sticky-top">
+                <app-dashboardnav></app-dashboardnav>
+            </div>
         </div>
-        <div class="row">
-            <!-- <app-dashboard-home></app-dashboard-home> -->
-            <app-meals></app-meals>
+        <div class="col-10">
+            <div class="row">
+                <div class="w-100 mt-1">
+                    <app-header></app-header>
+                </div>
+            </div>
+            <div class="row">
+                <div class="p2">
+                    <app-dashboard-home></app-dashboard-home>
+                </div>
+                <!-- <app-meals></app-meals> -->
+            </div>
         </div>
     </div>
 </div>

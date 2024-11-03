@@ -1,6 +1,6 @@
-<div class="container p-0">
-    <div class="row d-flex justify-content-between align-items-center">
-        <div class="col-12 col-lg-4">
+<div class="container-fluid m-0">
+    <div class="row d-flex justify-content-between align-items-center ">
+        <div class="col-12 col-lg-4 p-1">
             <div class="container pill rounded-5 p-2 gap-2">
                 <div class="row">
                     <div class="img-fluid">
@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-lg-7">
+        <div class="col-12 col-lg-7 p-1">
             <div class="row gap-2 d-flex justify-content-end">
                 <div class="col-12 col-lg-5 mt-2 mt-lg-0">
                     <div class="flex-column pill rounded-5">
@@ -35,8 +35,8 @@
         </div>
     </div>
     <div class="row mt-2 d-flex justify-content-between">
-        <div class="col-12 col-lg-4">
-            <div class="container pill rounded-4 gap-2 p-2 d-flex flex-column align-items-center">
+        <div class="col-12 col-lg-4 p-1">
+            <div class="container pill rounded-4 gap-1 p-2 d-flex flex-column align-items-center">
                 <div class="row cardColor text-center w-100 rounded-4 p-2">
                     <p class="m-0 fw-bold">No Streak</p>
                     <p class="m-0 fw-bold text-dark-emphasis">Keep it up to build your streak!</p>
@@ -64,61 +64,61 @@
                 <p class="align-self-start my-2">See your Progress ></p>
             </div>
         </div>
-        <div class="col-12 col-lg-8 mt-2 m-lg-0">
-            <div class="container d-block pill rounded-4">
-                <p class="text-center fw-bold mt-3">Meals for the day</p>
-                <div class="row gap-2 py-3">
-                    <div class="col-12 col-lg">
-                        <div class="centered cardColor py-4 rounded-4">
+        <div class="col-12 col-lg-8 p-1 mt-2 m-lg-0">
+            <div class="p-1 d-block pill rounded-4">
+                <p class="text-center fw-bold m-0 mb-1">Meals for the day</p>
+                <div class="row gap-1 px-3">
+                    <div class="col-12 col-lg p-0">
+                        <div class="centered cardColor py-5 rounded-4">
                             <img height="70vh" width="70vh" src="/icons/breakfast.png" alt="breakfast">
                             <p class="mt-2 m-0">Breakfast</p>
                         </div>
                     </div>
-                    <div class="col-12 col-lg">
-                        <div class="centered cardColor py-4 rounded-4">
+                    <div class="col-12 col-lg p-0">
+                        <div class="centered cardColor py-5 rounded-4">
                             <img height="70vh" width="70vh" src="/icons/cashew.png" alt="snack">
                             <p class="mt-2 m-0">Breakfast</p>
                         </div>
                     </div>
-                    <div class="col-12 col-lg">
-                        <div class="centered cardColor py-4 rounded-4">
+                    <div class="col-12 col-lg p-0">
+                        <div class="centered cardColor py-5 rounded-4">
                             <img height="70vh" width="70vh" src="/icons/fried-rice.png" alt="lunch">
                             <p class="mt-2 m-0">Lunch</p>
                         </div>
                     </div>
-                    <div class="col-12 col-lg">
-                        <div class="centered cardColor py-4 rounded-4">
+                    <div class="col-12 col-lg p-0">
+                        <div class="centered cardColor py-5 rounded-4">
                             <img height="70vh" width="70vh" src="/icons/cashew.png" alt="snack">
                             <p class="mt-2 m-0">Snack</p>
                         </div>
                     </div>
-                    <div class="col-12 col-lg">
-                        <div class="centered cardColor py-4 rounded-4">
+                    <div class="col-12 col-lg p-0">
+                        <div class="centered cardColor py-5 rounded-4">
                             <img height="70vh" width="70vh" src="/icons/roast-chicken.png" alt="dinner">
                             <p class="mt-2 m-0">Dinner</p>
                         </div>
                     </div>
                 </div>
-                <p class="pt-2">Edit your meals ></p>
+                <p class="py-2 m-0">Edit your meals ></p>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-12 col-lg-8">
+        <div class="col-12 col-lg-8 p-0">
             <div class="pill flex-column rounded-4 mt-2">
                 <div class="py-2">
                     <p class="fw-bold m-0">This week's Calorie Intake</p>
                 </div>
-                <div class="container" style="position: relative; height: 34vh; width: 100vh;">
-                    <canvas id="progressChart">{{ chart1 }}</canvas>
+                <div class="">
+                    <canvas height="400" width="500" id="progressChart">{{ chart1 }}</canvas>
                 </div>
             </div>
         </div>
         <div class="col-12 col-lg-4 pt-2 h-100">
             <div class="container pill h-100 flex-column  rounded-4">
-                <div class="w-50 my-4 centered">
-                    <div class="container p-0 p-2" style="position: relative; height: 25vh; width: 90vh;">
-                        <canvas id="waterChart">{{ chart2 }}</canvas>
+                <div class="centered">
+                    <div class="p-0">
+                        <canvas height="200" width="240" id="waterChart">{{ chart2 }}</canvas>
                     </div>
                 </div>
                 <div class="centered flex-row">
