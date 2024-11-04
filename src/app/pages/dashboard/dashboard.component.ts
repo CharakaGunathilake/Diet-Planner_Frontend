@@ -4,11 +4,12 @@ import { DashboardnavComponent } from '../../common/dashboardnav/dashboardnav.co
 import { DashboardHomeComponent } from './dashboard-home/dashboard-home.component';
 import { RouterOutlet } from '@angular/router';
 import { MealsComponent } from './meals/meals.component';
+import { ProgressComponent } from './progress/progress.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [HeaderComponent,DashboardnavComponent,DashboardHomeComponent,RouterOutlet,MealsComponent],
+  imports: [HeaderComponent,DashboardnavComponent,DashboardHomeComponent,RouterOutlet,MealsComponent,ProgressComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

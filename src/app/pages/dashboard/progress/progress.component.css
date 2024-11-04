@@ -1,0 +1,38 @@
+.pill {
+    border: 2px #D1DCCB solid;
+    border-radius: 20px;
+    padding: 2%;
+}
+
+.centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-control:focus {
+    border-color: rgb(25, 250, 25);
+    box-shadow:  0 0 0 #d2dcd1, 0 0 8px #dcdddc;
+}
+
+.btn-success1 {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #16E011;
+    --bs-btn-border-color: #D1DCCB;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #0bb208;
+    --bs-btn-hover-border-color: #16E011;
+    --bs-btn-focus-shadow-rgb: 60, 153, 110;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #16E011;
+    --bs-btn-active-border-color: #16E011;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #16E011;
+    --bs-btn-disabled-border-color: #16E011;
+}
+
+.row .pill .col-12:hover {
+    background-color: #D1DCCB;
+    cursor: pointer;
+}
