@@ -13,10 +13,12 @@ export class ProgressComponent implements OnInit {
   weightChart: any;
   waterChart: any;
   caloricChart: any;
+  mealHourChart: any;
   ngOnInit(): void {
     this.createWeightChart();
     this.createWaterChart();
     this.createCaloricChart();
+    this.createMealHourChart();
   }
   createWeightChart(): void {
     const labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
@@ -98,6 +100,47 @@ export class ProgressComponent implements OnInit {
       },
     };
     this.caloricChart = new Chart("caloricChart", config);
+  }
+  createMealHourChart(): void {
+    const labels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const data = {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Breakfast',
+          data: [8, 9, 8.5, 7],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        },
+        {
+          label: 'Lunch',
+          data: [13, 12, 15, 0],
+          fill: false,
+          borderColor: 'rgba(255, 159, 64)',
+          tension: 0.1
+        },
+        {
+          label: 'Snack',
+          data: [18, 17, 16.8, 16],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 1
+        },
+        {
+          label: 'Dinner',
+          data: [21, 20, 22, 21],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        },
+      ]
+    };
+    const config: any = {
+      type: 'line',
+      data: data,
+    };
+    this.mealHourChart = new Chart("mealHourChart", config);
   }
 
 }

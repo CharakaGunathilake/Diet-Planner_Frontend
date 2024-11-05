@@ -1,17 +1,9 @@
-.pill{
-    border: 2px #D1DCCB solid;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
 
 .cardColor:hover{
     background-color: #E5E5E8;
+    border-radius: 20px;
     
 }
-
-
 
 .centered{
     display: flex;

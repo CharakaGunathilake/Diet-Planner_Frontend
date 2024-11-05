@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { RegisterComponent } from '../../pages/register/register.component';
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [],
+  imports: [RouterLink,RegisterComponent],
   templateUrl: './hero.component.html',
   styleUrl: './hero.component.css'
 })
