@@ -6,15 +6,19 @@ import { DashboardHomeComponent } from './pages/dashboard-components/dashboard-h
 import { RegisterComponent } from './pages/register/register.component';
 import { ProgressComponent } from './pages/dashboard-components/progress/progress.component';
 import { LoginComponent } from './pages/login/login.component';
+import { ProfileComponent } from './pages/dashboard-components/profile/profile.component';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent },
+    { path: '', component: HomeComponent},
     { path: "register", component: RegisterComponent },
-    { path: "login", component: LoginComponent },
-    { path: 'dashboard', component: DashboardComponent }, 
-    { path: 'home', component: DashboardHomeComponent},
-    { path: "meals", component: MealsComponent},
-    { path: "progress", component: ProgressComponent,},
+    { path: "login", component: LoginComponent},
+    { path: 'dashboard', component: DashboardComponent, children:[
+        { path:'home',pathMatch:"prefix", component: DashboardHomeComponent, },
+        { path: "meals", component: MealsComponent},
+        { path: "progress", component: ProgressComponent},
+        { path: "profile", component: ProfileComponent},
+    ]}, 
 ];
+
 
 
