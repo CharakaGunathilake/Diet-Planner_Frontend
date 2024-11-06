@@ -19,6 +19,11 @@ h1 {
     padding: 2%;
 }
 
+.pill1 {
+    border: 4px #D1DCCB solid;
+    border-radius: 25px;
+}
+
 .centered {
     display: flex;
     align-items: center;

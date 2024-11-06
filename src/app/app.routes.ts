@@ -18,6 +18,7 @@ export const routes: Routes = [
         { path: "progress", component: ProgressComponent},
         { path: "profile", component: ProfileComponent},
     ]}, 
+    
 ];
 
 

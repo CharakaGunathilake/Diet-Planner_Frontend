@@ -6,13 +6,16 @@ import { RouterOutlet } from '@angular/router';
 import { MealsComponent } from '../dashboard-components/meals/meals.component';
 import { ProgressComponent } from '../dashboard-components/progress/progress.component';
 
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [HeaderComponent,DashboardnavComponent,DashboardHomeComponent,RouterOutlet,MealsComponent,ProgressComponent],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrl: './dashboard.component.css',
+
 })
 export class DashboardComponent {
+  
 
 }
