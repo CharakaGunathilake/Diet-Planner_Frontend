@@ -1,23 +1,27 @@
-
-.cardColor:hover{
+.cardColor:hover {
     background-color: #E5E5E8;
     border-radius: 20px;
-    
+
 }
 
-.centered{
+.decorationNone {
+    text-decoration: none;
+    color: #000;
+}
+
+.centered {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.progressBody{
+.progressBody {
     background-color: #ff928a7b;
     border: 2px #ff928a solid;
 }
 
-.progressWeight{
+.progressWeight {
     background-color: #14e011bb;
     border: 2px #0eac0e solid;
 }

@@ -1,65 +1,155 @@
-<form class="row g-3 needs-validation" novalidate>
-    <div class="col-md-4">
-        <label for="validationCustom01" class="form-label needs-validation">First name</label>
-        <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-    </div>
-    <div class="col-md-4">
-        <label for="validationCustom02" class="form-label needs-validation">Last name</label>
-        <input type="text" class="form-control" id="validationCustom02" value="Otto" required>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-    </div>
-    <div class="col-md-4">
-        <label for="validationCustomUsername" class="form-label">Username</label>
-        <div class="input-group has-validation">
-            <span class="input-group-text" id="inputGroupPrepend">&#64;</span>
-            <input type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend"
-                required>
-            <div class="invalid-feedback">
-                Please choose a username.
+<div class="mt-1">
+    <div class="row gap-1 px-2">
+        <div class="col-12 col-lg-6 p-0">
+            <div class="pill px-4">
+                <p class="fs-4 px-2">Personal Info</p>
+                <div class="col-6">
+                    <label for="personFirstName" class="form-label">First Name</label>
+                    <input type="text" id="personFirstName" class="form-control">
+                    <label for="personLastName" class="form-label">Last Name</label>
+                    <input type="text" id="personLastName" class="form-control">
+                    <label for="personLastName" class="form-label">Gender</label>
+                    <div class="dropdown mb-2">
+                        <button class="btn btn-outline-success w-100 border dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Gender
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><button class="dropdown-item" type="button">Male</button></li>
+                            <li><button class="dropdown-item" type="button">Female</button></li>
+                        </ul>
+                    </div>
+                </div>
+                <label for="personEmail" class="form-label">E-mail</label>
+                <input type="email" id="personEmail" class="form-control">
+                <div class="row d-flex justify-content-between gap-2">
+                    <div class="col">
+                        <label for="personDob" class="form-label">Date of birth</label>
+                        <input type="date" id="personDob" class="form-control">
+                    </div>
+                    <div class="col">
+                        <label for="personAge" class="form-label">Age</label>
+                        <input type="text" id="personAge" class="form-control">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</button>
+                </div>
+            </div>
+            <div class="pill mt-1 px-4">
+                <p class="fs-4 px-2">Account Info</p>
+                <div class="row d-flex">
+                    <div class="col-6">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" id="username" class="form-control">
+
+                        <label for="password" class="form-label">Password</label>
+                        <input type="text" id="password" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <label for="dateCreated" class="form-label">Date Created</label>
+                        <input type="text" id="dateCreated" class="form-control">
+                        <div class="d-flex justify-content-end pt-3">
+                            <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-6">
-        <label for="validationCustom03" class="form-label">City</label>
-        <input type="text" class="form-control" id="validationCustom03" required>
-        <div class="invalid-feedback">
-            Please provide a valid city.
-        </div>
-    </div>
-    <div class="col-md-3">
-        <label for="validationCustom04" class="form-label">State</label>
-        <select class="form-select" id="validationCustom04" required>
-            <option selected disabled value="">Choose...</option>
-            <option>...</option>
-        </select>
-        <div class="invalid-feedback">
-            Please select a valid state.
-        </div>
-    </div>
-    <div class="col-md-3">
-        <label for="validationCustom05" class="form-label">Zip</label>
-        <input type="text" class="form-control" id="validationCustom05" required>
-        <div class="invalid-feedback">
-            Please provide a valid zip.
-        </div>
-    </div>
-    <div class="col-12">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-            <label class="form-check-label" for="invalidCheck">
-                Agree to terms and conditions
-            </label>
-            <div class="invalid-feedback">
-                You must agree before submitting.
+        <div class="col-12 col-lg p-0 ">
+            <div class="pill h-100 px-4">
+                <p class="fs-4 px-2">Diet Info</p>
+                <div class="row d-flex">
+                    <div class="col">
+                        <label for="height" class="form-label">Height</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control"
+                                aria-label="height" aria-describedby="basic-addon2">
+                            <span class="input-group-text">unit</span>
+                        </div>
+                        <label for="activityRate" class="form-label">Activity Rate</label>
+                        <input type="text" id="activityRate" class="form-control">
+                        <label for="bmiStatus" class="form-label">Bmi Status</label>
+                        <input type="text" id="bmiStatus" class="form-control">
+                    </div>
+                    <div class="col">
+                        <label for="weight" class="form-label">Weight</label>
+                        <div class="input-group ">
+                            <input type="text" class="form-control"
+                                aria-label="weight" aria-describedby="basic-addon2">
+                            <span class="input-group-text">unit</span>
+                        </div>
+                        <label for="bmi" class="form-label">Bmi</label>
+                        <input type="text" id="bmi" class="form-control">
+                        <div class="d-flex justify-content-end pt-3">
+                            <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</button>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <p class="fs-4 px-2">Ongoing Diet Info</p>
+                <div class="row d-flex">
+                    <div class="col">                        
+                        <label for="planName" class="form-label">Plan Name</label>
+                        <input type="text" id="planName" class="form-control">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" id="startDate" class="form-control">                        
+                        <label for="goal" class="form-label">Goal</label>
+                        <input type="text" id="goal" class="form-control">
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                          </div>
+                    </div> 
+                    <div class="col">                        
+                        <label for="dietType" class="form-label">Diet Type</label>
+                        <input type="text" id="dietType" class="form-control">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" id="endDate" class="form-control">
+                        <label for="targetWeight" class="form-label">Target Weight</label>
+                        <div class="input-group ">
+                            <input type="text" class="form-control"
+                                aria-label="eight" aria-describedby="basic-addon2">
+                            <span class="input-group-text">unit</span>
+                        </div>                        
+                        <label for="mealsPerDay" class="form-label">Meals Per Date</label>
+                        <div class="dropdown mb-2">
+                            <button class="btn btn-outline-success w-100 border dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                meals
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" type="button">2 meals</button></li>
+                                <li><button class="dropdown-item" type="button">3 meals</button></li>
+                                <li><button class="dropdown-item" type="button">3 meals and 1 snack</button></li>
+                                <li><button class="dropdown-item" type="button">3 meals and 2 snacks</button></li>
+                            </ul>
+                        </div>
+                    </div> 
+                    <div class="d-flex justify-content-end pt-3 gap-2">
+                        <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">New plan</button>
+                        <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</button>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>    
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Are you Sure?</h1>
+            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+          </div>
+          <div class="modal-body">
+            this is the description for the action
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-success1">Yes</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col-12">
-        <button class="btn btn-primary" type="submit">Submit form</button>
-    </div>
-</form>
+</div>

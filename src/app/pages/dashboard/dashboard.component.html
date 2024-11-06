@@ -1,25 +1,14 @@
-<div class="container-fluid ps-0">
-    <div class="row p-0">
-        <div class="col-2">
-            <div class="sticky-top">
-                <app-dashboardnav></app-dashboardnav>
-            </div>
+<div class="container-fluid p-0 d-flex">
+    <div class="col-2 p-0 ">
+        <div class="sticky-top">
+            <app-dashboardnav></app-dashboardnav>
         </div>
-        <div class="col-10 ps-0">
-            <div class="row p-0 px-2">
-                <div class="w-100 p-0 my-1">
-                    <app-header></app-header>
-                </div>
-            </div>
-            <div class="row ms-1">
-                
-                <div class="ps-0">
-                    <!-- <app-dashboard-home></app-dashboard-home> -->
-                    <!-- <app-meals></app-meals> -->
-                    <!-- <app-progress></app-progress> -->
-                    <router-outlet></router-outlet>
-                     <!-- <app-profile></app-profile> -->
-                </div>
+    </div>
+    <div class="col-10 p-0">
+        <div class="container mt-2">
+            <app-header></app-header>
+            <div class="ps-1">
+                <router-outlet></router-outlet>
             </div>
         </div>
     </div>

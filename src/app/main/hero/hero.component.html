@@ -8,7 +8,8 @@
                 extensive
                 prebuilt components, and powerful JavaScript plugins.</p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-                <a routerLink = "register" type="button" class="btn btn-success btn-lg px-4 me-sm-3">Get Started</a>
+                <a  type="button" class="btn btn-success btn-lg px-4 me-sm-3" data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop">Get Started</a>
                 <a type="button" class="btn btn-outline-secondary btn-lg px-4">Learn More</a>
             </div>
         </div>
@@ -16,6 +17,24 @@
             <div class="container">
                 <img src="/img/dashboard.png" class="img-fluid border rounded-3 shadow-lg mb-4" alt="Example image"
                     width="700" height="500" loading="lazy">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade w-100" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Are you Sure?</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <app-register></app-register>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success1">Yes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

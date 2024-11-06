@@ -1,37 +1,91 @@
-<div class="colorMain borderDiv">
-    <div class="container vh-100">
-        <div class="col-12 h-100 centered">
-            <div class="row d-block">
-                <div class="col">
-                    <img class="img-fluid" src="icons/avatar.png" alt="avatar icon">
-                </div>
-            </div>
-            <div class="row d-flex position-absolute bottom-50 flex-column gap-2 pe-3">
-                <div class="col">
-                    <a class="btn" routerLink='home'><img class="img-fluid mx-2" height="30px" width="30px"
-                            src="icons/dashboard.png" alt="dashboard icon"><span id="btnText">Dashboard</span></a>
-                </div>
-                <div class="col" routerLink="meals">
-                    <a class="btn"><img class="img-fluid mx-2" height="30px" width="30px" src="icons/restaurant.png"
-                            alt="meals icon"><span id="btnText">Meals</span></a>
-                </div>
-                <div class="col" routerLink="progress">
-                    <a class="btn"><img class="img-fluid mx-2" height="30px" width="30px" src="icons/progress.png"
-                            alt="progress icon"><span id="btnText ">{{progress}}</span></a>
-                </div>
-            </div>
-            <div class="row">
-                <hr>
-                <div class="d-flex align-items-center">
-                    <div class="col">
-                        <button class="btn d-inline-flex" routerLink="profile"><img class="img-fluid mx-2" height="30px" width="30px"
-                                src="icons/avatar.png" alt="avatar icon"><span class="mt-1">Profile</span></button>
-                        <button class="btn"><img class="img-fluid" height="20px" width="20px" src="icons/more.png"
-                                alt="more icon"></button>
-                    </div>
-                </div>
-            </div>
+<div class="d-flex flex-column colorMain borderDiv vh-100">
+    <a class="align-self-center mx-3 link-body-emphass  text-decoration-none" title="avatar" data-bs-toggle="tooltip">
+        <img src="/icons/avatar.png" class="bi pe-none p-3 borderBottom" width="100%" height="100%" role="img"
+            aria-label="Home" alt="avatar png">
+    </a>
+    <div class="row mb-auto">
+        <div class="col-1">
+            <ul class="nav nav-pills nav-flush flex-column mb-auto mt-3 ">
+                <li class="nav-item">
+                    <a routerLink="home" class="nav-link" title="Home" data-bs-toggle="tooltip"
+                        data-bs-placement="right">
+                        <img src="/icons/dashboard.png" class="bi pe-none" width="24" height="24" role="img"
+                            aria-label="Home" alt="dashboard png">
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="meals" class="nav-link pt-3 pb-2 rounded-0" title="meals" data-bs-toggle="tooltip"
+                        data-bs-placement="right">
+                        <img src="/icons/restaurant.png" class="bi pe-none" width="24" height="24" role="img"
+                            aria-label="Meals" alt="meals png">
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="progress" class="nav-link py-3 rounded-0" title="Progress" data-bs-toggle="tooltip"
+                        data-bs-placement="right">
+                        <img src="/icons/progress.png" class="bi pe-none" width="24" height="24" role="img"
+                            aria-label="Progress" alt="progress png">
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col d-flex ms-4 flex-column">
+            <a routerLink="home" class="nav-link px-2 py-4" title="Home" data-bs-toggle="tooltip"
+                data-bs-placement="right">
+                <span class="text-black ">Dashboard</span>
+            </a>
+            <a routerLink="meals" class="nav-link px-2 py-1" title="Home" data-bs-toggle="tooltip"
+                data-bs-placement="right">
+                <span class="text-black">Meals</span>
+            </a>
+            <a routerLink="progress" class="nav-link px-2 py-4" title="Home" data-bs-toggle="tooltip"
+                data-bs-placement="right">
+                <span class="text-black">Progress</span>
+            </a>
 
         </div>
     </div>
+
+    <div class="borderTop mx-3 mb-4 borderBottom">
+        <div class="row">
+            <div class="col-1">
+                <a routerLink="" class="nav-link py-3" title="Profile" data-bs-toggle="tooltip"
+                    data-bs-placement="profile">
+                    <img src="/icons/logout.png" class="bi pe-none" width="24" height="24" role="img"
+                        aria-label="Profile" alt="progress png">
+                </a>
+                <a routerLink="profile" class="nav-link  rounded-0" title="Profile" data-bs-toggle="tooltip"
+                    data-bs-placement="profile">
+                    <img src="/icons/avatar.png" class="bi pe-none" width="24" height="24" role="img"
+                        aria-label="Profile" alt="progress png">
+                </a>
+            </div>
+            <div class="col">
+                <a class="nav-link px-2 pt-3 pb-1" title="Log out" data-bs-toggle="modal" data-bs-target="#staticBackdrop1" data-bs-placement="right">
+                    <span class="text-black ">Log Out</span>
+                </a>
+                <a routerLink="profile" class="nav-link px-2 py-3" title="Profile" data-bs-toggle="tooltip"
+                    data-bs-placement="right">
+                    <span class="text-black">Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="1" aria-labelledby="staticBackdrop1Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdrop1Label">Are you Sure?</h1>
+              <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+            </div>
+            <div class="modal-body">
+              this is the description for the action
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success1">Yes</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 </div>

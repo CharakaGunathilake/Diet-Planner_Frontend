@@ -1,9 +1,13 @@
 .borderDiv{
-    border-right: 2px black solid;
+    border-right: 2px #000000 solid;
     border-radius: 0 10px 10px 0;
 }
-
-
+.borderBottom{
+    border-bottom: 2px black solid;
+}
+.borderTop{
+    border-top: 2px black solid;
+}
 .centered{
     display: flex;
     flex-direction: column;

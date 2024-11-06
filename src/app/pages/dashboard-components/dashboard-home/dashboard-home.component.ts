@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css'
 })
@@ -18,7 +19,7 @@ export class DashboardHomeComponent {
         label: 'Achieved',
         data: [1600, 1000, 1600, 1810, 1500, 1350, 1200],
         backgroundColor: [
-          'rgba(20, 224, 17, 0.733)',
+          'rgba(20, 224, 17, 0.2)',
         ],
         borderColor: [
           'rgba(20, 224, 17)',
@@ -29,7 +30,7 @@ export class DashboardHomeComponent {
         label: 'Target Calories',
         data: [250, 1590, 1800, 1810, 1560, 1550, 1400],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
+          'rgba(255, 99, 132, 0.1)',
         ],
         borderColor: [
           'rgb(255, 99, 132)',

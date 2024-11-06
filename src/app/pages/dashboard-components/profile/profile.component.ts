@@ -1,9 +1,10 @@
+import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [],
+  imports: [NgIf],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
