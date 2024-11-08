@@ -7,6 +7,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { ProgressComponent } from './pages/dashboard-components/progress/progress.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/dashboard-components/profile/profile.component';
+import { AboutComponent } from './pages/about/about.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent},
@@ -18,6 +19,8 @@ export const routes: Routes = [
         { path: "progress", component: ProgressComponent},
         { path: "profile", component: ProfileComponent},
     ]}, 
+    { path: "about", component: AboutComponent},
+
     
 ];
 

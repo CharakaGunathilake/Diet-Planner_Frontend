@@ -1,19 +1,18 @@
 <div class="container colorBorder rounded-4">
   <header class="d-flex flex-wrap justify-content-center p-2">
     <a href="/" class="d-flex align-items-center mb-0 me-4 me-md-auto link-body-emphasis text-decoration-none">
-      <span class="fs-3 fw-bold">SmartPlate</span>
+      <span class="fs-3 fw-bold" (click) = "updateLoginStatus()">SmartPlate</span>
     </a>
 
     <ul class="nav nav-pills">
-      <li class="nav-item"><a routerLink="/" class="nav-link fw-bold text-success">Home</a></li>
-      <li class="nav-item"><a  class="nav-link fw-bold text-success" data-bs-toggle="modal"
-          data-bs-target="#staticBackdrop1">{{Dashboard}}</a></li>
-      <li class="nav-item"><a routerLink="about" class="nav-link fw-bold text-success">About</a></li>
+      <li class="nav-item"><a routerLink="/" class="nav-link fw-bold text-success" [ngClass]="{'active': selectedHeader == 'Home'}" (click) = "handleClickEvent(1)">Home</a></li>
+      <li class="nav-item"><a routerLink="#" class="nav-link fw-bold text-success" [ngClass]="{'active': selectedHeader == 'Dashboard'}" (click) = "handleClickEvent(2)">{{dashboard}}</a></li>
+      <li class="nav-item"><a routerLink="/about"  class="nav-link fw-bold text-success" [ngClass]="{'active': selectedHeader == 'About'}" (click)="handleClickEvent(3)">About</a></li>
     </ul>
   </header>
 </div>
 
-<div class="modal fade w-100" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade w-100" #staticBackdrop1 data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content rounded-5 p-0">
