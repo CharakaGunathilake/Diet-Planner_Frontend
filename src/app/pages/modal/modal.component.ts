@@ -1,18 +1,24 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
-import { BmicalculatorComponent } from '../bmicalculator/bmicalculator.component';
-import { RegisterComponent } from '../../pages/register/register.component';
-import { HeroComponent } from '../../main/hero/hero.component';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { BmicalculatorComponent } from '../../common/bmicalculator/bmicalculator.component';
+import { RegisterComponent } from '../register/register.component';
+import { Router } from '@angular/router';
+import { Modal } from 'bootstrap';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [NgIf, NgFor, BmicalculatorComponent, HeroComponent],
+  imports: [NgIf, NgFor, BmicalculatorComponent, RegisterComponent],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css'
+
 })
 export class ModalComponent implements OnInit {
+  @ViewChild('staticBackdrop') registerModal!: ElementRef;
   private baseUrl: String = "http://localhost:8080/";
+  constructor(private router: Router) { }
+  public userResponseObject:String = "nothing here";
+  
   async ngOnInit(): Promise<void> {
     await this.getQuiz();
     this.displayQuiz(0);
@@ -35,7 +41,10 @@ export class ModalComponent implements OnInit {
     this.displayQuiz(this.currentIndex++);
   }
 
-  userResponseObject1: any = this.quizObjectList;
+  private openModal() {
+    const modal = new Modal(this.registerModal.nativeElement);
+    modal.show();
+  }
 
   private async getQuiz() {
     let response = await fetch(this.baseUrl + "quiz/getAll");
@@ -46,14 +55,15 @@ export class ModalComponent implements OnInit {
 
   protected displayQuiz(index: number): void {
     if (index >= this.quizObjectList.length) {
+      this.openModal()
+    } else {
       this.question = this.quizObjectList[index].quizQuestion.question;
       this.description = this.quizObjectList[index].quizQuestion.description;
+      console.log(index, length);
       this.textUnit = false;
       this.option = false;
       this.bool = false;
       this.calculation = false;
-    }else{
-
     }
 
     switch (this.quizObjectList[index].quizQuestion.questionTypeEnum) {

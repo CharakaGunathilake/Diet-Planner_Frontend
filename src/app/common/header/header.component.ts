@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { LoginComponent } from '../../pages/login/login.component';
 import { Modal } from 'bootstrap';
@@ -15,6 +15,9 @@ export class HeaderComponent implements OnInit {
   @ViewChild('staticBackdrop1') loginModal!: ElementRef;
   private rememberedLogin: boolean = false;
   private isLoggedIn: boolean = JSON.parse(localStorage.getItem("isLoggedIn") || "false");
+  public selectedHeader = 'Home';
+  protected dashboard: String = "Log In";
+  constructor(private router: Router) {}
   ngOnInit(): void {
     this.dashboard = "Log In";
     this.rememberedLogin = JSON.parse(localStorage.getItem("rememberedLogin") || "false");
@@ -23,21 +26,19 @@ export class HeaderComponent implements OnInit {
     this.alreadyLoggedIn();
   }
 
-  public selectedHeader = 'Home';
-
   protected handleClickEvent(btnIndex: number): void {
     switch (btnIndex) {
       case 1: {
         this.changeSelectedHeader('Home');
         this.updateLoginStatus();
-      }break;
+      } break;
       case 2: {
         this.changeSelectedHeader('Dashboard');
         this.navigateToDashboard();
-      }break;
+      } break;
       case 3: {
         this.changeSelectedHeader('About');
-      }break;
+      } break;
     }
   }
 
@@ -45,8 +46,6 @@ export class HeaderComponent implements OnInit {
     this.selectedHeader = menuName;
   }
 
-  protected dashboard: String = "Log In";
-  constructor(private router: Router) { }
   protected navigateToDashboard() {
     if (this.rememberedLogin || this.isLoggedIn) {
       this.router.navigate(["/dashboard/home"]);

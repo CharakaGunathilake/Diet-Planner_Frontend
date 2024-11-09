@@ -2,24 +2,27 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from "@angular/forms";
 import { NgIf } from '@angular/common';
-import { ModalComponent } from '../../common/modal/modal.component';
+import { ModalComponent } from '../modal/modal.component';
+import { DataService } from '../../data.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterLink, FormsModule, NgIf, ModalComponent],
+  imports: [RouterLink, FormsModule, NgIf],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
 
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit{
   private baseUrl: String = "http://localhost:8080/";
   private header = { "Content-Type": "application/json" };
-  @Input() userResponseObject: any;
-  ngOnInit(): void {
-    // console.log(this.userResponseObject);
-  }
+
   constructor(private router: Router) { }
+  @Input() userResponseObject!: String;
+  ngOnInit(): void {
+    console.log(this.userResponseObject);
+        
+  }
 
 
   protected passwordNew: string = "";
@@ -36,7 +39,7 @@ export class RegisterComponent implements OnInit {
 
 
   protected async showData(): Promise<void> {
-    this.router.navigate(["/modal"]);
+    this.router.navigate(["/"]);
     if (this.matchingPassword()) {
       if (await this.checkUserName(this.userObj.username)) {
         console.log("Username already taken");

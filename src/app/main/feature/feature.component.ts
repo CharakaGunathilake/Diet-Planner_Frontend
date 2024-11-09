@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ModalComponent } from '../../common/modal/modal.component';
+import { ModalComponent } from '../../pages/modal/modal.component';
 
 @Component({
   selector: 'app-feature',
