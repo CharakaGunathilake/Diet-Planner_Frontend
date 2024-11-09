@@ -8,6 +8,7 @@ import { ProgressComponent } from './pages/dashboard-components/progress/progres
 import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/dashboard-components/profile/profile.component';
 import { AboutComponent } from './pages/about/about.component';
+import { ModalComponent } from './common/modal/modal.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent},
@@ -20,6 +21,7 @@ export const routes: Routes = [
         { path: "profile", component: ProfileComponent},
     ]}, 
     { path: "about", component: AboutComponent},
+    { path: "modal", component: ModalComponent},
 
     
 ];

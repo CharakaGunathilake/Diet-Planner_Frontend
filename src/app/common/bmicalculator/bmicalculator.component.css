@@ -1,7 +1,3 @@
-.container .pill:hover{
-    background-color: #16e011;
-}
-
 .btn-success1 {
     --bs-btn-color: #fff;
     --bs-btn-bg: #16E011;

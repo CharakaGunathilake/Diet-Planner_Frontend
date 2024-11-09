@@ -1,8 +1,7 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from "@angular/forms";
 import { NgIf } from '@angular/common';
-import { Modal } from 'bootstrap';
 import { ModalComponent } from '../../common/modal/modal.component';
 
 @Component({
@@ -14,15 +13,18 @@ import { ModalComponent } from '../../common/modal/modal.component';
 })
 
 export class RegisterComponent implements OnInit {
-  @ViewChild('staticBackdrop1') loginModal!: ElementRef;
   private baseUrl: String = "http://localhost:8080/";
   private header = { "Content-Type": "application/json" };
+  @Input() userResponseObject: any;
   ngOnInit(): void {
+    // console.log(this.userResponseObject);
   }
+  constructor(private router: Router) { }
+
+
   protected passwordNew: string = "";
   protected passwordConfirm: string = "";
   protected expression: boolean = false;
-  protected quizObj: any = [];
   protected userObj = {
     firstName: "",
     lastName: "",
@@ -32,15 +34,9 @@ export class RegisterComponent implements OnInit {
     regDate: new Date()
   }
 
-  private openModal() {
-    const modal = new Modal(this.loginModal.nativeElement);
-    modal.show();
-  }
 
   protected async showData(): Promise<void> {
-    this.getQuiz();
-    console.log(this.quizObj);
-
+    this.router.navigate(["/modal"]);
     if (this.matchingPassword()) {
       if (await this.checkUserName(this.userObj.username)) {
         console.log("Username already taken");
@@ -103,11 +99,4 @@ export class RegisterComponent implements OnInit {
     alert(JSON.stringify(body));
   }
 
-  private async getQuiz() {
-    let response = await fetch(this.baseUrl + "quiz-questions/getAll");
-    let body = await response.json();
-    this.quizObj = body;
-    console.log(this.quizObj[0].id + " - " + this.quizObj[0].question);
-    this.openModal();
-  }
 }

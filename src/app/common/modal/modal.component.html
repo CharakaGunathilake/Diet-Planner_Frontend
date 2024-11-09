@@ -1,21 +1,41 @@
-
-<button data-bs-toggle="modal"
-data-bs-target="#quizModal">Click me</button>
-<div class="modal fade w-100" id="quizModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="staticBackdropLabel1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content rounded-5 p-0">
-            <div class="modal-header">
-                <button type="button" class="btn-close position-absolute end-0 mx-3" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
+<div class="container-fluid centered vh-100">
+    <div class="col-11 col-lg-8 pill h-50 centered">
+        <div class="text-center centered flex-column p-3">
+            <div class="">
+                <h3 class="">{{question}}</h3>
+                <h6 class="text-dark-emphasis">{{description}}</h6>
             </div>
-            <div class="modal-body">
-
+            <div class="centered w-100">
+                <div class="overflow-auto col-12 py-2 mb-3" style="height: 16em;">
+                    <div class="container centered">
+                        <div *ngIf="!textUnit && !calculation" class="container px-2 rounded-5">
+                            <div (click)="nextQuestion()" *ngFor="let option_text of option; let i = index"
+                                class="pill p-3 mb-1">
+                                <p class="m-0">{{option[i].option_text}}</p>
+                            </div>
+                        </div>
+                        <div class="" *ngIf="textUnit && !calculation">
+                            <div class="px-5 py-3 mb-3">
+                                <div class="input-group">
+                                    <input type="{{type}}" class="form-control rounded{{dash}}5"
+                                        placeholder="{{placeholder}}" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2">
+                                    <span *ngIf="unit" class="input-group-text rounded-end-5"
+                                        id="basic-addon2">{{unit}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="" *ngIf="calculation">
+                        <app-bmicalculator></app-bmicalculator>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success1">Yes</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <div *ngIf="bool || textUnit" class="d-flex justify-content-end">
+                <button (click)="nextQuestion()" class="btn btn-success1">{{btnText}}</button>
             </div>
         </div>
     </div>
 </div>
+
+<app-hero  [userResponseObject]="userResponseObject1"></app-hero>

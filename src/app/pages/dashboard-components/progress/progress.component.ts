@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
+import { BmicalculatorComponent } from '../../../common/bmicalculator/bmicalculator.component';
 
 Chart.register(...registerables);
 @Component({
   selector: 'app-progress',
   standalone: true,
-  imports: [],
+  imports: [BmicalculatorComponent],
   templateUrl: './progress.component.html',
   styleUrl: './progress.component.css'
 })
