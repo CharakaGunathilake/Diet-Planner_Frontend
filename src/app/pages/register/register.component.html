@@ -8,14 +8,14 @@
                 <div class="pill py-3">
                     <h1 class="text-center py-3">Sign Up</h1>
                     <div class="input-group mb-2">
-                        <span class="input-group-text rounded-start-4">First & last name</span>
-                        <input type="text" [(ngModel)]="userObj.firstName" aria-label="Firstname"
-                            class="form-control validate">
-                        <input type="text" [(ngModel)]="userObj.lastName" aria-label="Lastname"
+                        <span class="input-group-text rounded-start-4">Name</span>
+                        <input type="text" [(ngModel)]="userObj.firstName" aria-label="Firstname" placeholder="First"
+                            class="form-control">
+                        <input type="text" [(ngModel)]="userObj.lastName" aria-label="Lastname" placeholder="Last"
                             class="form-control validate rounded-end-4">
                     </div>
                     <div class="form-floating mb-2">
-                        <input type="text" [(ngModel)]="userObj.username" class="form-control rounded-4 validate"
+                        <input type="text" [(ngModel)]="login.username" class="form-control rounded-4 validate"
                             id="floatingUsername" placeholder="Bob">
                         <label for="floatingUsername">Username</label>
                     </div>

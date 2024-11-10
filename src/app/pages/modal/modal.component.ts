@@ -4,11 +4,12 @@ import { BmicalculatorComponent } from '../../common/bmicalculator/bmicalculator
 import { RegisterComponent } from '../register/register.component';
 import { Router } from '@angular/router';
 import { Modal } from 'bootstrap';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [NgIf, NgFor, BmicalculatorComponent, RegisterComponent],
+  imports: [NgIf, NgFor, BmicalculatorComponent, RegisterComponent, FormsModule],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css'
 
@@ -17,8 +18,8 @@ export class ModalComponent implements OnInit {
   @ViewChild('staticBackdrop') registerModal!: ElementRef;
   private baseUrl: String = "http://localhost:8080/";
   constructor(private router: Router) { }
-  public userResponseObject:String = "nothing here";
-  
+  public userResponseObject: any = [];
+
   async ngOnInit(): Promise<void> {
     await this.getQuiz();
     this.displayQuiz(0);
@@ -31,14 +32,63 @@ export class ModalComponent implements OnInit {
   protected unit: String = "";
   protected bool: boolean = false;
   protected textUnit: boolean = false;
-  protected type = "";
-  protected currentIndex = 1;
+  protected type:String = "";
+  private currentIndex = 1;
   protected placeholder: String = "";
   protected dash: String = "-";
   protected btnText: String = "Next";
+  public userResponseObjectACTUAL: any = [];
+  protected response: any = null;
+  private multipleChoice: any = [];
+  private questionType: string = "";
+  protected color: string = "secondary";
 
-  protected nextQuestion(): void {
-    this.displayQuiz(this.currentIndex++);
+
+  protected handleClickEvent(response: any): void {
+    this.catchResponse(response);
+  }
+
+
+  catchResponse(response: any) {
+    console.log(this.questionType, this.userResponseObjectACTUAL[this.currentIndex - 1]);
+    if (this.questionType === "MULTIPLE") {
+      if (!this.multipleChoice.includes(response)) {
+        this.multipleChoice.push(response);
+        this.color = "success";
+        console.log(this.multipleChoice);
+      }else{
+        this.multipleChoice.pop(response);
+      }
+    } else {
+      this.userResponseObjectACTUAL.push(response);
+      this.nextQuestion(false);
+    }
+  }
+
+  protected nextQuestion(bool: boolean): void {
+    if (this.currentIndex >= this.quizObjectList.length) {
+      this.userResponseObject = this.userResponseObjectACTUAL;
+      this.openModal();
+    } else {
+      if (bool) {
+        if (this.questionType === "MULTIPLE") {
+          if (this.multipleChoice.length === 0) {
+            this.userResponseObjectACTUAL.push("none");
+          } else {
+            this.userResponseObjectACTUAL.push(this.multipleChoice);
+            this.multipleChoice = [];
+          }
+        } else if (this.questionType === "TEXT") {
+          this.userResponseObjectACTUAL.push(this.response);
+          this.response = null;
+        } else if (this.questionType === "CALCULATION"){
+          this.userResponseObjectACTUAL.push(localStorage.getItem("BMI"));
+          localStorage.removeItem("BMI");
+        }
+        console.log(this.userResponseObjectACTUAL);
+      }
+      this.displayQuiz(this.currentIndex++);
+    }
   }
 
   private openModal() {
@@ -50,21 +100,16 @@ export class ModalComponent implements OnInit {
     let response = await fetch(this.baseUrl + "quiz/getAll");
     let body = await response.json();
     this.quizObjectList = body;
-    console.log(this.quizObjectList);
   }
 
   protected displayQuiz(index: number): void {
-    if (index >= this.quizObjectList.length) {
-      this.openModal()
-    } else {
-      this.question = this.quizObjectList[index].quizQuestion.question;
-      this.description = this.quizObjectList[index].quizQuestion.description;
-      console.log(index, length);
-      this.textUnit = false;
-      this.option = false;
-      this.bool = false;
-      this.calculation = false;
-    }
+    this.question = this.quizObjectList[index].quizQuestion.question;
+    this.description = this.quizObjectList[index].quizQuestion.description;
+    this.questionType = this.quizObjectList[index].quizQuestion.questionTypeEnum;
+    this.textUnit = false;
+    this.option = false;
+    this.bool = false;
+    this.calculation = false;
 
     switch (this.quizObjectList[index].quizQuestion.questionTypeEnum) {
       case "SINGLE": {
@@ -118,4 +163,3 @@ export class ModalComponent implements OnInit {
     }
   }
 }
-

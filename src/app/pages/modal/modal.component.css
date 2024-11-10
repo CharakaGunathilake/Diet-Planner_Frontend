@@ -1,5 +1,6 @@
-.container .pill:hover{
+.bordered:hover{
     background-color: #16e011;
+    cursor: pointer;
 }
 
 .btn-success1 {
@@ -17,4 +18,9 @@
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: #16E011;
     --bs-btn-disabled-border-color: #16E011;
+}
+
+.bordered{
+    border: 2px solid;
+    border-radius: 15px;
 }
