@@ -1,15 +1,13 @@
-<div class="container-fluid p-0 d-flex">
-    <div class="col-2 p-0 ">
-        <div class="sticky-top">
+<div class="container-fluid p-0">
+    <div class="d-flex">
+        <div class="sticky-top col-1">
             <app-dashboardnav></app-dashboardnav>
         </div>
-    </div>
-    <div class="col-10 p-0">
-        <div class="container mt-2">
-            <app-header></app-header>
-            <div class="ps-1">
+        <div class="col-10 col-md-8">
+            <div class="">
                 <router-outlet></router-outlet>
             </div>
         </div>
     </div>
+
 </div>

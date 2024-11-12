@@ -1,11 +1,12 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { initFlowbite } from 'flowbite';
 let texts = document.getElementById("btnText") as HTMLElement;
 
 @Component({
   selector: 'app-dashboardnav',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink,RouterOutlet],
   templateUrl: './dashboardnav.component.html',
   styleUrl: './dashboardnav.component.css'
 })
@@ -15,6 +16,8 @@ export class DashboardnavComponent implements OnInit{
   ngOnInit() {
     // Initialize any logic that depends on the initial screen size
     this.onResize();
+    initFlowbite();
+
   }
 
   @HostListener('window:resize', ['$event'])

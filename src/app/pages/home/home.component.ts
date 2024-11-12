@@ -3,6 +3,7 @@ import { HeroComponent } from '../../main/hero/hero.component';
 import { HeaderComponent } from '../../common/header/header.component';
 import { FooterComponent } from '../../common/footer/footer.component';
 import { FeatureComponent } from '../../main/feature/feature.component';
+import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'app-home',

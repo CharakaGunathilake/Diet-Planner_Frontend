@@ -5,25 +5,40 @@ import { RegisterComponent } from '../register/register.component';
 import { Router } from '@angular/router';
 import { Modal } from 'bootstrap';
 import { FormsModule } from '@angular/forms';
+import { DataService } from '../../data.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [NgIf, NgFor, BmicalculatorComponent, RegisterComponent, FormsModule],
+  imports: [NgIf, NgFor, BmicalculatorComponent, RegisterComponent, FormsModule, HttpClientModule],
   templateUrl: './modal.component.html',
-  styleUrl: './modal.component.css'
-
+  styleUrl: './modal.component.css',
+  template: `<app-details [data]="parentData"></app-details>`,
+  providers: [DataService]
 })
 export class ModalComponent implements OnInit {
   @ViewChild('staticBackdrop') registerModal!: ElementRef;
   private baseUrl: String = "http://localhost:8080/";
-  constructor(private router: Router) { }
+  constructor(private router: Router,private dataService: DataService) { }
   public userResponseObject: any = [];
 
   async ngOnInit(): Promise<void> {
     await this.getQuiz();
     this.displayQuiz(0);
   }
+
+  sendData() {
+    const userData = {
+      firstName: 'John',
+      lastName: 'Doe',
+      age: 25
+    };
+    console.log(userData);
+    
+    this.dataService.setUserData(userData);
+  }
+
   protected calculation: boolean = false;
   protected quizObjectList: any = null;
   protected question: String = "";
@@ -50,7 +65,6 @@ export class ModalComponent implements OnInit {
 
 
   catchResponse(response: any) {
-    console.log(this.questionType, this.userResponseObjectACTUAL[this.currentIndex - 1]);
     if (this.questionType === "MULTIPLE") {
       if (!this.multipleChoice.includes(response)) {
         this.multipleChoice.push(response);

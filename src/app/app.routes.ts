@@ -11,19 +11,19 @@ import { AboutComponent } from './pages/about/about.component';
 import { ModalComponent } from './pages/modal/modal.component';
 
 export const routes: Routes = [
-    { path: '', component: HomeComponent},
+    { path: '', component: HomeComponent },
     { path: "register", component: RegisterComponent },
-    { path: "login", component: LoginComponent},
-    { path: 'dashboard', component: DashboardComponent, children:[
-        { path:'home',pathMatch:"prefix", component: DashboardHomeComponent, },
-        { path: "meals", component: MealsComponent},
-        { path: "progress", component: ProgressComponent},
-        { path: "profile", component: ProfileComponent},
-    ]}, 
-    { path: "about", component: AboutComponent},
-    { path: "modal", component: ModalComponent},
-
-    
+    { path: "login", component: LoginComponent },
+    {
+        path: 'dashboard', component: DashboardComponent, children: [
+            { path: 'home', pathMatch: "prefix", component: DashboardHomeComponent, },
+            { path: "meals", component: MealsComponent },
+            { path: "progress", component: ProgressComponent },
+            { path: "profile", component: ProfileComponent },
+        ]
+    },
+    { path: "about", component: AboutComponent },
+    { path: "modal", component: ModalComponent },
 ];
 
 
