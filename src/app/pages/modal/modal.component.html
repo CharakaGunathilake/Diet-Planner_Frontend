@@ -1,6 +1,7 @@
 <div class="container-fluid centered">
     <div class="pill centered w-100" style="height: 30em;">
-        <button type="button" class="btn-close position-absolute end-0 top-0 mt-4 me-5" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close position-absolute end-0 top-0 mt-4 me-5" data-bs-dismiss="modal"
+            aria-label="Close"></button>
         <div class="text-center centered flex-column p-3">
             <div class="mb-3">
                 <h3 class="">{{question}}</h3>
@@ -43,12 +44,18 @@
 
 <div class="modal fade w-100" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content rounded-5">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Are you Sure?</h1>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+            </div>
             <div class="modal-body">
-                <button type="button" class="btn-close position-absolute end-0 mx-3" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-                <app-register></app-register>
+                Would you like to Sign up and Start your Diet?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success1" (click)="signUp()">Yes! I am</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No! I am not</button>
             </div>
         </div>
     </div>

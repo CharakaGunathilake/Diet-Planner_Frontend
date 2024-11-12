@@ -2,41 +2,29 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BmicalculatorComponent } from '../../common/bmicalculator/bmicalculator.component';
 import { RegisterComponent } from '../register/register.component';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Modal } from 'bootstrap';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../data.service';
 import { HttpClientModule } from '@angular/common/http';
+import { DetailsComponent } from '../../common/details/details.component';
+import { DietaryinfoserviceService } from '../../dietaryinfoservice.service';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [NgIf, NgFor, BmicalculatorComponent, RegisterComponent, FormsModule, HttpClientModule],
+  imports: [NgIf, NgFor, BmicalculatorComponent, DetailsComponent, FormsModule, HttpClientModule],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css',
-  template: `<app-details [data]="parentData"></app-details>`,
-  providers: [DataService]
 })
 export class ModalComponent implements OnInit {
-  @ViewChild('staticBackdrop') registerModal!: ElementRef;
+  @ViewChild('staticBackdrop') detailsModal!: ElementRef;
   private baseUrl: String = "http://localhost:8080/";
-  constructor(private router: Router,private dataService: DataService) { }
-  public userResponseObject: any = [];
+  constructor(private router: Router) { }
 
   async ngOnInit(): Promise<void> {
     await this.getQuiz();
     this.displayQuiz(0);
-  }
-
-  sendData() {
-    const userData = {
-      firstName: 'John',
-      lastName: 'Doe',
-      age: 25
-    };
-    console.log(userData);
-    
-    this.dataService.setUserData(userData);
   }
 
   protected calculation: boolean = false;
@@ -47,7 +35,7 @@ export class ModalComponent implements OnInit {
   protected unit: String = "";
   protected bool: boolean = false;
   protected textUnit: boolean = false;
-  protected type:String = "";
+  protected type: String = "";
   private currentIndex = 1;
   protected placeholder: String = "";
   protected dash: String = "-";
@@ -58,11 +46,36 @@ export class ModalComponent implements OnInit {
   private questionType: string = "";
   protected color: string = "secondary";
 
+  createObject(userResponseObject: any[]) {
+    return new DietaryinfoserviceService(
+      userResponseObject.at(0),
+      calculateAge(userResponseObject.at(1)),
+      userResponseObject.at(2),
+      userResponseObject.at(3),
+      userResponseObject.at(6),
+      userResponseObject.at(5),
+      userResponseObject.at(4),
+      getSplittedString(userResponseObject.at(7)),
+      getSplittedString(userResponseObject.at(8)),
+      userResponseObject.at(9),
+      userResponseObject.at(10),
+      getCaloriesDeficit(userResponseObject.at(11)),
+      getWaterIntake(userResponseObject.at(13)),
+      userResponseObject.at(14),
+      userResponseObject.at(15),
+      getMealPlan(userResponseObject.at(16)),
+      userResponseObject.at(17)
+    );
+    
+  }
 
   protected handleClickEvent(response: any): void {
     this.catchResponse(response);
   }
 
+  signUp(){
+    this.router.navigate(["/register"],{state:this.createObject(this.userResponseObjectACTUAL)});
+  }
 
   catchResponse(response: any) {
     if (this.questionType === "MULTIPLE") {
@@ -70,7 +83,7 @@ export class ModalComponent implements OnInit {
         this.multipleChoice.push(response);
         this.color = "success";
         console.log(this.multipleChoice);
-      }else{
+      } else {
         this.multipleChoice.pop(response);
       }
     } else {
@@ -81,7 +94,6 @@ export class ModalComponent implements OnInit {
 
   protected nextQuestion(bool: boolean): void {
     if (this.currentIndex >= this.quizObjectList.length) {
-      this.userResponseObject = this.userResponseObjectACTUAL;
       this.openModal();
     } else {
       if (bool) {
@@ -95,7 +107,7 @@ export class ModalComponent implements OnInit {
         } else if (this.questionType === "TEXT") {
           this.userResponseObjectACTUAL.push(this.response);
           this.response = null;
-        } else if (this.questionType === "CALCULATION"){
+        } else if (this.questionType === "CALCULATION") {
           this.userResponseObjectACTUAL.push(localStorage.getItem("BMI"));
           localStorage.removeItem("BMI");
         }
@@ -106,7 +118,7 @@ export class ModalComponent implements OnInit {
   }
 
   private openModal() {
-    const modal = new Modal(this.registerModal.nativeElement);
+    const modal = new Modal(this.detailsModal.nativeElement);
     modal.show();
   }
 
@@ -175,5 +187,71 @@ export class ModalComponent implements OnInit {
         this.btnText = "Finish";
       } break;
     }
+  }
+}
+
+
+function calculateAge(date: any): number {
+  let today = new Date();
+  let birthDate = new Date(date);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  let m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
+
+function getSplittedString(responseObj: []): String {
+  console.log(responseObj);
+
+  let st: String = "";
+  responseObj.forEach(obj => {
+    st += obj + ", ";
+  })
+  return st.substring(0, st.length - 2);
+}
+
+function getCaloriesDeficit(responseObj: any) {
+  switch (responseObj) {
+    case "250 kcal/day":
+      return 250;
+    case "500 kcal/day":
+      return 500;
+    case "750 kcal/day":
+      return 750;
+    default:
+      return 0;
+  }
+}
+
+function getWaterIntake(responseObj: any) {
+  switch (responseObj) {
+    case "Less than 4 glasses":
+      return 4;
+    case "4-8 glasses":
+      return 6;
+    case "8-12 glasses":
+      return 10;
+    case "More than 12 glasses":
+      return 15;
+    default:
+      return 0;
+  }
+}
+
+function getMealPlan(responseObj: any) {
+  switch (responseObj) {
+    case "Set mealtimes (breakfast, lunch, dinner)":
+      return 3;
+    case "Set mealtimes with a snack":
+      return 4;
+    case "Smaller, frequent meals (4-5 times a day)":
+      return 5;
+    case "1-2 larger meals a day (intermittent fasting)":
+      return 2;
+    default:
+      return 0;
   }
 }

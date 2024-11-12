@@ -14,10 +14,14 @@ import { DataService } from '../../data.service';
 export class RegisterComponent implements OnInit {
   private baseUrl: String = "http://localhost:8080/";
   private header = { "Content-Type": "application/json" };
-
-  constructor(private router: Router) { }
-  ngOnInit() {
+  private data: any;
+  constructor(private router: Router) {
+    this.data = this.router.getCurrentNavigation()?.extras.state?.['dietaryData'];
+    console.log(this.data);
     
+  }
+  ngOnInit() {
+
   }
 
   protected passwordNew: string = "";
@@ -28,7 +32,7 @@ export class RegisterComponent implements OnInit {
     firstName: "",
     lastName: "",
     gender: "",
-    birthDay: undefined,
+    birthDay: new Date(),
     age: 0,
     height: 0,
     weight: 0,
@@ -47,12 +51,34 @@ export class RegisterComponent implements OnInit {
       if (await this.checkUserName(this.login.username)) {
         console.log("Username already taken");
       } else {
-        // await this.saveUser();
+        await this.saveUser();
         localStorage.setItem("currentUser", `${this.login.username}`);
         localStorage.setItem("isloggedIn", JSON.stringify(true));
       }
     } else {
       console.log("Password fields doesn't match")
+    }
+  }
+  async saveUser() {
+    try {
+      const response = await fetch(this.baseUrl + "user/add-user-with-plan", {
+        method: "POST",
+        headers: this.header,
+        body: JSON.stringify({
+          "user":this.userObj,
+          "dietaryInfo":this.data,
+          "login":this.login})
+      });
+      if (!response.ok) {
+        console.error("Failed to save dietary info:", response.statusText);
+        return false;
+      }
+      const body = await response.json();
+      return body.success === true;
+
+    } catch (error) {
+      console.error("Error saving dietary info:", error);
+      return false;
     }
   }
 
@@ -90,7 +116,7 @@ export class RegisterComponent implements OnInit {
   }
 
 
- 
+
 
   // private async saveLogin(): Promise<boolean> {
   //   (this.userObj.username)
@@ -111,7 +137,7 @@ export class RegisterComponent implements OnInit {
   //   return body;
   // }
 
-  
+
 }
 
 
