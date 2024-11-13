@@ -1,7 +1,7 @@
-<div class="container-fluid centered">
-    <div class="pill centered w-100" style="height: 30em;">
-        <button type="button" class="btn-close position-absolute end-0 top-0 mt-4 me-5" data-bs-dismiss="modal"
-            aria-label="Close"></button>
+<div class="container-fluid centered vh-100">
+    <div class="pill centered col-lg-6" style="height: 30em;">
+        <!-- <button type="button" class="btn-close position-absolute end-0 top-0 mt-4 me-5" data-bs-dismiss="modal"
+            aria-label="Close"></button> -->
         <div class="text-center centered flex-column p-3">
             <div class="mb-3">
                 <h3 class="">{{question}}</h3>
@@ -9,36 +9,46 @@
             </div>
             <div class="centered w-100">
                 <div class="overflow-auto no-scrollbar col-12 py-2 mb-3" style="height: 15em;">
-                    <div class="container centered ">
-                        <div *ngIf="!textUnit && !calculation" class="container px-2 rounded-5">
+                    <div *ngIf="!textUnit && !calculation" class="container px-2 rounded-5">
+                        <div class="container  ">
                             <div (click)="handleClickEvent(option[i].option_text)"
                                 *ngFor="let option_text of option; let i = index"
                                 class="bordered border-{{color}} p-3 mb-1">
                                 <p class="m-0">{{option[i].option_text}}</p>
                             </div>
                         </div>
-                        <div class="" *ngIf="textUnit && !calculation">
+                    </div>
+                    <div class="" *ngIf="textUnit && !calculation">
+                        <div class="container centered col-12">
                             <div class="px-5 py-3 mb-3">
+                                <label class="text-danger fw-bold" *ngIf="warn" id="basic-addon2">Invalid {{placeholder}}!</label>
                                 <div class="input-group">
-                                    <input type="{{type}}" [(ngModel)]="response" class="form-control rounded{{dash}}5"
-                                        placeholder="{{placeholder}}">
+                                    <input type="{{type}}" autofocus #responseField  [(ngModel)]="response" class="form-control rounded{{dash}}5" min={{min}}
+                                        max={{max}} value="2010-10-08" >
                                     <span *ngIf="unit" class="input-group-text rounded-end-5"
                                         id="basic-addon2">{{unit}}</span>
                                 </div>
                             </div>
+                            
+                        </div>
+                        <div *ngIf="bool || textUnit" class="">
+                            <button [disabled]="!bool && !response && !calculation && !warn" (click)="validate()"
+                                class="btn btn-success1">{{btnText}}</button>
                         </div>
                     </div>
-                    <div class="" *ngIf="calculation">
+                </div>
+                <div class="" *ngIf="calculation">
+                    <div class="container centered ">
                         <app-bmicalculator [height]="userResponseObjectACTUAL[2]"
-                            [weight]="userResponseObjectACTUAL[3]"></app-bmicalculator>
+                        [weight]="userResponseObjectACTUAL[3]"></app-bmicalculator>
                     </div>
                 </div>
             </div>
-            <div *ngIf="bool || textUnit" class="d-flex justify-content-end">
-                <button [disabled]="!bool && !response && !calculation" (click)="nextQuestion(true)"
-                    class="btn btn-success1">{{btnText}}</button>
-            </div>
         </div>
+        <!-- <div *ngIf="bool || textUnit" class="d-flex justify-content-end">
+            <button [disabled]="!bool && !response && !calculation" (click)="nextQuestion(true)"
+                class="btn btn-success1">{{btnText}}</button>
+        </div> -->
     </div>
 </div>
 

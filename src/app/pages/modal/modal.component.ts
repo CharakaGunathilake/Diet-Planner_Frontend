@@ -1,14 +1,11 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BmicalculatorComponent } from '../../common/bmicalculator/bmicalculator.component';
-import { RegisterComponent } from '../register/register.component';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Modal } from 'bootstrap';
 import { FormsModule } from '@angular/forms';
-import { DataService } from '../../data.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DetailsComponent } from '../../common/details/details.component';
-import { DietaryinfoserviceService } from '../../dietaryinfoservice.service';
 
 @Component({
   selector: 'app-modal',
@@ -17,14 +14,22 @@ import { DietaryinfoserviceService } from '../../dietaryinfoservice.service';
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css',
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent implements AfterViewInit {
   @ViewChild('staticBackdrop') detailsModal!: ElementRef;
+  @ViewChild("responseField") responseField!: ElementRef;
+  ngAfterViewInit() {
+  }
   private baseUrl: String = "http://localhost:8080/";
-  constructor(private router: Router) { }
+  constructor(private router: Router, private http: HttpClient) {
+    this.getQuiz();
+  }
 
-  async ngOnInit(): Promise<void> {
-    await this.getQuiz();
-    this.displayQuiz(0);
+
+  private async getQuiz() {
+    this.http.get<any[]>(`${this.baseUrl}quiz/getAll`).subscribe((data) => {
+      this.quizObjectList = data;
+      this.displayQuiz(0);
+    });
   }
 
   protected calculation: boolean = false;
@@ -45,44 +50,35 @@ export class ModalComponent implements OnInit {
   private multipleChoice: any = [];
   private questionType: string = "";
   protected color: string = "secondary";
+  protected min: any = "";
+  protected max: any = "";
+  protected warn: boolean = false;
 
-  createObject(userResponseObject: any[]) {
-    return new DietaryinfoserviceService(
-      userResponseObject.at(0),
-      calculateAge(userResponseObject.at(1)),
-      userResponseObject.at(2),
-      userResponseObject.at(3),
-      userResponseObject.at(6),
-      userResponseObject.at(5),
-      userResponseObject.at(4),
-      getSplittedString(userResponseObject.at(7)),
-      getSplittedString(userResponseObject.at(8)),
-      userResponseObject.at(9),
-      userResponseObject.at(10),
-      getCaloriesDeficit(userResponseObject.at(11)),
-      getWaterIntake(userResponseObject.at(13)),
-      userResponseObject.at(14),
-      userResponseObject.at(15),
-      getMealPlan(userResponseObject.at(16)),
-      userResponseObject.at(17)
-    );
-    
-  }
 
   protected handleClickEvent(response: any): void {
     this.catchResponse(response);
   }
 
-  signUp(){
-    this.router.navigate(["/register"],{state:this.createObject(this.userResponseObjectACTUAL)});
+  signUp() {
+    const userObj = this.userResponseObjectACTUAL;
+    this.router.navigate(["/details"], { state: { userResponseObjectACTUAL: userObj } });
+  }
+
+  validate() {
+    if (!this.response < this.min && this.response !> this.max) {
+      this.warn = true;
+    } else {
+      this.warn = false;
+      this.nextQuestion(true);
+    }
   }
 
   catchResponse(response: any) {
     if (this.questionType === "MULTIPLE") {
       if (!this.multipleChoice.includes(response)) {
         this.multipleChoice.push(response);
+        this.responseField.nativeElement.color = "green";
         this.color = "success";
-        console.log(this.multipleChoice);
       } else {
         this.multipleChoice.pop(response);
       }
@@ -93,6 +89,7 @@ export class ModalComponent implements OnInit {
   }
 
   protected nextQuestion(bool: boolean): void {
+    
     if (this.currentIndex >= this.quizObjectList.length) {
       this.openModal();
     } else {
@@ -111,7 +108,6 @@ export class ModalComponent implements OnInit {
           this.userResponseObjectACTUAL.push(localStorage.getItem("BMI"));
           localStorage.removeItem("BMI");
         }
-        console.log(this.userResponseObjectACTUAL);
       }
       this.displayQuiz(this.currentIndex++);
     }
@@ -120,12 +116,6 @@ export class ModalComponent implements OnInit {
   private openModal() {
     const modal = new Modal(this.detailsModal.nativeElement);
     modal.show();
-  }
-
-  private async getQuiz() {
-    let response = await fetch(this.baseUrl + "quiz/getAll");
-    let body = await response.json();
-    this.quizObjectList = body;
   }
 
   protected displayQuiz(index: number): void {
@@ -161,17 +151,23 @@ export class ModalComponent implements OnInit {
     switch (id) {
       case 2: {
         this.dash = "-";
+        this.min = "1940-01-01";
+        this.max = "2014-12-31";
         this.type = "date";
         this.textUnit = true;
       } break;
       case 3: {
         this.type = "number";
+        this.min = "50";
+        this.max = "240";
         this.placeholder = "Height"
         this.textUnit = true;
         this.unit = "cm";
       } break;
       case 4: {
         this.type = "number";
+        this.min = "20";
+        this.max = "200";
         this.placeholder = "Weight"
         this.textUnit = true;
         this.unit = "kg";
@@ -191,67 +187,3 @@ export class ModalComponent implements OnInit {
 }
 
 
-function calculateAge(date: any): number {
-  let today = new Date();
-  let birthDate = new Date(date);
-  let age = today.getFullYear() - birthDate.getFullYear();
-  let m = today.getMonth() - birthDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  return age;
-}
-
-
-function getSplittedString(responseObj: []): String {
-  console.log(responseObj);
-
-  let st: String = "";
-  responseObj.forEach(obj => {
-    st += obj + ", ";
-  })
-  return st.substring(0, st.length - 2);
-}
-
-function getCaloriesDeficit(responseObj: any) {
-  switch (responseObj) {
-    case "250 kcal/day":
-      return 250;
-    case "500 kcal/day":
-      return 500;
-    case "750 kcal/day":
-      return 750;
-    default:
-      return 0;
-  }
-}
-
-function getWaterIntake(responseObj: any) {
-  switch (responseObj) {
-    case "Less than 4 glasses":
-      return 4;
-    case "4-8 glasses":
-      return 6;
-    case "8-12 glasses":
-      return 10;
-    case "More than 12 glasses":
-      return 15;
-    default:
-      return 0;
-  }
-}
-
-function getMealPlan(responseObj: any) {
-  switch (responseObj) {
-    case "Set mealtimes (breakfast, lunch, dinner)":
-      return 3;
-    case "Set mealtimes with a snack":
-      return 4;
-    case "Smaller, frequent meals (4-5 times a day)":
-      return 5;
-    case "1-2 larger meals a day (intermittent fasting)":
-      return 2;
-    default:
-      return 0;
-  }
-}

@@ -1,2 +1,6 @@
-<p>details works!</p>
-<button (click)="showData()"></button>
+<div class="centered vh-100">
+    <button type="button" class="btn btn-success1" (click)="register()">Register</button>
+    <div class="pill col-8 h-50" *ngIf="showRegister">
+        <app-register [data]="userResponseObject"></app-register>
+    </div>
+</div>

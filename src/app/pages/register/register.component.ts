@@ -2,11 +2,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from "@angular/forms";
 import { NgIf } from '@angular/common';
-import { DataService } from '../../data.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterLink, FormsModule, NgIf],
+  imports: [RouterLink, FormsModule, NgIf, HttpClientModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -14,16 +15,12 @@ import { DataService } from '../../data.service';
 export class RegisterComponent implements OnInit {
   private baseUrl: String = "http://localhost:8080/";
   private header = { "Content-Type": "application/json" };
-  private data: any;
-  constructor(private router: Router) {
-    this.data = this.router.getCurrentNavigation()?.extras.state?.['dietaryData'];
-    console.log(this.data);
-    
-  }
+
+  constructor(private router: Router, private http: HttpClient) { }
+  @Input() data: any;
   ngOnInit() {
 
   }
-
   protected passwordNew: string = "";
   protected passwordConfirm: string = "";
   protected expression: boolean = false;
@@ -32,7 +29,7 @@ export class RegisterComponent implements OnInit {
     firstName: "",
     lastName: "",
     gender: "",
-    birthDay: new Date(),
+    birthDay: Date,
     age: 0,
     height: 0,
     weight: 0,
@@ -60,26 +57,35 @@ export class RegisterComponent implements OnInit {
     }
   }
   async saveUser() {
-    try {
-      const response = await fetch(this.baseUrl + "user/add-user-with-plan", {
-        method: "POST",
-        headers: this.header,
-        body: JSON.stringify({
-          "user":this.userObj,
-          "dietaryInfo":this.data,
-          "login":this.login})
-      });
-      if (!response.ok) {
-        console.error("Failed to save dietary info:", response.statusText);
-        return false;
-      }
-      const body = await response.json();
-      return body.success === true;
-
-    } catch (error) {
-      console.error("Error saving dietary info:", error);
-      return false;
+    this.userObj.age = this.data.age;
+    this.userObj.birthDay = this.data.birthDay;
+    const requestBody = {
+      user: this.userObj,
+      dietaryInfo: this.data,
+      login: this.login
     }
+
+    this.http.post(`${this.baseUrl}user/add-user-with-plan`, requestBody, { headers: this.header }).subscribe((data) => {
+      console.log(data);
+    });
+    // try {
+    //   const response = await fetch(this.baseUrl + "user/add-user-with-plan", {
+    //     method: "POST",
+    //     headers: this.header,
+    //     body: JSON.stringify({
+    //       })
+    //   });
+    //   if (!response.ok) {
+    //     console.error("Failed to save dietary info:", response.statusText);
+    //     return false;
+    //   }
+    //   const body = await response.json();
+    //   return body.success === true;
+
+    // } catch (error) {
+    //   console.error("Error saving dietary info:", error);
+    //   return false;
+    // }
   }
 
   private async checkUserName(username: String): Promise<boolean> {
@@ -95,47 +101,6 @@ export class RegisterComponent implements OnInit {
     } return false;
   }
 
-  private async saveDietaryInfo(userObj: any): Promise<boolean> {
-    try {
-      const response = await fetch(this.baseUrl + "dietary-info/add-dietary-info", {
-        method: "POST",
-        headers: this.header,
-        body: JSON.stringify(userObj)
-      });
-      if (!response.ok) {
-        console.error("Failed to save dietary info:", response.statusText);
-        return false;
-      }
-      const body = await response.json();
-      return body.success === true;
-
-    } catch (error) {
-      console.error("Error saving dietary info:", error);
-      return false;
-    }
-  }
-
-
-
-
-  // private async saveLogin(): Promise<boolean> {
-  //   (this.userObj.username)
-  //   let response = await fetch(this.baseUrl + "login/add-login", {
-  //     method: "POST",
-  //     headers: this.header,
-  //     body: JSON.stringify(
-  //       this.login = {
-  //         "username": this.login.username,
-  //         "password": this.login.password,
-  //         "loginDate": new Date()
-  //       }
-  //     )
-  //   })
-
-  //   let body = await response.json()
-  //   alert(JSON.stringify(body));
-  //   return body;
-  // }
 
 
 }
