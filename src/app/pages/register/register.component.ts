@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FormsModule } from "@angular/forms";
+import { FormsModule, NgForm, ReactiveFormsModule } from "@angular/forms";
 import { NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterLink, FormsModule, NgIf, HttpClientModule],
+  imports: [RouterLink, FormsModule, NgIf, HttpClientModule, ReactiveFormsModule, ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -24,6 +24,13 @@ export class RegisterComponent implements OnInit {
   protected passwordNew: string = "";
   protected passwordConfirm: string = "";
   protected expression: boolean = false;
+  protected responseObj: any = [];
+  protected invalidUsername = false;
+  protected validateUsername = "";
+  protected invalidPassword = false;
+  protected validatePassword = "";
+  protected invalidName = false;
+  protected validateName = "";
 
   protected userObj: any = {
     firstName: "",
@@ -34,58 +41,55 @@ export class RegisterComponent implements OnInit {
     height: 0,
     weight: 0,
     email: "",
-    status: Boolean,
-    regDate: Date,
+    status: false,
+    regDate: new Date(),
   }
 
   protected login: any = {
     username: "",
     password: "",
-    Date
+    loginDate: new Date()
   }
+
+  onSubmit(form: NgForm) {
+    if (form.valid) {
+      this.showData();
+    }
+  }
+
   protected async showData(): Promise<void> {
-    if (this.matchingPassword()) {
-      if (await this.checkUserName(this.login.username)) {
-        console.log("Username already taken");
+    if (this.isEmptyNameFields()) {
+      if (this.matchingPassword()) {
+        if (await this.checkUserName(this.login.username)) {
+          this.validateUsername = "Username already taken!";
+          this.invalidUsername = true;
+        } else {
+          await this.saveUser();
+          localStorage.setItem("currentUser", `${this.login.username}`);
+          localStorage.setItem("isloggedIn", JSON.stringify(true));
+        }
       } else {
-        await this.saveUser();
-        localStorage.setItem("currentUser", `${this.login.username}`);
-        localStorage.setItem("isloggedIn", JSON.stringify(true));
+        this.validatePassword = "Password fields doesn't match";
+        this.invalidPassword = true;
       }
-    } else {
-      console.log("Password fields doesn't match")
     }
   }
   async saveUser() {
-    this.userObj.age = this.data.age;
-    this.userObj.birthDay = this.data.birthDay;
+    this.userObj.gender = this.data.at(0).gender;
+    this.userObj.age = this.data.at(0).age;
+    this.userObj.birthDay = this.data.at(0).birthDay;
+    this.userObj.status = true;
+    this.userObj.height = this.data.at(0).height;
+    this.userObj.weight = this.data.at(0).weight;
     const requestBody = {
       user: this.userObj,
-      dietaryInfo: this.data,
-      login: this.login
+      login: this.login,
+      dietaryInfo: this.data[0],
+      dietPlan: this.data[1]
     }
-
     this.http.post(`${this.baseUrl}user/add-user-with-plan`, requestBody, { headers: this.header }).subscribe((data) => {
       console.log(data);
     });
-    // try {
-    //   const response = await fetch(this.baseUrl + "user/add-user-with-plan", {
-    //     method: "POST",
-    //     headers: this.header,
-    //     body: JSON.stringify({
-    //       })
-    //   });
-    //   if (!response.ok) {
-    //     console.error("Failed to save dietary info:", response.statusText);
-    //     return false;
-    //   }
-    //   const body = await response.json();
-    //   return body.success === true;
-
-    // } catch (error) {
-    //   console.error("Error saving dietary info:", error);
-    //   return false;
-    // }
   }
 
   private async checkUserName(username: String): Promise<boolean> {
@@ -94,14 +98,25 @@ export class RegisterComponent implements OnInit {
   }
 
   private matchingPassword(): boolean {
-    console.log(this.passwordNew, this.passwordConfirm);
-    if (this.passwordNew === this.passwordConfirm) {
-      this.login.password = this.passwordConfirm;
-      return true;
+    if (this.passwordNew === "") {
+      this.validatePassword = "Password can't be empty!";
+      this.invalidPassword = true;
+      if (this.passwordNew === this.passwordConfirm) {
+        this.login.password = this.passwordConfirm;
+        return true;
+      } return false;
     } return false;
   }
 
-
+  private isEmptyNameFields(): boolean {
+    if (this.userObj.firstName == "" || this.userObj == "") {
+      this.validateName = "Name can't be empty!";
+      this.invalidName = true;
+      return false;
+    } else {
+      return true;
+    }
+  }
 
 }
 

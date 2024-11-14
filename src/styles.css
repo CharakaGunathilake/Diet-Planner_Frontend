@@ -28,6 +28,12 @@ h1 {
     border-radius: 25px;
 }
 
+.colorBorder{
+    border: 2px #D1DCCB solid;
+    background-color: white;
+}
+
+
 .centered {
     display: flex;
     align-items: center;

@@ -1,30 +1,51 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { DietaryinfoserviceService } from '../../dietaryinfoservice.service';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { RegisterComponent } from '../../pages/register/register.component';
+import { FormsModule } from '@angular/forms';
+import { Modal } from 'bootstrap';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [NgIf, RegisterComponent],
+  imports: [NgIf, RegisterComponent, FormsModule],
   templateUrl: './details.component.html',
   styleUrl: './details.component.css'
 })
 export class DetailsComponent implements OnInit {
-  public userResponseObject: any;
+  @ViewChild('staticBackdrop') detailsModal!: ElementRef;
+  public userResponseObject: any = []
   ngOnInit() { }
   protected data: any[] = [];
+  public dietPlan ={
+    name: "",
+    description:"",
+    startDate: new Date(),
+    endDateString:"",
+    dietType:""
+  }
   protected showRegister = false;
   constructor(private router: Router) {
     this.data = this.router.getCurrentNavigation()?.extras.state?.["userResponseObjectACTUAL"]
-    console.log(this.data);
-    console.log(this.initObject(this.data));
   }
 
   register() {
-    this.userResponseObject = this.initObject(this.data);
-    this.showRegister = true;
+    const obj = this.initObject(this.data);
+    console.log(obj);
+    
+    this.userResponseObject.push(obj);
+    console.log(this.userResponseObject);
+    
+    this.dietPlan.endDateString = this.data[10]
+    this.dietPlan.dietType = this.data[4]
+    this.userResponseObject.push(this.dietPlan)
+    this.openModal();
+  }
+
+  private openModal() {
+    const modal = new Modal(this.detailsModal.nativeElement);
+    modal.show();
   }
 
   initObject(userResponseObject: any[]) {
@@ -35,9 +56,9 @@ export class DetailsComponent implements OnInit {
         calculateAge(userResponseObject.at(1)),
         userResponseObject.at(2),
         userResponseObject.at(3),
-        userResponseObject.at(6),
-        userResponseObject.at(5),
         userResponseObject.at(4),
+        userResponseObject.at(5),
+        userResponseObject.at(6),
         getSplittedString(userResponseObject.at(7)),
         getSplittedString(userResponseObject.at(8)),
         userResponseObject.at(9),
@@ -67,8 +88,6 @@ function calculateAge(date: any): number {
 }
 
 function getSplittedString(responseObj: []): String {
-  console.log(responseObj);
-
   let st: String = "";
   responseObj.forEach(obj => {
     st += obj + ", ";

@@ -10,7 +10,7 @@
             <div class="centered w-100">
                 <div class="overflow-auto no-scrollbar col-12 py-2 mb-3" style="height: 15em;">
                     <div *ngIf="!textUnit && !calculation" class="container px-2 rounded-5">
-                        <div class="container  ">
+                        <div class="container">
                             <div (click)="handleClickEvent(option[i].option_text)"
                                 *ngFor="let option_text of option; let i = index"
                                 class="bordered border-{{color}} p-3 mb-1">
@@ -18,43 +18,41 @@
                             </div>
                         </div>
                     </div>
-                    <div class="" *ngIf="textUnit && !calculation">
+                    <div *ngIf="textUnit && !calculation">
                         <div class="container centered col-12">
                             <div class="px-5 py-3 mb-3">
-                                <label class="text-danger fw-bold" *ngIf="warn" id="basic-addon2">Invalid {{placeholder}}!</label>
+                                <label class="text-danger fw-bold" *ngIf="warn" id="basic-addon2">Invalid
+                                    {{placeholder}}!</label>
                                 <div class="input-group">
-                                    <input type="{{type}}" autofocus #responseField  [(ngModel)]="response" class="form-control rounded{{dash}}5" min={{min}}
-                                        max={{max}} value="2010-10-08" >
-                                    <span *ngIf="unit" class="input-group-text rounded-end-5"
-                                        id="basic-addon2">{{unit}}</span>
+                                    <input type="{{type}}" [(ngModel)]="response"
+                                        class="form-control rounded{{dash}}5" min={{min}} max={{max}}>
+                                    <button *ngIf="unit" class="input-group-text rounded-end-5"
+                                        id="basic-addon2" (click)="changeUnit()">{{unit}}</button>
                                 </div>
                             </div>
-                            
+
                         </div>
-                        <div *ngIf="bool || textUnit" class="">
-                            <button [disabled]="!bool && !response && !calculation && !warn" (click)="validate()"
-                                class="btn btn-success1">{{btnText}}</button>
-                        </div>
+                        <button [disabled]="!response" (click)="validate()" class="btn btn-success1">{{btnText}}</button>
                     </div>
-                </div>
-                <div class="" *ngIf="calculation">
-                    <div class="container centered ">
-                        <app-bmicalculator [height]="userResponseObjectACTUAL[2]"
-                        [weight]="userResponseObjectACTUAL[3]"></app-bmicalculator>
+                    <div class="" *ngIf="calculation">
+                        <div class="container centered">
+                            <app-bmicalculator [height]="userResponseObjectACTUAL[2]"
+                            [weight]="userResponseObjectACTUAL[3]"></app-bmicalculator>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- <div *ngIf="bool || textUnit" class="d-flex justify-content-end">
-            <button [disabled]="!bool && !response && !calculation" (click)="nextQuestion(true)"
+            <div *ngIf="bool" class="d-flex justify-content-end">
+                <button [disabled]="!bool && !response && !calculation" (click)="nextQuestion(true)"
                 class="btn btn-success1">{{btnText}}</button>
-        </div> -->
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="modal fade w-100" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Are you Sure?</h1>
@@ -64,7 +62,7 @@
                 Would you like to Sign up and Start your Diet?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success1" (click)="signUp()">Yes! I am</button>
+                <button type="button" class="btn btn-success1" data-bs-dismiss="modal">Yes! I am</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No! I am not</button>
             </div>
         </div>

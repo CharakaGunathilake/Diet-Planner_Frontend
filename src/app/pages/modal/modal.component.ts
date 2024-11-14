@@ -59,25 +59,45 @@ export class ModalComponent implements AfterViewInit {
     this.catchResponse(response);
   }
 
-  signUp() {
-    const userObj = this.userResponseObjectACTUAL;
-    this.router.navigate(["/details"], { state: { userResponseObjectACTUAL: userObj } });
+  changeUnit() {
+    if (this.unit === "cm") { 
+      this.unit = " ft ";
+      this.max = 10;
+      this.min = 4;
+    }else if (this.unit === " ft ") {
+      this.unit = "cm"
+      this.max = 240;
+      this.min = 50;
+    }else if (this.unit == "kg") {
+      this.unit = "lb"
+      this.max = 350;
+      this.min = 0;
+    }else if(this.unit = "kg"){
+      this.max = 150;
+      this.min = 20;
+    }
   }
 
   validate() {
-    if (!this.response < this.min && this.response !> this.max) {
-      this.warn = true;
+    if (this.response != null) {
+      if (this.response <= this.min || this.response >= this.max) {
+        this.warn = true;
+      } else {
+        this.warn = false;
+        this.userResponseObjectACTUAL.push(this.response);
+        this.response = null;
+        this.nextQuestion(false);
+      }
     } else {
-      this.warn = false;
-      this.nextQuestion(true);
+      this.warn = true;
     }
   }
+
 
   catchResponse(response: any) {
     if (this.questionType === "MULTIPLE") {
       if (!this.multipleChoice.includes(response)) {
         this.multipleChoice.push(response);
-        this.responseField.nativeElement.color = "green";
         this.color = "success";
       } else {
         this.multipleChoice.pop(response);
@@ -89,15 +109,18 @@ export class ModalComponent implements AfterViewInit {
   }
 
   protected nextQuestion(bool: boolean): void {
-    
     if (this.currentIndex >= this.quizObjectList.length) {
-      this.openModal();
+      const userObj = this.userResponseObjectACTUAL;
+      this.router.navigate(["/details"], { state: { userResponseObjectACTUAL: userObj } });
     } else {
       if (bool) {
         if (this.questionType === "MULTIPLE") {
           if (this.multipleChoice.length === 0) {
-            this.userResponseObjectACTUAL.push("none");
+            this.multipleChoice.push("none");
+            this.userResponseObjectACTUAL.push(this.multipleChoice);
+            this.multipleChoice = [];
           } else {
+            console.log(this.multipleChoice);
             this.userResponseObjectACTUAL.push(this.multipleChoice);
             this.multipleChoice = [];
           }
@@ -116,6 +139,11 @@ export class ModalComponent implements AfterViewInit {
   private openModal() {
     const modal = new Modal(this.detailsModal.nativeElement);
     modal.show();
+  }
+
+  private closeModal() {
+    const modal = new Modal(this.detailsModal.nativeElement);
+    modal.hide();
   }
 
   protected displayQuiz(index: number): void {
@@ -155,19 +183,20 @@ export class ModalComponent implements AfterViewInit {
         this.max = "2014-12-31";
         this.type = "date";
         this.textUnit = true;
+        this.warn = false;
       } break;
       case 3: {
         this.type = "number";
-        this.min = "50";
-        this.max = "240";
+        this.min = 50;
+        this.max = 240;
         this.placeholder = "Height"
         this.textUnit = true;
         this.unit = "cm";
       } break;
       case 4: {
         this.type = "number";
-        this.min = "20";
-        this.max = "200";
+        this.min = 20;
+        this.max = 200;
         this.placeholder = "Weight"
         this.textUnit = true;
         this.unit = "kg";
