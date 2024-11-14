@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FormsModule, NgForm, ReactiveFormsModule } from "@angular/forms";
+import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from "@angular/forms";
 import { NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
@@ -15,8 +15,12 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 export class RegisterComponent implements OnInit {
   private baseUrl: String = "http://localhost:8080/";
   private header = { "Content-Type": "application/json" };
-
-  constructor(private router: Router, private http: HttpClient) { }
+  registerForm: FormGroup;
+  constructor(private router: Router, private http: HttpClient, private fb:FormBuilder) { 
+    this.registerForm = this.fb.group({
+      Username: ['', [Validators.required, Validators.minLength(3)]],
+    });
+  }
   @Input() data: any;
   ngOnInit() {
 

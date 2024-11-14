@@ -10,13 +10,13 @@
         </div>
         <p class="fs-6 text-danger m-0 ms-2" *ngIf="invalidName">{{validateName}}</p>
         <div class="form-floating mb-2">
-            <input type="text" [(ngModel)]="login.username" name="Username" class="form-control rounded-4 is-valid"
-                id="floatingUsername" placeholder="Bob" required minlength="3" #name="ngModel">
+            <input type="text" [(ngModel)]="login.username" name="username" class="form-control rounded-4 is-valid"
+                id="floatingUsername" placeholder="Bob" required minlength="3" #username="ngModel">
             <label for="floatingUsername">Username</label>
             <p class="fs-6 text-danger m-0 ms-2" *ngIf="invalidUsername">{{validateUsername}}</p>
-            <div *ngIf="username.invalid && username.touched">
-                <small *ngIf="username.errors?.required">Name is required.</small>
-                <small *ngIf="username.errors?.minlength">Name must be at least 3 characters long.</small>
+            <div *ngIf="login.username.invalid && login.username.touched">
+                <small *ngIf="login.username.errors?.required">Name is required.</small>
+                <small *ngIf="login.username.errors?.minlength">Name must be at least 3 characters long.</small>
               </div>
         </div>
         <div class="form-floating mb-2">
