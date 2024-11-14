@@ -61,6 +61,13 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  notMatching(){
+    if(this.passwordNew === this.passwordConfirm){
+      this.login.password = this.passwordConfirm;
+      return true;
+    } return false;
+  }
+
   protected async showData(): Promise<void> {
     if (this.isEmptyNameFields()) {
       if (this.matchingPassword()) {
