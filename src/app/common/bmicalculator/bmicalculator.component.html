@@ -4,16 +4,16 @@
     <tr>
         <td class="pe-1">
             <div class="input-group mb-1">
-                <input type="number" [(ngModel)]="height" class="form-control" placeholder="Height" aria-label="height"
+                <input type="number" [(ngModel)]="height" min="{{minHeight}}" max="{{maxHeight}}" class="form-control" placeholder="Height" aria-label="height"
                     aria-describedby="basic-addon2">
-                <span class="input-group-text" id="basic-addon2">{{unitHeight}}</span>
+                <span class="input-group-text" id="basic-addon2"  (click)="changeUnitHeight()">{{unitHeight}}</span>
             </div>
         </td>
         <td class="">
             <div class="input-group mb-1">
-                <input type="number" [(ngModel)]="weight" class="form-control" placeholder="Weight" aria-label="weight"
+                <input type="number" [(ngModel)]="weight" min="{{minWeight}}" max="{{maxWeight}}" class="form-control" placeholder="Weight" aria-label="weight"
                     aria-describedby="basic-addon2">
-                <span class="input-group-text" id="basic-addon2">{{unitWeight}}</span>
+                <span class="input-group-text" id="basic-addon2"  (click)="changeUnitWeight()">{{unitWeight}}</span>
             </div>
         </td>
     </tr>
@@ -31,4 +31,3 @@
     <button class="btn btn-success1 rounded-5 border-2 border-black text-black fw-bold" [disabled]="!height || !weight"
         (click)="calculateBMI()">Calculate</button>
 </div>
-<!-- </div> -->

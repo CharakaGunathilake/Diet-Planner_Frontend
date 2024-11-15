@@ -62,7 +62,7 @@
                 <small class="text-danger m-0 ms-2" *ngIf="passwordNew.errors?.['required']">Password is
                     required.</small>
                 <small class="text-danger m-0 ms-2"
-                    *ngIf="passwordNew.errors?.['pattern']||email.errors?.['minlength']">Password must be at least 6
+                    *ngIf="passwordNew.errors?.['pattern']||passwordNew.errors?.['minlength']">Password must be at least 6
                     characters with one UpperCase, LowerCase, Number and Special Character</small>
             </div>
         </div>
@@ -71,7 +71,7 @@
                 id="floatingPassword1" placeholder="ConfirmPassword" required #passwordConfirm="ngModel">
             <label for="floatingPassword1">Confirm Password</label>
             <div *ngIf="passwordConfirm.invalid && passwordConfirm.touched">
-                <small class="text-danger m-0 ms-2" *ngIf="passwordConfirm.errors?.['notMatching'] || passwordConfirm.errors?.['required']">Passwords do not match.</small>
+                <small class="text-danger m-0 ms-2" *ngIf="passwordConfirm === passwordNew">Passwords do not match.</small>
             </div>
         </div>
         <div class="form-check my-2">

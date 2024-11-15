@@ -54,25 +54,21 @@ export class ModalComponent implements AfterViewInit {
   protected max: any = "";
   protected warn: boolean = false;
 
-
-  protected handleClickEvent(response: any): void {
-    this.catchResponse(response);
-  }
-
   changeUnit() {
-    if (this.unit === "cm") { 
-      this.unit = " ft ";
+    if (this.unit === "cm") {
+      this.unit = "ft";
       this.max = 10;
       this.min = 4;
-    }else if (this.unit === " ft ") {
+    } else if (this.unit === "ft") {
       this.unit = "cm"
       this.max = 240;
       this.min = 50;
-    }else if (this.unit == "kg") {
+    } else if (this.unit == "kg") {
       this.unit = "lb"
       this.max = 350;
       this.min = 0;
-    }else if(this.unit = "kg"){
+    } else if (this.unit = "lb") {
+      this.unit = "kg"
       this.max = 150;
       this.min = 20;
     }
@@ -84,54 +80,57 @@ export class ModalComponent implements AfterViewInit {
         this.warn = true;
       } else {
         this.warn = false;
-        this.userResponseObjectACTUAL.push(this.response);
-        this.response = null;
-        this.nextQuestion(false);
+        this.catchByType();
       }
     } else {
       this.warn = true;
     }
   }
 
+  protected handleClick(response: any): void {
+    this.response = response;
+    this.catchByType();
+  }
 
   catchResponse(response: any) {
-    if (this.questionType === "MULTIPLE") {
-      if (!this.multipleChoice.includes(response)) {
-        this.multipleChoice.push(response);
-        this.color = "success";
-      } else {
-        this.multipleChoice.pop(response);
+    this.multipleChoice.push(response);
+  }
+
+  protected catchByType() {
+    if (this.questionType === "TEXT") {
+      if (this.unit === "ft") {
+        this.response = this.response * 30.48;
+      } else if (this.unit === "lb") {
+        this.response = this.response * 0.4536;
       }
-    } else {
-      this.userResponseObjectACTUAL.push(response);
-      this.nextQuestion(false);
+      this.userResponseObjectACTUAL.push(this.response);
+      this.nextQuestion();
+    } else if (this.questionType === "SINGLE") {
+      this.response == null ? this.response = "none" : this.response;
+      this.userResponseObjectACTUAL.push(this.response);
+      this.nextQuestion();
+    } else if (this.questionType === "MULTIPLE") {
+      this.catchResponse(this.response);
+    } else if (this.questionType === "CALCULATION") {
+      this.userResponseObjectACTUAL.push(localStorage.getItem("BMI"));
+      localStorage.removeItem("BMI");
+      this.nextQuestion();
     }
   }
 
-  protected nextQuestion(bool: boolean): void {
+  protected nextQuestion(): void {
     if (this.currentIndex >= this.quizObjectList.length) {
       const userObj = this.userResponseObjectACTUAL;
       this.router.navigate(["/details"], { state: { userResponseObjectACTUAL: userObj } });
     } else {
-      if (bool) {
-        if (this.questionType === "MULTIPLE") {
-          if (this.multipleChoice.length === 0) {
-            this.multipleChoice.push("none");
-            this.userResponseObjectACTUAL.push(this.multipleChoice);
-            this.multipleChoice = [];
-          } else {
-            console.log(this.multipleChoice);
-            this.userResponseObjectACTUAL.push(this.multipleChoice);
-            this.multipleChoice = [];
-          }
-        } else if (this.questionType === "TEXT") {
-          this.userResponseObjectACTUAL.push(this.response);
-          this.response = null;
-        } else if (this.questionType === "CALCULATION") {
-          this.userResponseObjectACTUAL.push(localStorage.getItem("BMI"));
-          localStorage.removeItem("BMI");
-        }
+      if (this.questionType === "MULTIPLE") {
+        this.multipleChoice.length === 0 ? this.multipleChoice.push("none") : this.multipleChoice;
+        this.userResponseObjectACTUAL.push(this.multipleChoice);
+        this.multipleChoice = [];
       }
+      this.response = null;
+      console.log(this.userResponseObjectACTUAL);
+      
       this.displayQuiz(this.currentIndex++);
     }
   }
@@ -170,6 +169,7 @@ export class ModalComponent implements AfterViewInit {
       } break;
       case "CALCULATION": {
         this.textUnit = true;
+        this.bool = true;
         this.calculation = true;
       }
     }
@@ -183,7 +183,6 @@ export class ModalComponent implements AfterViewInit {
         this.max = "2014-12-31";
         this.type = "date";
         this.textUnit = true;
-        this.warn = false;
       } break;
       case 3: {
         this.type = "number";
@@ -209,6 +208,7 @@ export class ModalComponent implements AfterViewInit {
       } break;
       case 19: {
         this.bool = true;
+        this.questionType = "MULTIPLE";
         this.btnText = "Finish";
       } break;
     }
