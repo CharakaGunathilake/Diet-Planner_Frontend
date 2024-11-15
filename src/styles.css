@@ -59,6 +59,17 @@ h1 {
     --bs-btn-disabled-border-color: #16E011;
 }
 
+input:active {
+    border: 2px solid #ccc;
+}
+
+input.form-control:focus, 
+textarea.form-control:focus, 
+select.form-control:focus {
+  border: 2px solid #d6edb8;
+  box-shadow: none;
+}
+
 .no-scrollbar {
     scrollbar-width: none;
     /* For Firefox */

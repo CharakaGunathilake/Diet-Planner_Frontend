@@ -1,0 +1,48 @@
+<div class="container centered vh-100">
+    <div class="col-12 col-lg-6 centered flex-col pill p-0 py-3 p-lg-5">
+        <h4 class="text-center p-3">Verify your email</h4>
+        <form class="col-10 py-2" #verifyEmailForm="ngForm" (ngSubmit)="onSubmit(verifyEmailForm)">
+            <div class="mb-3">
+                <label for="emailFormControlInput" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" disabled="!show" [(ngModel)]="email"
+                    id="emailFormControlInput" placeholder="example@mail.com"
+                    pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" #email="ngModel" required>
+                <div class="" *ngIf="email.invalid && email.touched">
+                    <small class="text-danger m-0 ms-2" *ngIf="email.errors?.['required'] ">E-mail is required.</small>
+                    <small class="text-danger m-0 ms-2"
+                        *ngIf="email.errors?.['pattern'] || email.errors?.['minlength']">E-mail must be at least 10
+                        characters long and can only contain a-z, 0-9, ., _, -, &#64;</small>
+                </div>
+            </div>
+            <div class="mb-3" *ngIf="show">
+                <label for="otpFormControlInput" class="form-label">OTP</label>
+                <input type="number" class="form-control" name="otp" #otp="ngModel" id="otpFormControlInput"
+                    [(ngModel)]="otp" required>
+                <div class="" *ngIf="otp.invalid && otp.touched">
+                    <small class="text-danger m-0 ms-2" *ngIf="otp.errors?.['required'] ">OTP is required.</small>
+                    <small class="text-danger m-0 ms-2" *ngIf="invalidOTP">Invalid OTP</small>
+
+                </div>
+            </div>
+        </form>
+        <button type="submit" class="btn btn-success1" [disabled]=" email.errors?.['invalid']">{{btnText}}</button>
+    </div>
+</div>
+<div class="modal fade w-100" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">{{title}}</h1>
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+            </div>
+            <div class="modal-body">
+                {{message}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success1" data-bs-dismiss="modal">Ok</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

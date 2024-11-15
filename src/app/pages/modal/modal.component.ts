@@ -107,17 +107,17 @@ export class ModalComponent implements AfterViewInit {
         } else if (this.unit === "lb") {
           this.response = this.response * 0.4536;
         }
+        console.log(this.response);
+        this.userResponseObjectACTUAL.push(this.response);
         this.nextQuestion();
       } else if (this.questionType === "SINGLE") {
         this.response == null ? this.response = "none" : this.response;
+        console.log(this.response);
+        this.userResponseObjectACTUAL.push(this.response);
         this.nextQuestion();
       } else if (this.questionType === "MULTIPLE") {
         this.catchResponse(this.response);
-      } else if (this.questionType === "CALCULATION") {
-        this.userResponseObjectACTUAL.push(localStorage.getItem("BMI"));
-        localStorage.removeItem("BMI");
-        this.nextQuestion();
-      }
+      } 
     }
   }
 
@@ -126,9 +126,11 @@ export class ModalComponent implements AfterViewInit {
       this.multipleChoice.length === 0 ? this.multipleChoice.push("none") : this.multipleChoice;
       this.userResponseObjectACTUAL.push(this.multipleChoice);
       this.multipleChoice = [];
+    }else if (this.questionType === "CALCULATION") {
+      this.userResponseObjectACTUAL.push(localStorage.getItem("BMI"));
+      console.log(localStorage.getItem("BMI"))
+      localStorage.removeItem("BMI");
     }
-    console.log(this.response);
-    this.userResponseObjectACTUAL.push(this.response);
     this.response = null;
     console.log(this.userResponseObjectACTUAL);
     this.displayQuiz(this.currentIndex++);

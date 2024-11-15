@@ -10,6 +10,7 @@ import { ProfileComponent } from './pages/dashboard-components/profile/profile.c
 import { AboutComponent } from './pages/about/about.component';
 import { DetailsComponent } from './common/details/details.component';
 import { ModalComponent } from './pages/modal/modal.component';
+import { VerifyemailComponent } from './pages/verifyemail/verifyemail.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -26,6 +27,7 @@ export const routes: Routes = [
     { path: "about", component: AboutComponent },
     { path: "details", component: DetailsComponent },
     { path: "modal", component: ModalComponent },
+    { path: "verifyemail", component: VerifyemailComponent },
 ];
 
 

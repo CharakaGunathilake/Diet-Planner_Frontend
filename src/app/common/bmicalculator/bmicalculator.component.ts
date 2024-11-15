@@ -55,9 +55,9 @@ export class BmicalculatorComponent {
     height /= 100;
     let bmi = (weight / (height * height));
     this.bmi = bmi.toFixed(2);
+    localStorage.setItem("BMI",`${this.bmi}`);
     this.setBmiStatus(bmi);
     this.calculateWeightRange(height);
-    localStorage.setItem("BMI",`${this.bmi}`);
   }
   setBmiStatus(bmi: number) {
     if (bmi > 0 && bmi < 18.5) {
