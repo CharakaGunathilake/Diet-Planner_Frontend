@@ -1,25 +1,13 @@
-<div class="colorBorder rounded-4">
+<div ngIf="loginStatus" class="colorBorder rounded-4">
   <header class="d-flex flex-wrap justify-content-center p-2">
     <a href="/" class="d-flex align-items-center mb-0 me-4 me-md-auto link-body-emphasis text-decoration-none">
       <span class="fs-3 fw-bold" (click) = "updateLoginStatus()">SmartPlate</span>
     </a>
 
     <ul class="nav nav-pills">
-      <li class="nav-item"><a routerLink="/" class="nav-link fw-bold text-success" [ngClass]="{'active': selectedHeader == 'Home'}" (click) = "handleClickEvent(1)">Home</a></li>
-      <li class="nav-item"><a routerLink="#" class="nav-link fw-bold text-success" [ngClass]="{'active': selectedHeader == 'Home'}" (click) = "handleClickEvent(2)">{{dashboard}}</a></li>
-      <li class="nav-item"><a routerLink="/about"  class="nav-link fw-bold text-success" [ngClass]="{'active': selectedHeader == 'About'}" (click)="handleClickEvent(3)">About</a></li>
+      <li class="nav-item"><a routerLink="/" class="nav-link fw-bold" [ngClass]="{'activeHeader': selectedHeader == 'Home'}" (click) = "handleClickEvent(1)">Home</a></li>
+      <li class="nav-item"><a routerLink="/" class="nav-link fw-bold" [ngClass]="{'activeHeader': selectedHeader == 'Dashboard'}" (click) = "handleClickEvent(2)">{{dashboard}}</a></li>
+      <li class="nav-item"><a routerLink="/about"  class="nav-link fw-bold" [ngClass]="{'activeHeader': selectedHeader == 'About'}" (click)="handleClickEvent(3)">About</a></li>
     </ul>
   </header>
-</div>
-
-<div class="modal fade w-100" #staticBackdrop1 data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  aria-labelledby="staticBackdropLabel1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-xl">
-    <div class="modal-content rounded-5 p-0">
-      <div class="modal-body">
-          <button type="button" class="btn-close position-absolute end-0 mx-3" data-bs-dismiss="modal" aria-label="Close"></button>
-            <app-login></app-login>
-      </div>
-    </div>
-  </div>
 </div>

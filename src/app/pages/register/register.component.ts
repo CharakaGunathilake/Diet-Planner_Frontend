@@ -16,12 +16,13 @@ export class RegisterComponent implements OnInit {
   private baseUrl: String = "http://localhost:8080/";
   private header = { "Content-Type": "application/json" };
   registerForm: FormGroup;
-  constructor(private router: Router, private http: HttpClient, private fb:FormBuilder) { 
+  constructor(private router: Router, private http: HttpClient, private fb:FormBuilder) {
     this.registerForm = this.fb.group({
       Username: ['', [Validators.required, Validators.minLength(3)]],
     });
   }
   @Input() data: any;
+
   ngOnInit() {
 
   }

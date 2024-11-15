@@ -1,18 +1,20 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { LoginComponent } from '../../pages/login/login.component';
 import { Modal } from 'bootstrap';
-import { NgClass } from '@angular/common';
+import { NgClass, NgStyle } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, LoginComponent, NgClass],
+  imports: [RouterLink, LoginComponent, NgClass, NgStyle],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit {
-  @ViewChild('staticBackdrop1') loginModal!: ElementRef;
+  @ViewChild('staticBackdrop') loginModal!: ElementRef;
+  @Output() action = new EventEmitter<void>();
+
   private rememberedLogin: boolean = false;
   private isLoggedIn: boolean = JSON.parse(localStorage.getItem("isLoggedIn") || "false");
   public selectedHeader = 'Home';
@@ -50,12 +52,13 @@ export class HeaderComponent implements OnInit {
     if (this.rememberedLogin || this.isLoggedIn) {
       this.router.navigate(["/dashboard/home"]);
     } else {
-      this.openModal();
+      this.emitEvent();
     }
   }
-  private openModal() {
-    const modal = new Modal(this.loginModal.nativeElement);
-    modal.show();
+
+
+  emitEvent() {
+    this.action.emit();
   }
 
   protected updateLoginStatus() {

@@ -14,3 +14,30 @@
     --bs-btn-disabled-bg: #16E011;
     --bs-btn-disabled-border-color: #16E011;
 }
+
+.bgColor{
+    background: #eff1ee88;
+}
+
+input.ng-touched.ng-invalid {
+    border: 2px solid red;
+}
+
+input.ng-touched.ng-valid {
+    border: 2px solid green;
+}
+
+input.ng-touched {
+    border: 2px solid #ccc;
+}
+
+input:active {
+    border: 2px solid #ccc;
+}
+
+input.form-control:focus, 
+textarea.form-control:focus, 
+select.form-control:focus {
+  border: 2px solid #d6edb8;
+  box-shadow: none;
+}

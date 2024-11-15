@@ -97,42 +97,41 @@ export class ModalComponent implements AfterViewInit {
   }
 
   protected catchByType() {
-    if (this.questionType === "TEXT") {
-      if (this.unit === "ft") {
-        this.response = this.response * 30.48;
-      } else if (this.unit === "lb") {
-        this.response = this.response * 0.4536;
-      }
-      this.userResponseObjectACTUAL.push(this.response);
-      this.nextQuestion();
-    } else if (this.questionType === "SINGLE") {
-      this.response == null ? this.response = "none" : this.response;
-      this.userResponseObjectACTUAL.push(this.response);
-      this.nextQuestion();
-    } else if (this.questionType === "MULTIPLE") {
-      this.catchResponse(this.response);
-    } else if (this.questionType === "CALCULATION") {
-      this.userResponseObjectACTUAL.push(localStorage.getItem("BMI"));
-      localStorage.removeItem("BMI");
-      this.nextQuestion();
-    }
-  }
-
-  protected nextQuestion(): void {
     if (this.currentIndex >= this.quizObjectList.length) {
       const userObj = this.userResponseObjectACTUAL;
       this.router.navigate(["/details"], { state: { userResponseObjectACTUAL: userObj } });
     } else {
-      if (this.questionType === "MULTIPLE") {
-        this.multipleChoice.length === 0 ? this.multipleChoice.push("none") : this.multipleChoice;
-        this.userResponseObjectACTUAL.push(this.multipleChoice);
-        this.multipleChoice = [];
+      if (this.questionType === "TEXT") {
+        if (this.unit === "ft") {
+          this.response = this.response * 30.48;
+        } else if (this.unit === "lb") {
+          this.response = this.response * 0.4536;
+        }
+        this.nextQuestion();
+      } else if (this.questionType === "SINGLE") {
+        this.response == null ? this.response = "none" : this.response;
+        this.nextQuestion();
+      } else if (this.questionType === "MULTIPLE") {
+        this.catchResponse(this.response);
+      } else if (this.questionType === "CALCULATION") {
+        this.userResponseObjectACTUAL.push(localStorage.getItem("BMI"));
+        localStorage.removeItem("BMI");
+        this.nextQuestion();
       }
-      this.response = null;
-      console.log(this.userResponseObjectACTUAL);
-      
-      this.displayQuiz(this.currentIndex++);
     }
+  }
+
+  protected nextQuestion(): void {
+    if (this.questionType === "MULTIPLE") {
+      this.multipleChoice.length === 0 ? this.multipleChoice.push("none") : this.multipleChoice;
+      this.userResponseObjectACTUAL.push(this.multipleChoice);
+      this.multipleChoice = [];
+    }
+    console.log(this.response);
+    this.userResponseObjectACTUAL.push(this.response);
+    this.response = null;
+    console.log(this.userResponseObjectACTUAL);
+    this.displayQuiz(this.currentIndex++);
   }
 
   private openModal() {
@@ -153,7 +152,6 @@ export class ModalComponent implements AfterViewInit {
     this.option = false;
     this.bool = false;
     this.calculation = false;
-
     switch (this.quizObjectList[index].quizQuestion.questionTypeEnum) {
       case "SINGLE": {
         this.option = this.quizObjectList[index].quizOption;
