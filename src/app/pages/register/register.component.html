@@ -5,7 +5,7 @@
             <div class="input-group ">
                 <span class="input-group-text rounded-start-4">Name</span>
                 <input type="text" [(ngModel)]="userObj.firstName" name="firstName" aria-label="Firstname"
-                    placeholder="First" class="form-control" required #firstName="ngModel" minlength="3"
+                    placeholder="First" class="form-control py-3" required #firstName="ngModel" minlength="3"
                     pattern="[a-zA-Z]{3,15}">
                 <input type="text" [(ngModel)]="userObj.lastName" name="LastName" aria-label="Lastname"
                     placeholder="Last" class="form-control rounded-end-4" required #lastName="ngModel" minlength="3"
@@ -33,6 +33,7 @@
                 id="floatingUsername" placeholder="Bob" required minlength="3" pattern="[a-zA-Z][a-zA-Z0-9._-]{3,15}"
                 #username="ngModel">
             <label for="floatingUsername">Username</label>
+            <small class="text-danger m-0 ms-2" *ngIf="!uniqueUsername">Username already exists!</small>
             <div *ngIf="username.invalid && username.touched">
                 <small class="text-danger m-0 ms-2" *ngIf="username.errors?.['required']">Username is required.</small>
                 <small class="text-danger m-0 ms-2" *ngIf="username.errors?.['minlength']">Username must be at least 3
@@ -46,6 +47,7 @@
                 id="floatingEmail" placeholder="name@example.com" required #email="ngModel" minlength="10"
                 pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
             <label for="floatingEmail">Email address</label>
+            <small class="text-danger m-0 ms-2" *ngIf="!uniqueEmail">Email already exists!</small>
             <div *ngIf="email.invalid && email.touched">
                 <small class="text-danger m-0 ms-2" *ngIf="email.errors?.['required'] ">E-mail is required.</small>
                 <small class="text-danger m-0 ms-2"
@@ -54,32 +56,38 @@
             </div>
         </div>
         <div class="form-floating mb-2">
-            <input type="password" [(ngModel)]="passwordNew" name="passwordNew" class="form-control rounded-4 validate"
-                id="floatingPasswordNew" placeholder="Password" required minlength="6"
-                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$" #passwordNew="ngModel">
+            <input type="password" [(ngModel)]="passwordObj.passwordNew" name="passwordNew"
+                class="form-control rounded-4 validate" id="floatingPasswordNew" placeholder="Password" required
+                minlength="6" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$" #passwordNew="ngModel">
             <label for="floatingPasswordNew">Password</label>
             <div *ngIf="passwordNew.invalid && passwordNew.touched">
                 <small class="text-danger m-0 ms-2" *ngIf="passwordNew.errors?.['required']">Password is
                     required.</small>
                 <small class="text-danger m-0 ms-2"
-                    *ngIf="passwordNew.errors?.['pattern']||passwordNew.errors?.['minlength']">Password must be at least 6
+                    *ngIf="passwordNew.errors?.['pattern']||passwordNew.errors?.['minlength']">Password must be at least
+                    6
                     characters with one UpperCase, LowerCase, Number and Special Character</small>
             </div>
         </div>
         <div class="form-floating">
-            <input type="password" [(ngModel)]="passwordConfirm" name="passwordConfirm" class="form-control rounded-4 validate"
-                id="floatingPassword1" placeholder="ConfirmPassword" required #passwordConfirm="ngModel">
+            <input type="password" [(ngModel)]="passwordObj.passwordConfirm" name="passwordConfirm"
+                class="form-control rounded-4 validate" id="floatingPassword1" placeholder="ConfirmPassword" required
+                #passwordConfirm="ngModel">
             <label for="floatingPassword1">Confirm Password</label>
             <div *ngIf="passwordConfirm.invalid && passwordConfirm.touched">
-                <small class="text-danger m-0 ms-2" *ngIf="passwordConfirm === passwordNew">Passwords do not match.</small>
+                <small class="text-danger m-0 ms-2" *ngIf="invalidPassword">Passwords do not match.</small>
             </div>
         </div>
-        <div class="form-check my-2">
+        <div class="form-check my-2 ms-2">
             <input class="form-check-input" type="checkbox" name="privacyPolicy" [(ngModel)]="expression"
-                id="defaultCheck">
+                id="defaultCheck" required #privacyPolicy="ngModel">
             <label class="form-check-label" for="defaultCheck">
                 I accept the <a href="" required>Privacy Policy</a>
             </label>
+            <div *ngIf="privacyPolicy.invalid && privacyPolicy.touched">
+                <small class="text-danger m-0 ms-2" *ngIf="privacyPolicy.errors?.['required']">Privacy Policy is
+                    required.</small>
+            </div>
         </div>
         <button class="btn btn-success1 py-2 w-100 border border-3 rounded-4" type="submit"
             [disabled]="registerForm.invalid">Sign Up</button>
@@ -91,6 +99,9 @@
                         alt="facebook png"></button>
                 <button type="button" class="btn"><img width="40px" src="/icons/twitter.png" alt="twitter png"></button>
             </div>
+        </div>
+        <div class="text-center my-2">
+            <small class="text-dark-emphasis">Already have an account? <a routerLink="/login">Login</a></small>
         </div>
     </form>
 </div>

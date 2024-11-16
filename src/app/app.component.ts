@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     initFlowbite();
     this.checkNavigation();
-    localStorage.setItem("rememberedLogin",JSON.stringify(false));
+    localStorage.setItem("rememberedLogin",JSON.stringify(true));
   }
   handleAction() {
     this.openModal();

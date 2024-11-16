@@ -7,7 +7,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterLink, FormsModule, NgIf, HttpClientModule, ReactiveFormsModule, ],
+  imports: [RouterLink, FormsModule, NgIf, HttpClientModule, ReactiveFormsModule,],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
   private baseUrl: String = "http://localhost:8080/";
   private header = { "Content-Type": "application/json" };
   registerForm: FormGroup;
-  constructor(private router: Router, private http: HttpClient, private fb:FormBuilder) {
+  constructor(private router: Router, private http: HttpClient, private fb: FormBuilder) {
     this.registerForm = this.fb.group({
       Username: ['', [Validators.required, Validators.minLength(3)]],
     });
@@ -26,16 +26,16 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {
 
   }
-  protected passwordNew: string = "";
-  protected passwordConfirm: string = "";
   protected expression: boolean = false;
   protected responseObj: any = [];
-  protected invalidUsername = false;
-  protected validateUsername = "";
+  protected uniqueUsername = true;
+  protected uniqueEmail = true;
   protected invalidPassword = false;
-  protected validatePassword = "";
-  protected invalidName = false;
-  protected validateName = "";
+
+  protected passwordObj: any = {
+    passwordNew: "",
+    passwordConfirm: ""
+  }
 
   protected userObj: any = {
     firstName: "",
@@ -58,33 +58,29 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(form: NgForm) {
     if (form.valid) {
-      this.showData();
+      this.registerUser();
     }
   }
 
-  notMatching(){
-    if(this.passwordNew === this.passwordConfirm){
-      this.login.password = this.passwordConfirm;
-      return true;
+  notMatching() {
+    if (this.passwordObj.passwordNew != "" || this.passwordObj.passwordConfirm != "") {
+      if (this.passwordObj.passwordNew === this.passwordObj.passwordConfirm) {
+        this.login.password = this.passwordObj.passwordConfirm;
+        return true;
+      } return false;
     } return false;
   }
 
-  protected async showData(): Promise<void> {
-    if (this.isEmptyNameFields()) {
-      if (this.matchingPassword()) {
-        if (await this.checkUserName(this.login.username)) {
-          this.validateUsername = "Username already taken!";
-          this.invalidUsername = true;
-        } else {
-          await this.saveUser();
-          localStorage.setItem("currentUser", `${this.login.username}`);
-          localStorage.setItem("isloggedIn", JSON.stringify(true));
-        }
-      } else {
-        this.validatePassword = "Password fields doesn't match";
+  protected async registerUser(): Promise<void> {
+    if (this.checkUserName(this.login.username) && this.checkEmail(this.userObj.email)) {
+      if (this.notMatching()) {
         this.invalidPassword = true;
+      } else {
+        await this.saveUser();
+        localStorage.setItem("currentUser", `${this.login.username}`);
+        localStorage.setItem("isloggedIn", JSON.stringify(true));
       }
-    }
+    }alert("User already exists");
   }
   async saveUser() {
     this.userObj.gender = this.data.at(0).gender;
@@ -104,30 +100,20 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  private async checkUserName(username: String): Promise<boolean> {
-    let response = await fetch(this.baseUrl + "login/check-username/" + `${username}`);
-    return await response.json();
+  private checkUserName(username: String): boolean {
+    this.http.get<boolean>(this.baseUrl + "login/check-username/" + `${username}`).subscribe((data) => {
+      this.uniqueUsername = !data;
+      return !data;
+    })
+    return false;
   }
 
-  private matchingPassword(): boolean {
-    if (this.passwordNew === "") {
-      this.validatePassword = "Password can't be empty!";
-      this.invalidPassword = true;
-      if (this.passwordNew === this.passwordConfirm) {
-        this.login.password = this.passwordConfirm;
-        return true;
-      } return false;
-    } return false;
-  }
-
-  private isEmptyNameFields(): boolean {
-    if (this.userObj.firstName == "" || this.userObj == "") {
-      this.validateName = "Name can't be empty!";
-      this.invalidName = true;
-      return false;
-    } else {
-      return true;
-    }
+  private checkEmail(email: String): boolean {
+    this.http.get<boolean>(`${this.baseUrl}user/verify-email/${email}`).subscribe((data) => {
+      this.uniqueEmail = !data;
+      return !data;
+    })
+    return false;
   }
 
 }

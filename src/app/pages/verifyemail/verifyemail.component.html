@@ -1,10 +1,10 @@
 <div class="container centered vh-100">
     <div class="col-12 col-lg-6 centered flex-col pill p-0 py-3 p-lg-5">
         <h4 class="text-center p-3">Verify your email</h4>
-        <form class="col-10 py-2" #verifyEmailForm="ngForm" (ngSubmit)="onSubmit(verifyEmailForm)">
+        <form class="col-10 py-2" #verifyEmailForm="ngForm">
             <div class="mb-3">
                 <label for="emailFormControlInput" class="form-label">Email</label>
-                <input type="email" class="form-control" name="email" disabled="!show" [(ngModel)]="email"
+                <input type="email" class="form-control" name="email" [disabled]="show" [(ngModel)]="login.email"
                     id="emailFormControlInput" placeholder="example@mail.com"
                     pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" #email="ngModel" required>
                 <div class="" *ngIf="email.invalid && email.touched">
@@ -14,7 +14,11 @@
                         characters long and can only contain a-z, 0-9, ., _, -, &#64;</small>
                 </div>
             </div>
-            <div class="mb-3" *ngIf="show">
+        </form>
+        <div class="mb-3 text-center">
+            <small class="text-green-900 m-0 ms-2" *ngIf="seconds!=0">code not received? Resend in 0:{{seconds}}</small>
+        </div>
+        <div class="mb-3" *ngIf="show">
                 <label for="otpFormControlInput" class="form-label">OTP</label>
                 <input type="number" class="form-control" name="otp" #otp="ngModel" id="otpFormControlInput"
                     [(ngModel)]="otp" required>
@@ -24,8 +28,7 @@
 
                 </div>
             </div>
-        </form>
-        <button type="submit" class="btn btn-success1" [disabled]=" email.errors?.['invalid']">{{btnText}}</button>
+        <button type="submit" class="btn btn-success1" (click)="handleSubmit()" [disabled]="verifyEmailForm.invalid || clicked">{{btnText}}</button>
     </div>
 </div>
 <div class="modal fade w-100" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"

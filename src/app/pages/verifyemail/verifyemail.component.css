@@ -20,3 +20,20 @@ select.form-control:focus {
   border: 2px solid #d6edb8;
   box-shadow: none;
 }
+
+.btn-success1 {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #16E011;
+    --bs-btn-border-color: #16E011;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #10890e;
+    --bs-btn-hover-border-color: #16E011;
+    --bs-btn-focus-shadow-rgb: 60, 153, 110;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #16E011;
+    --bs-btn-active-border-color: #16E011;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #16E011;
+    --bs-btn-disabled-border-color: #16E011;
+}
