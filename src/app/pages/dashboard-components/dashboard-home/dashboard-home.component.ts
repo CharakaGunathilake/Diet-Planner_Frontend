@@ -1,15 +1,15 @@
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Modal } from 'bootstrap';
+import bootstrap, { Modal } from 'bootstrap';
 
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [RouterLink, HttpClientModule, NgFor],
+  imports: [RouterLink, HttpClientModule, NgFor,NgIf],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css'
 })
@@ -27,14 +27,15 @@ export class DashboardHomeComponent implements OnInit,AfterViewInit{
   protected meals:String[] = ["Breakfast", "Lunch", "Dinner"];
   protected currentIndex = 0;
   protected title:String = "";
-  protected isSelecting: boolean = false;
+  protected isSelecting: boolean = true;
+  protected btnText: String = "Next";
 
   constructor(private http: HttpClient) {
     
    }
   ngAfterViewInit(): void {
     if(this.isSelecting){
-      this.title = `Choose your ${this.meals[this.currentIndex]}`;
+      this.title = `Choose your ${this.meals[this.currentIndex++]}`;
       this.openModal();
     }
   }
@@ -74,6 +75,11 @@ export class DashboardHomeComponent implements OnInit,AfterViewInit{
     modal.show();
   }
 
+  closeModal(): void {
+    const modal = new Modal(this.mealModal.nativeElement);
+    modal.hide();
+  }
+
   setMealTimes(mealPlan: number) {
     switch (mealPlan) {
       case 3:
@@ -91,18 +97,24 @@ export class DashboardHomeComponent implements OnInit,AfterViewInit{
     }
   }
 
-  getSomethingElse(){
-    this.getRandomMeal();
+  getSomethingElse(index: number){
+    // this.getRandomMeal(this.meals[index]);
   }
 
-  setMeal(){
-    if(this.currentIndex < this.meals.length){
-      this.currentIndex++;
+  protected setMeal(){
+    if(this.currentIndex != this.meals.length){
+      this.title = `Choose your ${this.meals[this.currentIndex++]}`;
+      this.getSomethingElse(this.currentIndex);
+      this.currentIndex == this.meals.length ? this.btnText = "Done" : this.btnText = "Next";
+    }else{
+      // this.closeModal();
+      this.isSelecting = false;
+      localStorage.setItem("isSelecting", "false");
     }
   }
 
-  private getRandomMeal(){
-    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&number=4&include-tags=breakfast,lunch,dinner`).subscribe((data: any) => {
+  private getRandomMeal(mealName:String){
+    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&number=4&include-tags=${mealName}`).subscribe((data: any) => {
       this.meals = data.recipes;
       console.log(this.meals);
     });

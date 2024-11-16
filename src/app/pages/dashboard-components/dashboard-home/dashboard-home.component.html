@@ -1,15 +1,15 @@
-<div class="container p-0 pe-2 position-relative z-30">
+<div class="container p-0 position-relative z-30 pe-2">
     <div class="row mb-1 d-flex justify-content-between gap-2">
-        <div class="col-12 col-lg-5 p-0 px-1">
+        <div class="col-12 col-lg-5 p-0 px-1 ">
             <div class="pill col-12 col-lg-7 centered rounded-4">
                 <table>
                     <tr>
-                        <td>
+                        <td class="pe-4">
                             <img height="40px" width="40px" src="/icons/avatar.png" alt="avatar">
                         </td>
                         <td>
                             <p class="m-0 fw-bold">Welcome, {{userDetails.firstName}}</p>
-                            <p class="m-0 fs-6 fw-bold text-dark-emphasis">Your personal dashboard</p>
+                            <small class="m-0 fs-6 text-dark-emphasis">Your personal dashboard</small>
                         </td>
                     </tr>
                 </table>
@@ -170,11 +170,11 @@
 
             </div>
             <div class="modal-footer">
-                <div class="d-flex justify-end me-3 gap-2">
-                    <button type="button" class="btn btn-success" (click)="setMeal()">Next</button>
+                <div class="d-flex justify-end me-3 gap-2" *ngIf="isSelecting">
+                    <button type="button" class="btn btn-success" (click)="setMeal()">{{btnText}}</button>
                     <button type="submit" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i> Try Something Else</button>
                 </div>
-                <button type="button" class="btn btn-outline-danger" *ngIf="isSelecting" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-danger" *ngIf="!isSelecting" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
