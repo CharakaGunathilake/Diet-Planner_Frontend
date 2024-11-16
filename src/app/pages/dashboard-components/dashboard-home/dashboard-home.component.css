@@ -1,6 +1,7 @@
 .cardColor:hover {
-    background-color: #E5E5E8;
+    background-color: #d7e2c972;
     border-radius: 20px;
+    cursor: pointer;
 }
 
 .decorationNone {

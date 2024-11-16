@@ -1,0 +1,8 @@
+.dashboard-nav {
+    z-index: 10; /* Set a lower z-index for the dashboard nav */
+}
+
+.content-area {
+    position: relative;
+    z-index: 20; /* Set a higher z-index for the router-outlet content */
+}

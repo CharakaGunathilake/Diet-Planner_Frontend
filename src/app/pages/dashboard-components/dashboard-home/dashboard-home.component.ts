@@ -1,19 +1,118 @@
-import { Component } from '@angular/core';
+import { NgFor } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Modal } from 'bootstrap';
 
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, HttpClientModule, NgFor],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css'
 })
-export class DashboardHomeComponent {
-  public labels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  public data = {
-    labels: this.labels,
+export class DashboardHomeComponent implements OnInit,AfterViewInit{
+  @ViewChild('staticBackdrop') mealModal!: ElementRef
+  private baseUrl: String = "http://localhost:8080/";
+  private spoonacularBaseUrl: String = "https://api.spoonacular.com/recipes/";
+  private apiKey = "a4cc5dffa90c4777b649112d67c3cecc";
+  protected chart1: any;
+  protected chart2: any;
+  protected image = new Image();
+  private userId = 2;
+  protected userDetails: any = {};
+  protected userDietaryInfo: any = {};
+  protected meals:String[] = ["Breakfast", "Lunch", "Dinner"];
+  protected currentIndex = 0;
+  protected title:String = "";
+  protected isSelecting: boolean = false;
+
+  constructor(private http: HttpClient) {
+    
+   }
+  ngAfterViewInit(): void {
+    if(this.isSelecting){
+      this.title = `Choose your ${this.meals[this.currentIndex]}`;
+      this.openModal();
+    }
+  }
+
+  mealObj = {
+    mealName: "",
+    mealTime: "",
+    description: "",
+    mealCuisine: "",
+    mealImage: new Image(),
+    mealCalories: 0
+  }
+
+  ngOnInit(): void {
+    this.image.src = 'icons/water.png';
+    this.chart1 = new Chart("progressChart", weeklyCalorieChart());
+    this.chart2 = new Chart("waterChart", dailyWaterIntakerChart(this.image));
+    this.getUserDetails();
+  }
+
+  showDetails(mealName:String) {
+    this.title = mealName;
+    this.openModal();
+  }
+
+  private getUserDetails(): void {
+    this.http.get<any>(`${this.baseUrl}user/get-userWithPlan-byId/${this.userId}`).subscribe((data: any) => {
+      console.log(data);
+      this.userDetails = data.user;
+      this.userDietaryInfo = data.dietaryInfo;
+      this.setMealTimes(data.dietaryInfo.mealPlan);
+    })
+  }
+
+  private openModal() {
+    const modal = new Modal(this.mealModal.nativeElement);
+    modal.show();
+  }
+
+  setMealTimes(mealPlan: number) {
+    switch (mealPlan) {
+      case 3:
+        this.meals = ["Breakfast", "Lunch", "Dinner"];
+        break;
+      case 2:
+        this.meals = ["Meal 1", "Meal 2"];
+        break;
+      case 4:
+        this.meals = ["Breakfast", "Lunch", "Snack", "Dinner"];
+        break;
+      case 5:
+        this.meals = ["Breakfast","Snack", "Lunch","Afternoon Snack", "Dinner"];
+        break;
+    }
+  }
+
+  getSomethingElse(){
+    this.getRandomMeal();
+  }
+
+  setMeal(){
+    if(this.currentIndex < this.meals.length){
+      this.currentIndex++;
+    }
+  }
+
+  private getRandomMeal(){
+    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&number=4&include-tags=breakfast,lunch,dinner`).subscribe((data: any) => {
+      this.meals = data.recipes;
+      console.log(this.meals);
+    });
+  }
+}
+
+function weeklyCalorieChart(): any {
+  const labels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const data = {
+    labels: labels,
     datasets: [
       {
         label: 'Achieved',
@@ -39,8 +138,8 @@ export class DashboardHomeComponent {
       }
     ]
   };
-  
-  options1 = {
+
+  const options = {
     responsive: true,
     aspectRatio: 2,
     scales: {
@@ -61,15 +160,15 @@ export class DashboardHomeComponent {
       }
     }
   };
-
-  public config1: any = {
+  return {
     type: 'bar',
-    data: this.data,
-    options: this.options1,
+    data: data,
+    options: options,
   };
-  chart1: any;
+}
 
-  data2 = {
+function dailyWaterIntakerChart(image: any): any {
+  const data = {
     labels: ['Water Taken', 'Target'], // Labels for each section
     datasets: [{
       label: 'Glasses',
@@ -87,9 +186,7 @@ export class DashboardHomeComponent {
     }]
   };
 
-  
-
-  options = {
+  const options = {
     responsive: true,
     mainAspectRatio: false,
     plugins: {
@@ -103,31 +200,25 @@ export class DashboardHomeComponent {
     cutout: '70%' // Controls the thickness of the doughnut
   };
 
-  chart2: any;
-  image = new Image();
-  public config2:any = {
+  const config: any = {
     type: 'doughnut',
-    data: this.data2,
+    data: data,
     plugins: [{
       id: 'customCanvasBackgroundImage',
       beforeDraw: (chart2: { ctx: any; chartArea: { top: any; left: any; width: any; height: any; }; draw: () => any; }) => {
-        if (this.image.complete) {
+        if (image.complete) {
           const ctx = chart2.ctx;
-          const {top, left, width, height} = chart2.chartArea;
-          const x = left + width / 2 - this.image.width / 2;
-          const y = top + height / 2 - this.image.height / 2;
-          ctx.drawImage(this.image, x, y);
+          const { top, left, width, height } = chart2.chartArea;
+          const x = left + width / 2 - image.width / 2;
+          const y = top + height / 2 - image.height / 2;
+          ctx.drawImage(image, x, y);
         } else {
-          this.image.onload = () => chart2.draw();
+          image.onload = () => chart2.draw();
         }
       }
     }],
-    options: this.options
+    options: options
   }
 
-  ngOnInit(): void {
-    this.chart1 = new Chart("progressChart", this.config1);
-    this.chart2 = new Chart("waterChart", this.config2);
-    this.image.src = 'icons/water.png';
-  }
+  return config;
 }

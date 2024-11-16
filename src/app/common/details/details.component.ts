@@ -21,9 +21,6 @@ export class DetailsComponent implements OnInit {
   public dietPlan ={
     name: "",
     description:"",
-    startDate: new Date(),
-    endDateString:"",
-    dietType:""
   }
   protected showRegister = false;
   constructor(private router: Router) {
@@ -31,14 +28,8 @@ export class DetailsComponent implements OnInit {
   }
 
   register() {
-    const obj = this.initObject(this.data);
-    console.log(obj);
-    
-    this.userResponseObject.push(obj);
+    this.userResponseObject.push(this.initObject(this.data));
     console.log(this.userResponseObject);
-    
-    this.dietPlan.endDateString = this.data[10]
-    this.dietPlan.dietType = this.data[4]
     this.userResponseObject.push(this.dietPlan)
     this.openModal();
   }
@@ -113,13 +104,13 @@ function getWaterIntake(responseObj: any) {
     case "Less than 4 glasses":
       return 4;
     case "4-8 glasses":
-      return 6;
+      return 8;
     case "8-12 glasses":
-      return 10;
+      return 12;
     case "More than 12 glasses":
       return 15;
     default:
-      return 0;
+      return 6;
   }
 }
 
@@ -134,7 +125,7 @@ function getMealPlan(responseObj: any) {
     case "1-2 larger meals a day (intermittent fasting)":
       return 2;
     default:
-      return 0;
+      return 3;
   }
 }
 

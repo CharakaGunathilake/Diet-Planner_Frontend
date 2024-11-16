@@ -1,4 +1,4 @@
-<div class="container p-0 pe-2">
+<div class="container p-0 pe-2 position-relative z-30">
     <div class="row mb-1 d-flex justify-content-between gap-2">
         <div class="col-12 col-lg-5 p-0 px-1">
             <div class="pill col-12 col-lg-7 centered rounded-4">
@@ -8,7 +8,7 @@
                             <img height="40px" width="40px" src="/icons/avatar.png" alt="avatar">
                         </td>
                         <td>
-                            <p class="m-0 fw-bold">Welcome, Name</p>
+                            <p class="m-0 fw-bold">Welcome, {{userDetails.firstName}}</p>
                             <p class="m-0 fs-6 fw-bold text-dark-emphasis">Your personal dashboard</p>
                         </td>
                     </tr>
@@ -24,14 +24,14 @@
                 </div>
                 <div class="pill col centered p-0 rounded-4">
                     <span class="fw-bold">Goal</span>
-                    <span class="fs-6 fw-bold text-dark-emphasis">Weight Gain</span>
-                    <span class="fs-6 fw-bold text-dark-emphasis">General Diet</span>
+                    <span class="fs-6 fw-bold text-dark-emphasis">{{userDietaryInfo.goal}}</span>
+                    <span class="fs-6 fw-bold text-dark-emphasis">{{userDietaryInfo.dietPreference}}</span>
                 </div>
             </div>
         </div>
     </div>
     <div class="row my-1">
-        <div class="col-12 col-lg-6 p-0 pe-1">
+        <div class="col-12 col-lg-6 p-0">
             <div class="row">
                 <div class="col-12 col-lg-6 px-3 pe-lg-0">
                     <div class="pill pb-3 px-2">
@@ -52,7 +52,9 @@
                                             <p class="text-end m-0 p-1 text-white">90%</p>
                                         </div>
                                     </div>
-                                    <p class="m-0 text-end pe-2 align-self-end" style="font-size: smaller;">70kg</p>
+                                    <div class="d-flex justify-end">
+                                        <small class="m-0 text-end pe-2">{{userDietaryInfo.targetWeight}}kg</small>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -65,15 +67,18 @@
                                             <p class="text-end m-0 p-1">75%</p>
                                         </div>
                                     </div>
-                                    <p class="m-0 text-end pe-2" style="font-size: smaller;">1800kcal</p>
+                                    <div class="d-flex justify-end">
+                                        <small class="m-0 text-end pe-2">{{userDietaryInfo.dcr}}kcal</small>
+                                    </div>
                                 </td>
                             </tr>
                         </table>
-                        <a class="m-0 decorationNone d-inline-flex "  routerLink="../progress"> <span class="">See your Progress</span> <i class="bi bi-caret-right"></i></a> 
+                        <a class="m-0 decorationNone d-inline-flex " routerLink="../progress"> <span class="">See your
+                                Progress</span> <i class="bi bi-caret-right"></i></a>
 
                     </div>
                 </div>
-                <div class="col-12 col-lg-6 my-1 my-lg-0">
+                <div class="col-12 col-lg-6 my-1 my-lg-0 ps-lg-1">
                     <div class="pill mx-1 m-lg-0 centered h-100">
                         <div class="" style="height:26vh; width:26vh;">
                             <canvas id="waterChart">{{ chart2 }}</canvas>
@@ -99,45 +104,26 @@
             </div>
         </div>
         <div class="col-12 col-lg-6 p-0 px-1">
-            <div class="pill h-100">
+            <div class="pill">
                 <p class="py-2 m-0 text-center">Meals for the day</p>
-                <div class="d-flex flex-column flex-lg-row my-3 text-center ">
-                    <a href="#" class="col-12 col-lg cardColor centered py-3 decorationNone" data-bs-toggle="modal"
+                <div class="d-flex flex-column flex-lg-row my-3 text-center">
+                    <a class="col-12 col-lg cardColor centered py-3 px-1 decorationNone" *ngFor="let meal of meals let i = index" (click)="showDetails(meal)"
                         data-bs-target="#staticBackdrop">
-                        <img height="70vh" width="70vh" src="/icons/breakfast.png" alt="breakfast">
-                        <p class="mt-4 m-0">Breakfast</p>
-                    </a>
-                    <a href="#" class="col-12 col-lg cardColor centered py-3 decorationNone" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                        <img height="70vh" width="70vh" src="/icons/cashew.png" alt="snack">
-                        <p class="mt-4 m-0">Snack</p>
-                    </a>
-                    <a href="#" class=" col-12 col-lg centered cardColor py-3 decorationNone" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                        <img height="70vh" width="70vh" src="/icons/fried-rice.png" alt="lunch">
-                        <p class="mt-4 m-0">Lunch</p>
-                    </a>
-                    <a href="#" class=" col-12 col-lg centered cardColor py-3 decorationNone" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                        <img height="70vh" width="70vh" src="/icons/cashew.png" alt="snack">
-                        <p class="mt-4 m-0">Snack</p>
-                    </a>
-                    <a href="#" class="col-12 col-lg cardColor centered py-3 decorationNone" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                        <img height="70vh" width="70vh" src="/icons/roast-chicken.png" alt="dinner">
-                        <p class="mt-4 m-0  text-decoration-none">Dinner</p>
+                        <img src="icons/breakfast.png" width="55em" class="img-fluid" alt="breakfast">
+                        <p class="mt-4 m-0">{{meals[i]}}</p>
                     </a>
                 </div>
-                <a routerLink="../meals" class="mb-0 decorationNone d-inline-flex"><span>Change your meals</span> <i class="bi bi-caret-right"></i></a>
+                <a routerLink="../meals" class="mb-0 decorationNone d-inline-flex"><span>Change your meals</span> <i
+                        class="bi bi-caret-right"></i></a>
             </div>
         </div>
     </div>
     <div class="row my-1">
         <div class="col-12 col-lg-6 px-1">
             <div class="pill">
-                <p class="fw-bold m-0 text-center" >This week's Calorie Intake</p>
+                <p class="fw-bold m-0 text-center">This week's Calorie Intake</p>
                 <div class="container p-0 centered" style=" height:17rem;">
-                    <canvas id="progressChart" >{{ chart1 }}</canvas>
+                    <canvas id="progressChart">{{ chart1 }}</canvas>
                 </div>
             </div>
         </div>
@@ -147,32 +133,48 @@
 
     </div>
 </div>
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable no-scrollbar modal-md">
+        <div class="modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Are you Sure?</h1>
+                <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">{{title}}</h1>
                 <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
             </div>
             <div class="modal-body">
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
-                this is the description for the action
+                <div class="row m-0">
+                    <h6 class="fw-bold bg-green-100 py-2 px-4 rounded-2 text-center">Meal time</h6>
+                    <div class="cols centered py-3">
+                        <img class="img-fluid" src="icons/breakfast.png" alt="">
+                    </div>
+                    <div class="cols px-2">
+                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Description</h6>
+                        <p class="text-justify cardColor p-2">
+                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error esse quae quos tempora
+                            adipisci, animi quibusdam doloremque at itaque, autem nobis sed eaque eligendi repellendus.
+                            Repudiandae amet sunt quidem officiis?
+                            Tempora aspernatur nihil sequi dolor esse dolore odit, atque exercitationem, laborum velit
+                            doloribus tempore. Soluta voluptatum rem saepe repellendus, facilis, perspiciatis doloribus
+                            reprehenderit vero consequuntur nesciunt quod fugit quia harum.
+                        </p>
+                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Meal time</h6>
+                        <p class="text-justify cardColor p-2">
+                            12:00 pm
+                        </p>
+                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Ingredients</h6>                        
+                        <p class="text-justify cardColor p-2">
+                            Ingredient 1, Ingredient 2, Ingredient 3, Ingredient 4, Ingredient 5
+                        </p>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success1">Yes</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="d-flex justify-end me-3 gap-2">
+                    <button type="button" class="btn btn-success" (click)="setMeal()">Next</button>
+                    <button type="submit" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i> Try Something Else</button>
+                </div>
+                <button type="button" class="btn btn-outline-danger" *ngIf="isSelecting" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
