@@ -107,7 +107,8 @@
             <div class="pill">
                 <p class="py-2 m-0 text-center">Meals for the day</p>
                 <div class="d-flex flex-column flex-lg-row my-3 text-center">
-                    <a class="col-12 col-lg cardColor centered py-3 px-1 decorationNone" *ngFor="let meal of meals let i = index" (click)="showDetails(meal)"
+                    <a class="col-12 col-lg cardColor centered py-3 px-1 decorationNone"
+                        *ngFor="let meal of meals let i = index" (click)="showDetails(meal)"
                         data-bs-target="#staticBackdrop">
                         <img src="icons/breakfast.png" width="55em" class="img-fluid" alt="breakfast">
                         <p class="mt-4 m-0">{{meals[i]}}</p>
@@ -143,38 +144,43 @@
             </div>
             <div class="modal-body">
                 <div class="row m-0">
-                    <h6 class="fw-bold bg-green-100 py-2 px-4 rounded-2 text-center">Meal time</h6>
+                    <h6 class="fw-bold bg-green-100 py-2 px-4 rounded-2 text-center">{{mealObj.mealName}}</h6>
                     <div class="cols centered py-3">
-                        <img class="img-fluid" src="icons/breakfast.png" alt="">
+                        <img class="img-fluid" src="{{mealObj.mealImage}}" alt="">
                     </div>
                     <div class="cols px-2">
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Description</h6>
-                        <p class="text-justify cardColor p-2">
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error esse quae quos tempora
-                            adipisci, animi quibusdam doloremque at itaque, autem nobis sed eaque eligendi repellendus.
-                            Repudiandae amet sunt quidem officiis?
-                            Tempora aspernatur nihil sequi dolor esse dolore odit, atque exercitationem, laborum velit
-                            doloribus tempore. Soluta voluptatum rem saepe repellendus, facilis, perspiciatis doloribus
-                            reprehenderit vero consequuntur nesciunt quod fugit quia harum.
+                        <p class="text-justify cardColor p-2" [innerHTML]="mealObj.description">
                         </p>
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Meal time</h6>
                         <p class="text-justify cardColor p-2">
-                            12:00 pm
+                            {{mealTimes[currentIndex-1]}}
                         </p>
-                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Ingredients</h6>                        
+                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Cuisines</h6>
                         <p class="text-justify cardColor p-2">
-                            Ingredient 1, Ingredient 2, Ingredient 3, Ingredient 4, Ingredient 5
+                            {{mealObj.mealCuisine}}
                         </p>
+                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Ingredients</h6>
+                        <div class="d-flex">
+                            <p class="cardColor p-2">
+                                {{mealObj.ingredients}}
+                            </p>
+                        </div>
                     </div>
+                </div>
+                <div class="m-3 d-flex justify-end">
+                    <small class="fst-italic">Credits: {{mealObj.credits}}</small>
                 </div>
 
             </div>
             <div class="modal-footer">
                 <div class="d-flex justify-end me-3 gap-2" *ngIf="isSelecting">
                     <button type="button" class="btn btn-success" (click)="setMeal()">{{btnText}}</button>
-                    <button type="submit" class="btn btn-secondary"><i class="bi bi-arrow-clockwise"></i> Try Something Else</button>
+                    <button type="submit" class="btn btn-secondary" (click)="getSomethingElse(currentIndex-1)"><i class="bi bi-arrow-clockwise"></i> Try Something
+                        Else</button>
                 </div>
-                <button type="button" class="btn btn-outline-danger" *ngIf="!isSelecting" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-danger" *ngIf="!isSelecting"
+                    data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

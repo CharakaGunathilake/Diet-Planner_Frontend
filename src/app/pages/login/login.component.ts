@@ -40,13 +40,7 @@ export class LoginComponent implements OnInit {
     }
   }
   private async validLogin(login: any): Promise<boolean> {
-    console.log(login);
-    // let response = await fetch(this.baseUrl + "login/get-login-byId/" + `${login.userName}`);
-    // let body = await response.json();
-    // this.loginObj = body;
     this.http.get<any[]>(`${this.baseUrl}login/get-login-byId/${login.userName}`).subscribe((data) => {
-      console.log(data);
-      
       this.loginObj = data;
     });
     return this.loginObj.username === login.userName && this.loginObj.password === login.password;

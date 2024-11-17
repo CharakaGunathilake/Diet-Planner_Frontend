@@ -25,28 +25,33 @@ export class DashboardHomeComponent implements OnInit,AfterViewInit{
   protected userDetails: any = {};
   protected userDietaryInfo: any = {};
   protected meals:String[] = ["Breakfast", "Lunch", "Dinner"];
+  protected mealTimes: String[] = [];
   protected currentIndex = 0;
   protected title:String = "";
   protected isSelecting: boolean = true;
-  protected btnText: String = "Next";
+  protected btnText: String = "Choose This";
+  protected mealsDescription:any = null;
 
   constructor(private http: HttpClient) {
     
    }
   ngAfterViewInit(): void {
     if(this.isSelecting){
-      this.title = `Choose your ${this.meals[this.currentIndex++]}`;
-      this.openModal();
+      // this.getSomethingElse(this.currentIndex);
+      this.openModal(`Choose your ${this.meals[this.currentIndex++]}`);
     }
   }
 
   mealObj = {
+    mealId: 0,
     mealName: "",
-    mealTime: "",
-    description: "",
-    mealCuisine: "",
+    description: null,
+    ingredients: [""],
+    mealCuisine: [""],
     mealImage: new Image(),
-    mealCalories: 0
+    instruction: "",
+    mealCalories: 0,
+    credits:""
   }
 
   ngOnInit(): void {
@@ -58,7 +63,7 @@ export class DashboardHomeComponent implements OnInit,AfterViewInit{
 
   showDetails(mealName:String) {
     this.title = mealName;
-    this.openModal();
+    this.openModal(`${mealName} Details`);
   }
 
   private getUserDetails(): void {
@@ -70,7 +75,8 @@ export class DashboardHomeComponent implements OnInit,AfterViewInit{
     })
   }
 
-  private openModal() {
+  private openModal(title: String) {
+    this.title = title;
     const modal = new Modal(this.mealModal.nativeElement);
     modal.show();
   }
@@ -84,40 +90,64 @@ export class DashboardHomeComponent implements OnInit,AfterViewInit{
     switch (mealPlan) {
       case 3:
         this.meals = ["Breakfast", "Lunch", "Dinner"];
+        this.mealTimes = ["9:00 AM", "Between 12:00 PM and 2:00 PM", "7:00 PM"];
         break;
       case 2:
         this.meals = ["Meal 1", "Meal 2"];
+        this.mealTimes = ["Between 10:00 AM and 12:00 PM", "Between 12:00 PM and 6:00 PM"];
         break;
       case 4:
         this.meals = ["Breakfast", "Lunch", "Snack", "Dinner"];
+        this.mealTimes = ["Between 8:00 AM and 10:00 AM", "Between 11:00 AM and 1:00 PM", "Between 3:00 PM and 5:00 PM", "7:00 PM"];
         break;
       case 5:
-        this.meals = ["Breakfast","Snack", "Lunch","Afternoon Snack", "Dinner"];
+        this.meals = ["Breakfast","Second Breakfast", "Lunch","Afternoon Snack", "Dinner"];
+        this.mealTimes = ["Between 6:00 AM and 8:00 AM", "Between 8:00 AM and 11:00 AM", "Between 11:00 AM and 1:00 PM", "Between 3:00 PM and 5:00 PM", "7:00 PM"];
         break;
     }
   }
 
   getSomethingElse(index: number){
-    // this.getRandomMeal(this.meals[index]);
+    this.getRandomMeal(this.meals[index]);
   }
 
   protected setMeal(){
     if(this.currentIndex != this.meals.length){
-      this.title = `Choose your ${this.meals[this.currentIndex++]}`;
-      this.getSomethingElse(this.currentIndex);
-      this.currentIndex == this.meals.length ? this.btnText = "Done" : this.btnText = "Next";
-    }else{
-      // this.closeModal();
+      this.title = `Choose your ${this.meals[this.currentIndex]}`;
+      console.log("here is the index", this.currentIndex);
+      this.getSomethingElse(this.currentIndex++);
+      this.currentIndex == this.meals.length ? this.btnText = "Done" : this.btnText = "Choose This";
+    }else{  
       this.isSelecting = false;
       localStorage.setItem("isSelecting", "false");
     }
   }
 
-  private getRandomMeal(mealName:String){
-    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&number=4&include-tags=${mealName}`).subscribe((data: any) => {
-      this.meals = data.recipes;
-      console.log(this.meals);
+  private getRandomMeal(mealName:String):any{
+    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&include-tags=${mealName.toLocaleLowerCase()}`).subscribe((data) => {
+      data = data.recipes[0];
+      console.log(data);
+      this.mealObj={
+        mealId : data.id,
+        mealName: data.title,
+        description: data.summary,
+        ingredients: this.getIngredientNames(data.extendedIngredients),
+        mealCuisine: getCusines(data.cuisines),
+        mealImage: data.image,
+        instruction: data.summary,
+        mealCalories: data.calories,
+        credits:data.creditsText
+      }     
+      return data;
     });
+  }
+  getIngredientNames(extendedIngredients: any): string[] {
+    let names: any[] = [];
+    extendedIngredients.forEach((ingredient: any) => {
+      ingredient.name = ingredient.name.charAt(0).toUpperCase()+ingredient.name.slice(1);
+      names.push((" " + ingredient.amount + " " + ingredient.unit + " "+ingredient.name).trimEnd());
+    })
+    return names;
   }
 }
 
@@ -231,6 +261,14 @@ function dailyWaterIntakerChart(image: any): any {
     }],
     options: options
   }
-
   return config;
 }
+
+function getText(summary: any): any {
+  console.log(summary.charAt(0));
+  return summary;
+}
+function getCusines(cuisines: string[]): string[] {
+  return cuisines.length == 0? cuisines=["General"]: cuisines;
+}
+
