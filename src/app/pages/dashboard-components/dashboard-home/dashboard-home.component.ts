@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -9,36 +9,40 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [RouterLink, HttpClientModule, NgFor,NgIf],
+  imports: [RouterLink, HttpClientModule, NgFor, NgIf, NgClass],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css'
 })
-export class DashboardHomeComponent implements OnInit,AfterViewInit{
+export class DashboardHomeComponent implements OnInit, AfterViewInit {
   @ViewChild('staticBackdrop') mealModal!: ElementRef
   private baseUrl: String = "http://localhost:8080/";
   private spoonacularBaseUrl: String = "https://api.spoonacular.com/recipes/";
-  private apiKey = "a4cc5dffa90c4777b649112d67c3cecc";
+  private apiKey = "eb486ae5bf864471b925f2f6d660ba1d";
   protected chart1: any;
   protected chart2: any;
   protected image = new Image();
   private userId = 2;
   protected userDetails: any = {};
   protected userDietaryInfo: any = {};
-  protected meals:String[] = ["Breakfast", "Lunch", "Dinner"];
-  protected mealTimes: String[] = [];
+  protected meals: String[] = ["Breakfast", "Lunch", "Dinner"];
+  protected mealTimes: string[] = [];
   protected currentIndex = 0;
-  protected title:String = "";
-  protected isSelecting: boolean = true;
+  protected title: String = "Choose your Breakfast";
+  protected isSelecting: boolean = localStorage.getItem("isSelecting") == "true" ? true : false;
   protected btnText: String = "Choose This";
-  protected mealsDescription:any = null;
+  protected mealsDescription: any = null;
+  protected selectedMeals: any[] = [];
+  protected completed: String = "";
 
-  constructor(private http: HttpClient) {
-    
-   }
+  constructor(private http: HttpClient) { }
   ngAfterViewInit(): void {
-    if(this.isSelecting){
-      // this.getSomethingElse(this.currentIndex);
-      this.openModal(`Choose your ${this.meals[this.currentIndex++]}`);
+    console.log(this.isSelecting);
+    if (this.isSelecting) {
+      localStorage.setItem("isSelecting", "true");
+      this.getSomethingElse(this.currentIndex);
+      this.openModal(this.title);
+    } {
+      this.getSelectedMeals();
     }
   }
 
@@ -46,29 +50,53 @@ export class DashboardHomeComponent implements OnInit,AfterViewInit{
     mealId: 0,
     mealName: "",
     description: null,
-    ingredients: [""],
-    mealCuisine: [""],
-    mealImage: new Image(),
-    instruction: "",
-    mealCalories: 0,
-    credits:""
+    ingredients: "",
+    cuisines: "",
+    imageLink: "",
+    instructions: "",
+    calories: 0,
+    mealTime: "",
+    credits: ""
   }
+
+  // This component's code starts here
+  completeMeal() { 
+    this.completed = "Breakfast";
+  }
+  // This component's code ends here
 
   ngOnInit(): void {
     this.image.src = 'icons/water.png';
     this.chart1 = new Chart("progressChart", weeklyCalorieChart());
     this.chart2 = new Chart("waterChart", dailyWaterIntakerChart(this.image));
-    this.getUserDetails();
+    this.getUserDetails(this.userId);
   }
 
-  showDetails(mealName:String) {
+  showDetails(key: number, mealName: String) {
     this.title = mealName;
     this.openModal(`${mealName} Details`);
+    this.getThisMeal(this.selectedMeals.at(key).mealId, key);
   }
 
-  private getUserDetails(): void {
-    this.http.get<any>(`${this.baseUrl}user/get-userWithPlan-byId/${this.userId}`).subscribe((data: any) => {
-      console.log(data);
+  getThisMeal(mealId: number, key: number) {
+    this.http.get<any>(`${this.spoonacularBaseUrl}${mealId}/information?apiKey=${this.apiKey}&includeNutrition=true`).subscribe((data) => {
+      this.mealObj = {
+        mealId: data.id,
+        mealName: data.title,
+        description: data.summary,
+        ingredients: getSplittedString(1, data.extendedIngredients),
+        cuisines: getSplittedString(2, data.cuisines),
+        imageLink: data.image,
+        instructions: data.instructions,
+        calories: data.nutrition.nutrients[0].amount,
+        mealTime: data.mealTimes[key],
+        credits: data.creditsText
+      }
+    });
+  }
+
+  private getUserDetails(userId: number): void {
+    this.http.get<any>(`${this.baseUrl}user/get-userWithPlan-byId/${userId}`).subscribe((data: any) => {
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
       this.setMealTimes(data.dietaryInfo.mealPlan);
@@ -79,11 +107,6 @@ export class DashboardHomeComponent implements OnInit,AfterViewInit{
     this.title = title;
     const modal = new Modal(this.mealModal.nativeElement);
     modal.show();
-  }
-
-  closeModal(): void {
-    const modal = new Modal(this.mealModal.nativeElement);
-    modal.hide();
   }
 
   setMealTimes(mealPlan: number) {
@@ -101,53 +124,84 @@ export class DashboardHomeComponent implements OnInit,AfterViewInit{
         this.mealTimes = ["Between 8:00 AM and 10:00 AM", "Between 11:00 AM and 1:00 PM", "Between 3:00 PM and 5:00 PM", "7:00 PM"];
         break;
       case 5:
-        this.meals = ["Breakfast","Second Breakfast", "Lunch","Afternoon Snack", "Dinner"];
+        this.meals = ["Breakfast", "Second Breakfast", "Lunch", "Afternoon Snack", "Dinner"];
         this.mealTimes = ["Between 6:00 AM and 8:00 AM", "Between 8:00 AM and 11:00 AM", "Between 11:00 AM and 1:00 PM", "Between 3:00 PM and 5:00 PM", "7:00 PM"];
         break;
     }
   }
 
-  getSomethingElse(index: number){
+  getSomethingElse(index: number) {
     this.getRandomMeal(this.meals[index]);
   }
 
-  protected setMeal(){
-    if(this.currentIndex != this.meals.length){
+  protected setMeal() {
+    if (this.currentIndex != this.meals.length) {
       this.title = `Choose your ${this.meals[this.currentIndex]}`;
-      console.log("here is the index", this.currentIndex);
+      this.addMeal(this.mealObj);
       this.getSomethingElse(this.currentIndex++);
       this.currentIndex == this.meals.length ? this.btnText = "Done" : this.btnText = "Choose This";
-    }else{  
+    } else {
       this.isSelecting = false;
       localStorage.setItem("isSelecting", "false");
+      this.getSelectedMeals();
     }
   }
 
-  private getRandomMeal(mealName:String):any{
+  private addMeal(mealObj: any) {
+    mealObj.userId = this.userId;
+    mealObj.mealTime = this.mealTimes[this.currentIndex];
+    this.http.post<any>(`${this.baseUrl}meal-info/add-meal-info`, mealObj).subscribe((data) => {
+      console.log(data);
+    });
+  }
+
+  private getSelectedMeals() {
+    this.http.get<any>(`${this.baseUrl}meal-info/getAllMealInfo-byUserId/${this.userId}`).subscribe((data) => {
+      this.selectedMeals = data;
+    });
+  }
+
+  private getRandomMeal(mealName: String): any {
     this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&include-tags=${mealName.toLocaleLowerCase()}`).subscribe((data) => {
       data = data.recipes[0];
-      console.log(data);
-      this.mealObj={
-        mealId : data.id,
+      this.mealObj = {
+        mealId: data.id,
         mealName: data.title,
         description: data.summary,
-        ingredients: this.getIngredientNames(data.extendedIngredients),
-        mealCuisine: getCusines(data.cuisines),
-        mealImage: data.image,
-        instruction: data.summary,
-        mealCalories: data.calories,
-        credits:data.creditsText
-      }     
+        ingredients: getSplittedString(1, data.extendedIngredients),
+        cuisines: getSplittedString(2, data.cuisines),
+        imageLink: data.image,
+        instructions: data.instructions,
+        calories: 0,
+        mealTime: this.mealTimes[this.currentIndex],
+        credits: data.creditsText
+      }
       return data;
     });
   }
-  getIngredientNames(extendedIngredients: any): string[] {
-    let names: any[] = [];
-    extendedIngredients.forEach((ingredient: any) => {
-      ingredient.name = ingredient.name.charAt(0).toUpperCase()+ingredient.name.slice(1);
-      names.push((" " + ingredient.amount + " " + ingredient.unit + " "+ingredient.name).trimEnd());
-    })
-    return names;
+}
+function getSplittedString(index: number, array: any): string {
+  let names = "";
+  switch (index) {
+    case 1: {
+      array.forEach((obj: any) => {
+        obj.name = obj.name.charAt(0).toUpperCase() + obj.name.slice(1);
+        names += obj.amount + " " + obj.unit + " " + obj.name + ", ";
+      })
+      return names = names.substring(0, names.length - 2);
+    }
+    case 2: {
+      if (array.length == 0) {
+        return "Common"
+      } else {
+        array.forEach((obj: any) => {
+          names += obj + ", ";
+        })
+        return names = names.substring(0, names.length - 2);
+      }
+    } default: {
+      return "none";
+    }
   }
 }
 
@@ -264,11 +318,4 @@ function dailyWaterIntakerChart(image: any): any {
   return config;
 }
 
-function getText(summary: any): any {
-  console.log(summary.charAt(0));
-  return summary;
-}
-function getCusines(cuisines: string[]): string[] {
-  return cuisines.length == 0? cuisines=["General"]: cuisines;
-}
 

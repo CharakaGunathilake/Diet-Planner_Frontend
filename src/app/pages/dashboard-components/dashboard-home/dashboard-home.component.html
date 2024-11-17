@@ -75,7 +75,6 @@
                         </table>
                         <a class="m-0 decorationNone d-inline-flex " routerLink="../progress"> <span class="">See your
                                 Progress</span> <i class="bi bi-caret-right"></i></a>
-
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 my-1 my-lg-0 ps-lg-1">
@@ -108,9 +107,8 @@
                 <p class="py-2 m-0 text-center">Meals for the day</p>
                 <div class="d-flex flex-column flex-lg-row my-3 text-center">
                     <a class="col-12 col-lg cardColor centered py-3 px-1 decorationNone"
-                        *ngFor="let meal of meals let i = index" (click)="showDetails(meal)"
-                        data-bs-target="#staticBackdrop">
-                        <img src="icons/breakfast.png" width="55em" class="img-fluid" alt="breakfast">
+                        *ngFor="let meal of meals let i = index" [ngClass]="{'completed': completed == '{{meal}}'}" (click)="showDetails(i,meal)">
+                        <img src="/icons/breakfast.png" width="55em" class="img-fluid" alt="breakfast">
                         <p class="mt-4 m-0">{{meals[i]}}</p>
                     </a>
                 </div>
@@ -140,13 +138,12 @@
         <div class="modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;">
             <div class="modal-header">
                 <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">{{title}}</h1>
-                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
             </div>
             <div class="modal-body">
                 <div class="row m-0">
                     <h6 class="fw-bold bg-green-100 py-2 px-4 rounded-2 text-center">{{mealObj.mealName}}</h6>
                     <div class="cols centered py-3">
-                        <img class="img-fluid" src="{{mealObj.mealImage}}" alt="">
+                        <img class="img-fluid" src="{{mealObj.imageLink}}" alt="">
                     </div>
                     <div class="cols px-2">
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Description</h6>
@@ -158,7 +155,7 @@
                         </p>
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Cuisines</h6>
                         <p class="text-justify cardColor p-2">
-                            {{mealObj.mealCuisine}}
+                            {{mealObj.cuisines}}
                         </p>
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Ingredients</h6>
                         <div class="d-flex">
@@ -166,21 +163,26 @@
                                 {{mealObj.ingredients}}
                             </p>
                         </div>
+                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Instructions</h6>
+                        <p class="text-justify cardColor p-2" [innerHTML]="mealObj.instructions">
+                    </div>
+                    <div class="m-3 d-flex justify-end">
+                        <small class="fst-italic me-3">Credits: {{mealObj.credits}}</small>
                     </div>
                 </div>
-                <div class="m-3 d-flex justify-end">
-                    <small class="fst-italic">Credits: {{mealObj.credits}}</small>
-                </div>
-
             </div>
             <div class="modal-footer">
                 <div class="d-flex justify-end me-3 gap-2" *ngIf="isSelecting">
                     <button type="button" class="btn btn-success" (click)="setMeal()">{{btnText}}</button>
-                    <button type="submit" class="btn btn-secondary" (click)="getSomethingElse(currentIndex-1)"><i class="bi bi-arrow-clockwise"></i> Try Something
+                    <button type="submit" class="btn btn-secondary" (click)="getSomethingElse(currentIndex-1)"><i
+                            class="bi bi-arrow-clockwise"></i> Try Something
                         Else</button>
                 </div>
-                <button type="button" class="btn btn-outline-danger" *ngIf="!isSelecting"
-                    data-bs-dismiss="modal">Close</button>
+                <div class="d-flex justify-end me-3 gap-2">
+                    <button type="button" class="btn btn-success" (click)="completeMeal()">Completed</button>
+                    <button type="button" class="btn btn-outline-danger" *ngIf="!isSelecting"
+                        data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

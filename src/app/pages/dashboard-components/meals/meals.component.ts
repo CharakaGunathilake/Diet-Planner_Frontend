@@ -16,6 +16,7 @@ export class MealsComponent implements OnInit {
   }
 
   createChart():void {
+    //fat,carbohydrate,protein,sugar,cholesterol,fiber,vitamin A,Vitamin B2,Vitamin C,Calcium,Iron
     const data = {
       labels: [
         'Carbohydrate',

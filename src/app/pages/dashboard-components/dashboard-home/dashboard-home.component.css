@@ -9,6 +9,11 @@
     color: #000;
 }
 
+.completed{
+    background-color: #000;
+    
+}
+
 .centered {
     display: flex;
     flex-direction: column;
