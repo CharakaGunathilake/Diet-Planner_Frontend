@@ -1,4 +1,4 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -9,7 +9,7 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [RouterLink, HttpClientModule, NgFor, NgIf, NgClass],
+  imports: [RouterLink, HttpClientModule, NgFor, NgIf, NgClass, NgStyle],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css'
 })
@@ -33,6 +33,9 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   protected mealsDescription: any = null;
   protected selectedMeals: any[] = [];
   protected completed: String = "";
+  protected weightPercentage = 1;
+  protected caloriePercentage = 1;
+  protected waterIntake = 0;
 
   constructor(private http: HttpClient) { }
   ngAfterViewInit(): void {
@@ -43,6 +46,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       this.openModal(this.title);
     } {
       this.getSelectedMeals();
+      localStorage.setItem("completedMeals", JSON.stringify(0));
     }
   }
 
@@ -60,27 +64,47 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   }
 
   // This component's code starts here
-  completeMeal() { 
-    this.completed = "Breakfast";
-  }
-  // This component's code ends here
-
   ngOnInit(): void {
     this.image.src = 'icons/water.png';
     this.chart1 = new Chart("progressChart", weeklyCalorieChart());
-    this.chart2 = new Chart("waterChart", dailyWaterIntakerChart(this.image));
+    this.chart2 = new Chart("waterChart", dailyWaterIntakerChart(this.image, this.waterIntake, this.userDietaryInfo.waterIntake));
     this.getUserDetails(this.userId);
   }
 
+  protected completeMeal() {
+    this.caloriePercentage = (this.mealObj.calories / this.userDietaryInfo.dcr) * 100;
+    const obj = this.getThisMeal(this.selectedMeals.at(this.currentIndex).mealId, this.currentIndex);
+    this.setMealCompleted(true, this.userId, obj.mealId, new Date());
+    this.completed = this.meals[this.currentIndex];
+  }
+  setMealCompleted(status: boolean, userId: number, mealId: number, dateCompleted: Date) {
+    this.http.get<any>(`${this.baseUrl}meal-Info/setMealCompleted/${status}/${userId}/${mealId}/${dateCompleted}`).subscribe((data) => {
+      console.log(data);
+    });
+  }
+
+  protected updateWaterIntake(status: boolean) {
+    // localStorage.setItem("waterIntake", JSON.stringify(0));
+    localStorage.getItem("waterIntake") ? this.waterIntake = JSON.parse(localStorage.getItem("waterIntake") || "0") : this.waterIntake = 0;
+    if (this.waterIntake < this.userDietaryInfo.waterIntake) {
+      this.waterIntake = status == true ? this.waterIntake + 1 : this.waterIntake != 0 ? this.waterIntake - 1 : 0;
+      localStorage.setItem("waterIntake", JSON.stringify(this.waterIntake));
+      this.chart2.destroy();
+      this.chart2 = new Chart("waterChart", dailyWaterIntakerChart(this.image, this.waterIntake, this.userDietaryInfo.waterIntake));
+    }
+  }
+  // This component's code ends here
+
   showDetails(key: number, mealName: String) {
     this.title = mealName;
+    this.currentIndex = key;
     this.openModal(`${mealName} Details`);
     this.getThisMeal(this.selectedMeals.at(key).mealId, key);
   }
 
-  getThisMeal(mealId: number, key: number) {
+  getThisMeal(mealId: number, key: number): any {
     this.http.get<any>(`${this.spoonacularBaseUrl}${mealId}/information?apiKey=${this.apiKey}&includeNutrition=true`).subscribe((data) => {
-      this.mealObj = {
+      return this.mealObj = {
         mealId: data.id,
         mealName: data.title,
         description: data.summary,
@@ -89,7 +113,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
         imageLink: data.image,
         instructions: data.instructions,
         calories: data.nutrition.nutrients[0].amount,
-        mealTime: data.mealTimes[key],
+        mealTime: this.selectedMeals[key].mealTime,
         credits: data.creditsText
       }
     });
@@ -139,6 +163,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       this.title = `Choose your ${this.meals[this.currentIndex]}`;
       this.addMeal(this.mealObj);
       this.getSomethingElse(this.currentIndex++);
+      localStorage.setItem("currentIndex", this.currentIndex.toString());
       this.currentIndex == this.meals.length ? this.btnText = "Done" : this.btnText = "Choose This";
     } else {
       this.isSelecting = false;
@@ -162,7 +187,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   }
 
   private getRandomMeal(mealName: String): any {
-    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&include-tags=${mealName.toLocaleLowerCase()}`).subscribe((data) => {
+    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&include-tags=${mealName.toLowerCase()}`).subscribe((data) => {
+      console.log(data);
       data = data.recipes[0];
       this.mealObj = {
         mealId: data.id,
@@ -263,12 +289,12 @@ function weeklyCalorieChart(): any {
   };
 }
 
-function dailyWaterIntakerChart(image: any): any {
+function dailyWaterIntakerChart(image: any, current: number, target: number): any {
   const data = {
     labels: ['Water Taken', 'Target'], // Labels for each section
     datasets: [{
       label: 'Glasses',
-      data: [2, 10], // Values for each section
+      data: [current, target], // Values for each section
       backgroundColor: [
         'rgba(54, 162, 235, 0.2)',
         'rgba(255, 99, 132, 0.2)'

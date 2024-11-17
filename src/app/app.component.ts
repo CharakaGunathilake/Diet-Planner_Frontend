@@ -24,6 +24,7 @@ export class AppComponent implements OnInit {
     initFlowbite();
     this.checkNavigation();
     localStorage.setItem("rememberedLogin",JSON.stringify(true));
+    // localStorage.setItem("isSelecting",JSON.stringify(true));
   }
   handleAction() {
     this.openModal();
