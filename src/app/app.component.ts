@@ -22,19 +22,15 @@ export class AppComponent implements OnInit {
   constructor(private router: Router) {}
   ngOnInit(): void {
     initFlowbite();
-    this.checkNavigation();
-    localStorage.setItem("rememberedLogin",JSON.stringify(true));
-    // localStorage.setItem("isSelecting",JSON.stringify(true));
+    // localStorage.setItem("rememberedLogin",JSON.stringify(false));
+    // localStorage.setItem("isLoggedIn",JSON.stringify(false));
+    // localStorage.setItem("isSelecting",JSON.stringify(false));
   }
   handleAction() {
     this.openModal();
+    // this.router.navigate(["/dashboard/home"]);
   }
-
-  checkNavigation() {
-    console.log(this.router.url==="/modal" ? "true":"false");
-    
-  }
-
+  
   private openModal() {
     const modal = new Modal(this.loginModal.nativeElement);
     modal.show();

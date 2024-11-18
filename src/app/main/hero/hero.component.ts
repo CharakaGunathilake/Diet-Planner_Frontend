@@ -1,8 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { RegisterComponent } from '../../pages/register/register.component';
 import { ModalComponent } from '../../pages/modal/modal.component';
-import { Modal } from 'bootstrap';
 @Component({
   selector: 'app-hero',
   standalone: true,
@@ -11,19 +10,24 @@ import { Modal } from 'bootstrap';
   styleUrl: './hero.component.css'
 })
 export class HeroComponent {
-  @ViewChild('staticBackdrop') loginModal!: ElementRef;
   @Output() action = new EventEmitter<void>()
 
-  showModal(){
-    const modal = new Modal(this.loginModal.nativeElement);
-    modal.show();
+  constructor(private router:Router){}
+  handleClick() {
+    const isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn") || "false")
+    const isRememberedLogin = JSON.parse(localStorage.getItem("rememberedLogin") || "false")
+    console.log(isRememberedLogin);
+    
+    if (isLoggedIn || isRememberedLogin) {
+      this.router.navigate(["/dashboard/home"]);
+    } else {
+      this.emitEvent();
+    }
   }
-  handleClick(){
-    this.emitEvent();
-  }
+
   emitEvent() {
     this.action.emit();
   }
-  
-  
+
+
 }

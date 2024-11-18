@@ -35,11 +35,11 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   protected completed: String = "";
   protected weightPercentage = 1;
   protected caloriePercentage = 1;
-  protected waterIntake = 0;
+  protected waterIntake = localStorage.getItem("waterIntake") ? JSON.parse(localStorage.getItem("waterIntake") || "0") : 0;
 
   constructor(private http: HttpClient) { }
   ngAfterViewInit(): void {
-    console.log(this.isSelecting);
+    // localStorage.setItem("waterIntake", JSON.stringify(0));
     if (this.isSelecting) {
       localStorage.setItem("isSelecting", "true");
       this.getSomethingElse(this.currentIndex);
@@ -66,9 +66,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   // This component's code starts here
   ngOnInit(): void {
     this.image.src = 'icons/water.png';
-    this.chart1 = new Chart("progressChart", weeklyCalorieChart());
-    this.chart2 = new Chart("waterChart", dailyWaterIntakerChart(this.image, this.waterIntake, this.userDietaryInfo.waterIntake));
     this.getUserDetails(this.userId);
+    this.chart1 = new Chart("progressChart", weeklyCalorieChart());
   }
 
   protected completeMeal() {
@@ -83,14 +82,15 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     });
   }
 
+
   protected updateWaterIntake(status: boolean) {
-    // localStorage.setItem("waterIntake", JSON.stringify(0));
-    localStorage.getItem("waterIntake") ? this.waterIntake = JSON.parse(localStorage.getItem("waterIntake") || "0") : this.waterIntake = 0;
     if (this.waterIntake < this.userDietaryInfo.waterIntake) {
       this.waterIntake = status == true ? this.waterIntake + 1 : this.waterIntake != 0 ? this.waterIntake - 1 : 0;
       localStorage.setItem("waterIntake", JSON.stringify(this.waterIntake));
       this.chart2.destroy();
       this.chart2 = new Chart("waterChart", dailyWaterIntakerChart(this.image, this.waterIntake, this.userDietaryInfo.waterIntake));
+    } else {
+      alert("Congratulations!! you have completed today's Hydration target.")
     }
   }
   // This component's code ends here
@@ -98,8 +98,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   showDetails(key: number, mealName: String) {
     this.title = mealName;
     this.currentIndex = key;
-    this.openModal(`${mealName} Details`);
     this.getThisMeal(this.selectedMeals.at(key).mealId, key);
+    this.openModal(`${mealName} Details`);
   }
 
   getThisMeal(mealId: number, key: number): any {
@@ -124,6 +124,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
       this.setMealTimes(data.dietaryInfo.mealPlan);
+      this.chart2 = new Chart("waterChart", dailyWaterIntakerChart(this.image, this.waterIntake, this.userDietaryInfo.waterIntake));
     })
   }
 

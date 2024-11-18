@@ -56,7 +56,6 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-
   emitEvent() {
     this.action.emit();
   }

@@ -1,5 +1,6 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { Modal } from 'bootstrap';
 import { initFlowbite } from 'flowbite';
 let texts = document.getElementById("btnText") as HTMLElement;
 
@@ -11,13 +12,19 @@ let texts = document.getElementById("btnText") as HTMLElement;
   styleUrl: './dashboardnav.component.css'
 })
 export class DashboardnavComponent implements OnInit{
+  @Output() action = new EventEmitter<void>();
+
   progress: String = '';
   screenWidth: number = window.innerWidth;
   ngOnInit() {
-    // Initialize any logic that depends on the initial screen size
     this.onResize();
     initFlowbite();
 
+  }
+
+  emitEvent() {
+    console.log("happen emit");
+    this.action.emit();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -28,7 +35,7 @@ export class DashboardnavComponent implements OnInit{
     // Call any other methods based on screen size here
     this.handleResponsiveLogic();
   }
-  
+
   handleResponsiveLogic(): void {
     if (this.screenWidth < 768) {
       console.log('Screen width is less than 768px, applying mobile layout');
