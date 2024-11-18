@@ -2,58 +2,74 @@
     <div class="row gap-1">
         <div class="col-12 col-lg-6 p-0">
             <div class="pill px-4">
-                <p class="fs-4 px-2">Personal Info</p>
-                <div class="col-6">
-                    <label for="personFirstName" class="form-label">First Name</label>
-                    <input type="text" id="personFirstName" class="form-control">
-                    <label for="personLastName" class="form-label">Last Name</label>
-                    <input type="text" id="personLastName" class="form-control">
-                    <label for="personLastName" class="form-label">Gender</label>
-                    <div class="dropdown mb-2">
-                        <button class="btn btn-outline-success w-100 border dropdown-toggle" type="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Gender
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><button class="dropdown-item" type="button">Male</button></li>
-                            <li><button class="dropdown-item" type="button">Female</button></li>
-                        </ul>
+                <form [ngClass]="{ 'disabled-form': !editablePersonal }">
+                    <p class="fs-4 px-2">Personal Info</p>
+                    <div class="col-6">
+                        <label for="personFirstName" class="form-label">First Name</label>
+                        <input type="text" id="personFirstName" [disabled]="!editablePersonal" name="firstName"
+                            [(ngModel)]="userDetails.firstName" class="form-control">
+                        <label for="personLastName" class="form-label">Last Name</label>
+                        <input type="text" id="personLastName" [disabled]="!editablePersonal" name="lastName"
+                            [(ngModel)]="userDetails.lastName" class="form-control">
+                        <label for="personLastName" class="form-label">Gender</label>
+                        <div class="dropdown mb-2">
+                            <button class="btn btn-outline-success w-100 border dropdown-toggle"
+                                [disabled]="!editablePersonal" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                {{userDetails.gender}}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" type="button">Male</button></li>
+                                <li><button class="dropdown-item" type="button">Female</button></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <label for="personEmail" class="form-label">E-mail</label>
-                <input type="email" id="personEmail" class="form-control">
-                <div class="row d-flex justify-content-between gap-2">
-                    <div class="col">
-                        <label for="personDob" class="form-label">Date of birth</label>
-                        <input type="date" id="personDob" class="form-control">
+                    <label for="personEmail" class="form-label">E-mail</label>
+                    <input type="email" id="personEmail" [disabled]="!editablePersonal" name="email"
+                        [(ngModel)]="userDetails.email" class="form-control">
+                    <div class="row d-flex justify-content-between gap-2">
+                        <div class="col">
+                            <label for="personDob" class="form-label">Date of birth</label>
+                            <input type="date" [disabled]="!editablePersonal" name="birthDay"
+                                [(ngModel)]="userDetails.birthDay" pattern="YYYY-MM-DD" id="personDob"
+                                class="form-control">
+                        </div>
+                        <div class="col">
+                            <label for="personAge" class="form-label">Age</label>
+                            <input type="text" disabled name="age" [(ngModel)]="userDetails.age" id="personAge"
+                                class="form-control">
+                        </div>
                     </div>
-                    <div class="col">
-                        <label for="personAge" class="form-label">Age</label>
-                        <input type="text" id="personAge" class="form-control">
-                    </div>
-                </div>
+                </form>
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</button>
+                    <button class="btn btn-success1 px-4 my-3 rounded-3" (click)="openModal('personal')">Edit</button>
                 </div>
             </div>
             <div class="pill mt-1 px-4">
-                <p class="fs-4 px-2">Account Info</p>
-                <div class="row d-flex">
-                    <div class="col-6">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" id="username" class="form-control">
+                <form [ngClass]="{ 'disabled-form': !editableAccount }">
+                    <p class="fs-4 px-2">Account Info</p>
+                    <div class="row d-flex">
+                        <div class="col-6">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" id="username" [disabled]="!editableAccount" name="username"
+                                [(ngModel)]="userLogin.username" class="form-control">
 
-                        <label for="password" class="form-label">Password</label>
-                        <input type="text" id="password" class="form-control">
-                    </div>
-                    <div class="col-6">
-                        <label for="dateCreated" class="form-label">Date Created</label>
-                        <input type="text" id="dateCreated" class="form-control">
-                        <div class="d-flex justify-content-end pt-3">
-                            <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</button>
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" id="password" disabled name="password"
+                                [(ngModel)]="userLogin.password" class="form-control">
+                        </div>
+                        <div class="col-6">
+                            <label for="loginDate" class="form-label">Date Created</label>
+                            <input type="text" id="loginDate" disabled name="loginDate"
+                                [(ngModel)]="userLogin.loginDate" class="form-control">
+                            <div class="d-flex justify-content-end pt-3">
+                                <button class="btn btn-success1 px-4 my-3 rounded-3"
+                                    (click)="openModal('account')">Edit</button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
+
             </div>
         </div>
         <div class="col-12 col-lg p-0 ">
@@ -63,60 +79,72 @@
                     <div class="col">
                         <label for="height" class="form-label">Height</label>
                         <div class="input-group">
-                            <input type="text" class="form-control"
-                                aria-label="height" aria-describedby="basic-addon2">
-                            <span class="input-group-text">unit</span>
+                            <input type="text" class="form-control" disabled name="height"
+                                [(ngModel)]="userDietaryInfo.height" aria-label="height"
+                                aria-describedby="basic-addon2">
+                            <span class="input-group-text">cm</span>
                         </div>
                         <label for="activityRate" class="form-label">Activity Rate</label>
-                        <input type="text" id="activityRate" class="form-control">
+                        <input type="text" id="activityRate" disabled name="activityRate"
+                            [(ngModel)]="userDietaryInfo.activityRate" class="form-control">
                         <label for="bmiStatus" class="form-label">Bmi Status</label>
-                        <input type="text" id="bmiStatus" class="form-control">
+                        <input type="text" id="bmiStatus" disabled name="bmiStatus"
+                            [(ngModel)]="userDietaryInfo.bmiStatus" class="form-control">
                     </div>
                     <div class="col">
                         <label for="weight" class="form-label">Weight</label>
                         <div class="input-group ">
-                            <input type="text" class="form-control"
-                                aria-label="weight" aria-describedby="basic-addon2">
-                            <span class="input-group-text">unit</span>
+                            <input type="text" class="form-control" disabled name="weight"
+                                [(ngModel)]="userDietaryInfo.weight" aria-label="weight"
+                                aria-describedby="basic-addon2">
+                            <span class="input-group-text">kg</span>
                         </div>
                         <label for="bmi" class="form-label">Bmi</label>
-                        <input type="text" id="bmi" class="form-control">
-                        <div class="d-flex justify-content-end pt-3">
-                            <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</button>
-                        </div>
+                        <input type="text" id="bmi" disabled name="bmi" [(ngModel)]="userDietaryInfo.bmi"
+                            class="form-control">
+                        <!-- <div class="d-flex justify-content-end pt-3">
+                            <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" (click)="openModal('diet')">Edit</button>
+                        </div> -->
                     </div>
                 </div>
                 <hr>
                 <p class="fs-4 px-2">Ongoing Diet Info</p>
                 <div class="row d-flex">
-                    <div class="col">                        
+                    <div class="col">
                         <label for="planName" class="form-label">Plan Name</label>
-                        <input type="text" id="planName" class="form-control">
+                        <input type="text" id="planName" [disabled]="!editableOngoing" name="planName"
+                            [(ngModel)]="userPlan.name" class="form-control">
                         <label for="startDate" class="form-label">Start Date</label>
-                        <input type="date" id="startDate" class="form-control">                        
+                        <input type="date" id="startDate" disabled name="startDate" [(ngModel)]="userPlan.startDate"
+                            class="form-control">
                         <label for="goal" class="form-label">Goal</label>
-                        <input type="text" id="goal" class="form-control">
+                        <input type="text" id="goal" disabled name="goal" [(ngModel)]="userDietaryInfo.goal"
+                            class="form-control">
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" rows="3"></textarea>
-                          </div>
-                    </div> 
-                    <div class="col">                        
+                            <textarea class="form-control" [disabled]="!editableOngoing" name="description"
+                                [(ngModel)]="userPlan.description" id="description" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="col">
                         <label for="dietType" class="form-label">Diet Type</label>
-                        <input type="text" id="dietType" class="form-control">
+                        <input type="text" id="dietType" disabled name="dietType" [(ngModel)]="userPlan.dietType"
+                            class="form-control">
                         <label for="endDate" class="form-label">End Date</label>
-                        <input type="date" id="endDate" class="form-control">
+                        <input type="date" id="endDate" disabled name="endDate" [(ngModel)]="userPlan.endDate"
+                            class="form-control">
                         <label for="targetWeight" class="form-label">Target Weight</label>
                         <div class="input-group ">
-                            <input type="text" class="form-control"
-                                aria-label="eight" aria-describedby="basic-addon2">
-                            <span class="input-group-text">unit</span>
-                        </div>                        
-                        <label for="mealsPerDay" class="form-label">Meals Per Date</label>
+                            <input type="text" class="form-control" disabled name="targetWeight"
+                                [(ngModel)]="userDietaryInfo.targetWeight" aria-describedby="basic-addon2">
+                            <span class="input-group-text">kg</span>
+                        </div>
+                        <label for="mealsPerDay" class="form-label">Meals Per Day</label>
                         <div class="dropdown mb-2">
                             <button class="btn btn-outline-success w-100 border dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                meals
+                                data-bs-toggle="dropdown" disabled aria-expanded="false">
+                                {{userDietaryInfo.mealPlan}}
                             </button>
                             <ul class="dropdown-menu">
                                 <li><button class="dropdown-item" type="button">2 meals</button></li>
@@ -125,31 +153,36 @@
                                 <li><button class="dropdown-item" type="button">3 meals and 2 snacks</button></li>
                             </ul>
                         </div>
-                    </div> 
+                    </div>
                     <div class="d-flex justify-content-end pt-3 gap-2">
-                        <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">New plan</button>
-                        <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</button>
+                        <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop" (click)="openModal('new')">New plan</button>
+                        <button class="btn btn-success1 px-4 my-3 rounded-3" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop" (click)="openModal('ongoing diet')">Edit</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
     <!-- Modal -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="staticBackdropLabel">Are you Sure?</h1>
-            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
-          </div>
-          <div class="modal-body">
-            this is the description for the action
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-success1">Yes</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
+    <div class="modal fade" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Are you Sure?</h1>
+                    <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+                </div>
+                <div class="modal-body">
+                    <p *ngIf="formName == 'new'">Your current plan will be deleted and there's no going back.</p>
+                    <p *ngIf="formName != 'new'">Do you need edit your {{formName}} details.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success1" (click)="toggleDisable()"
+                        data-bs-dismiss="modal">Yes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 </div>

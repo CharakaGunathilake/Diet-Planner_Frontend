@@ -6,6 +6,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { MealsComponent } from '../dashboard-components/meals/meals.component';
 import { ProgressComponent } from '../dashboard-components/progress/progress.component';
 import { Modal } from 'bootstrap';
+import { HomeComponent } from '../home/home.component';
 
 
 @Component({
@@ -27,15 +28,10 @@ export class DashboardComponent {
     const modal = new Modal(this.logoutModal.nativeElement);
     modal.show();
   }
-  
-  private reloadPage() {
-    window.location.reload();
-  }
 
   logOut(){
     localStorage.setItem("rememberedLogin",JSON.stringify(false));
     localStorage.setItem("isLoggedIn",JSON.stringify(false));
-    this.reloadPage();
     this.router.navigate(["/"]);
   }
 }

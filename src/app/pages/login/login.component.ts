@@ -48,7 +48,11 @@ export class LoginComponent implements OnInit {
   private async validLogin(login: any): Promise<boolean> {
     try {
       const data = await this.http.get<boolean>(`${this.baseUrl}login/get-login-byId/${login.userName}/${login.password}`).toPromise();
-      return data!;
+      if (data != null) {
+        localStorage.setItem("currentUserId", JSON.stringify(data));
+        return true;
+      }
+      return false;
     } catch (error) {
       return false;
     }

@@ -14,3 +14,8 @@
     --bs-btn-disabled-bg: #16E011;
     --bs-btn-disabled-border-color: #16E011;
 }
+
+.disabled-form input {
+    pointer-events: none;
+    background-color: #f5f5f5;
+}

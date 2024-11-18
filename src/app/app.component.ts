@@ -28,7 +28,6 @@ export class AppComponent implements OnInit {
   }
   handleAction() {
     this.openModal();
-    // this.router.navigate(["/dashboard/home"]);
   }
   
   private openModal() {
