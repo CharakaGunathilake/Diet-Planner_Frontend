@@ -25,11 +25,22 @@ export class AppComponent implements OnInit {
     // localStorage.setItem("rememberedLogin",JSON.stringify(false));
     // localStorage.setItem("isLoggedIn",JSON.stringify(false));
     // localStorage.setItem("isSelecting",JSON.stringify(false));
+    this.isCurrentUser();
   }
   handleAction() {
     this.openModal();
   }
   
+  private isCurrentUser(){
+    const currentUserId = localStorage.getItem("currentUserId");
+    if(currentUserId != null){
+      console.log(currentUserId);
+      localStorage.setItem("isLoggedIn",JSON.stringify(true));
+    }else{
+      localStorage.setItem("isLoggedIn",JSON.stringify(false));
+    }
+  }
+
   private openModal() {
     const modal = new Modal(this.loginModal.nativeElement);
     modal.show();

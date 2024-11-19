@@ -12,17 +12,8 @@
                         <input type="text" id="personLastName" [disabled]="!editablePersonal" name="lastName"
                             [(ngModel)]="userDetails.lastName" class="form-control">
                         <label for="personLastName" class="form-label">Gender</label>
-                        <div class="dropdown mb-2">
-                            <button class="btn btn-outline-success w-100 border dropdown-toggle"
-                                [disabled]="!editablePersonal" type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                {{userDetails.gender}}
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><button class="dropdown-item" type="button">Male</button></li>
-                                <li><button class="dropdown-item" type="button">Female</button></li>
-                            </ul>
-                        </div>
+                        <input type="text" id="personGender" disabled name="gender" [(ngModel)]="userDetails.gender"
+                            class="form-control">
                     </div>
                     <label for="personEmail" class="form-label">E-mail</label>
                     <input type="email" id="personEmail" [disabled]="!editablePersonal" name="email"
@@ -30,9 +21,8 @@
                     <div class="row d-flex justify-content-between gap-2">
                         <div class="col">
                             <label for="personDob" class="form-label">Date of birth</label>
-                            <input type="date" [disabled]="!editablePersonal" name="birthDay"
-                                [(ngModel)]="userDetails.birthDay" pattern="YYYY-MM-DD" id="personDob"
-                                class="form-control">
+                            <input type="text" disabled name="birthDay" [(ngModel)]="userDetails.birthDay"
+                                id="personDob" class="form-control">
                         </div>
                         <div class="col">
                             <label for="personAge" class="form-label">Age</label>
@@ -40,10 +30,13 @@
                                 class="form-control">
                         </div>
                     </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="btn btn-success1 px-4 my-3 rounded-3"
+                            (click)="openModal('personal')">{{btnText}}</button>
+                        <button class="btn btn-secondary px-4 my-3 rounded-3" *ngIf="editablePersonal"
+                            (click)="toggleDisable()">Cancel</button>
+                    </div>
                 </form>
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-success1 px-4 my-3 rounded-3" (click)="openModal('personal')">Edit</button>
-                </div>
             </div>
             <div class="pill mt-1 px-4">
                 <form [ngClass]="{ 'disabled-form': !editableAccount }">
@@ -82,7 +75,7 @@
                             <input type="text" class="form-control" disabled name="height"
                                 [(ngModel)]="userDietaryInfo.height" aria-label="height"
                                 aria-describedby="basic-addon2">
-                            <span class="input-group-text">cm</span>
+                            <span class="input-group-text cursor-pointer" (click)="changeUnitHeight()">{{unitHeight}}</span>
                         </div>
                         <label for="activityRate" class="form-label">Activity Rate</label>
                         <input type="text" id="activityRate" disabled name="activityRate"
@@ -97,7 +90,7 @@
                             <input type="text" class="form-control" disabled name="weight"
                                 [(ngModel)]="userDietaryInfo.weight" aria-label="weight"
                                 aria-describedby="basic-addon2">
-                            <span class="input-group-text">kg</span>
+                            <span class="input-group-text" (click)="changeUnitWeight()">{{unitWeight}}</span>
                         </div>
                         <label for="bmi" class="form-label">Bmi</label>
                         <input type="text" id="bmi" disabled name="bmi" [(ngModel)]="userDietaryInfo.bmi"

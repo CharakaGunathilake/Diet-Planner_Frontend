@@ -4,6 +4,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Modal } from 'bootstrap';
+import { createPopper } from '@popperjs/core';
 
 @Component({
   selector: 'app-profile',
@@ -26,13 +27,16 @@ export class ProfileComponent implements OnInit {
   protected userLogin: any = {};
   protected userPlan: any = {};
   protected userId: number = 0;
-  protected btnText: string = "";
+  protected btnText: string = "Edit";
+  protected unitHeight: String = "cm";
+  protected unitWeight: String = "kg";
 
   constructor(private http: HttpClient, private router: Router) { }
 
   toggleDisable() {
     if (this.formName == "personal") {
       this.editablePersonal = !this.editablePersonal;
+      this.btnText = this.btnText == "Save" ? "Edit" : "Save";
     } else if (this.formName == "account") {
       this.editableAccount = !this.editableAccount;
     } else if (this.formName == "diet") {
@@ -54,21 +58,34 @@ export class ProfileComponent implements OnInit {
   
   ngOnInit(): void {
     this.userId = JSON.parse(localStorage.getItem("currentUserId") || "0");
-    this.getUserDetails(2);
+    this.getUserDetails(this.userId);
   }
 
   openModal(name: String) {
     if (this.formName != name) {
       this.formName = name;
       const modal = new Modal(this.staticBackdrop.nativeElement);
-      this.btnText = "save";
       modal.show();
     }else{
+      this.toggleDisable();
       this.updateDetails(name);
     }
   }
   updateDetails(name: String) {
-    throw new Error('Method not implemented.');
+    if (name == "personal") {
+      this.http.put(`${this.baseUrl}user/update-user`, this.userDetails).subscribe((data) => {
+        if (data) {
+          alert("updated successfully");
+        }
+      })
+    }
+    else if (name == "account") {
+      this.http.put(`${this.baseUrl}login/update-login`, this.userLogin).subscribe((data) => {
+        if (data) {
+          alert("updated successfully");
+        }
+      })
+    }
   }
 
   private getUserDetails(userId: number): void {
@@ -79,5 +96,25 @@ export class ProfileComponent implements OnInit {
       this.userLogin = data.login;
       this.userPlan = data.dietPlan;
     })
+  }
+
+  changeUnitHeight(){
+    if(this.unitHeight == "cm"){
+      this.unitHeight = "ft";
+      this.userDietaryInfo.height /= 30; 
+    }else{
+      this.unitHeight = "cm";
+      this.userDietaryInfo.height *= 30;
+    }
+  }
+  changeUnitWeight(){
+    if(this.unitWeight == "kg"){
+      this.unitWeight = "lb";
+      this.userDietaryInfo.weight *= 2.205;
+      this.userDietaryInfo.weight.toFixed(2);
+    }else{
+      this.unitWeight = "kg";
+      this.userDietaryInfo.weight /= 2.205;
+    }
   }
 }
