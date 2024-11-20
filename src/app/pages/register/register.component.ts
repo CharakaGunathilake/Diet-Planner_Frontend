@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from "@angular/forms";
 import { NgIf } from '@angular/common';
@@ -15,6 +15,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 export class RegisterComponent implements OnInit {
   private baseUrl: String = "http://localhost:8080/";
   private header = { "Content-Type": "application/json" };
+  @Output() action = new EventEmitter<void>();
+
   registerForm: FormGroup;
   constructor(private router: Router, private http: HttpClient, private fb: FormBuilder) {
     this.registerForm = this.fb.group({
@@ -64,23 +66,31 @@ export class RegisterComponent implements OnInit {
 
   notMatching() {
     if (this.passwordObj.passwordNew != "" || this.passwordObj.passwordConfirm != "") {
-      if (this.passwordObj.passwordNew === this.passwordObj.passwordConfirm) {
+      if (this.passwordObj.passwordNew == this.passwordObj.passwordConfirm) {
+        console.log(this.passwordObj.passwordConfirm);
+        //User123@
         this.login.password = this.passwordObj.passwordConfirm;
         return true;
-      } return false;
-    } return false;
+      } else { return false; }
+    } { return false; }
   }
 
   protected async registerUser(): Promise<void> {
-    if (this.checkUserName(this.login.username) && this.checkEmail(this.userObj.email)) {
-      if (this.notMatching()) {
+    this.uniqueUsername = await this.checkUserName(this.login.username);
+    this.uniqueEmail = await this.checkEmail(this.userObj.email)
+    console.log(this.uniqueEmail + " and " + this.uniqueUsername);
+    if (this.uniqueUsername && this.uniqueEmail) {
+      if (!this.notMatching()) {
         this.invalidPassword = true;
       } else {
-        await this.saveUser();
         localStorage.setItem("currentUser", `${this.login.username}`);
         localStorage.setItem("isloggedIn", JSON.stringify(true));
+        await this.saveUser();
+        this.router.navigate(["/verifyemail"])
       }
-    }alert("User already exists");
+    } else {
+      alert("User already exists");
+    }
   }
   async saveUser() {
     this.userObj.gender = this.data.at(0).gender;
@@ -100,22 +110,30 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  private checkUserName(username: String): boolean {
-    this.http.get<boolean>(this.baseUrl + "login/check-username/" + `${username}`).subscribe((data) => {
-      this.uniqueUsername = !data;
+  private async checkUserName(username: String): Promise<boolean> {
+    try {
+      const data = await this.http.get<boolean>(this.baseUrl + "login/check-username/" + `${username}`).toPromise()
+      // this.uniqueUsername = !data;
       return !data;
-    })
-    return false;
+    } catch (error) {
+      return false;
+    }
   }
 
-  private checkEmail(email: String): boolean {
-    this.http.get<boolean>(`${this.baseUrl}user/verify-email/${email}`).subscribe((data) => {
-      this.uniqueEmail = !data;
+
+  private async checkEmail(email: String): Promise<boolean> {
+    try {
+      const data = await this.http.get<boolean>(`${this.baseUrl}user/verify-email/${email}`).toPromise()
+      // this.uniqueEmail = !data;
       return !data;
-    })
-    return false;
+    } catch (error) {
+      return false;
+    }
   }
 
+  emitEvent() {
+    this.action.emit();
+  }
 }
 
 

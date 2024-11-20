@@ -16,15 +16,13 @@ export class HeaderComponent implements OnInit {
   @Output() action = new EventEmitter<void>();
 
   private rememberedLogin: boolean = false;
-  private isLoggedIn: boolean = JSON.parse(localStorage.getItem("isLoggedIn") || "false");
+  private isLoggedIn: boolean = false;
   public selectedHeader = 'Home';
-  protected dashboard: String = "Log In";
-  constructor(private router: Router) {}
+  protected dashboard: String = "";
+  constructor(private router: Router) { }
   ngOnInit(): void {
-    this.dashboard = "Log In";
+    // this.dashboard = "Log In";
     this.rememberedLogin = JSON.parse(localStorage.getItem("rememberedLogin") || "false");
-    console.log(this.rememberedLogin);
-    console.log(this.isLoggedIn);
     this.alreadyLoggedIn();
   }
 
@@ -40,6 +38,7 @@ export class HeaderComponent implements OnInit {
       } break;
       case 3: {
         this.changeSelectedHeader('About');
+        this.updateLoginStatus();
       } break;
     }
   }
@@ -49,6 +48,7 @@ export class HeaderComponent implements OnInit {
   }
 
   protected navigateToDashboard() {
+    this.alreadyLoggedIn();
     if (this.rememberedLogin || this.isLoggedIn) {
       this.router.navigate(["/dashboard/home"]);
     } else {
@@ -66,6 +66,9 @@ export class HeaderComponent implements OnInit {
   }
 
   private alreadyLoggedIn() {
+    this.rememberedLogin = JSON.parse(localStorage.getItem("rememberedLogin") || "false");
+    this.isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn") || "false");
+    console.log(this.rememberedLogin + " this " + this.isLoggedIn);
     this.isLoggedIn === true || this.rememberedLogin === true ? this.dashboard = "Dashboard" : this.dashboard = "Log In";
   }
 }

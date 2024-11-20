@@ -1,6 +1,6 @@
-<div class="container p-0 position-relative z-30 pe-2">
-    <div class="row mb-1 d-flex justify-content-between gap-2">
-        <div class="col-12 col-lg-5 p-0 px-1 ">
+<div class="container p-0 position-relative z-30 pe-2 mt-1">
+    <div class="row  d-flex justify-content-between gap-2">
+        <div class="col-12 col-lg-5 p-0 d-flex px-1 ">
             <div class="pill col-12 col-lg-7 centered rounded-4">
                 <table>
                     <tr>
@@ -8,24 +8,24 @@
                             <img height="40px" width="40px" src="/icons/avatar.png" alt="avatar">
                         </td>
                         <td>
-                            <p class="m-0 fw-bold">Welcome, {{userDetails.firstName}}</p>
-                            <small class="m-0 fs-6 text-dark-emphasis">Your personal dashboard</small>
+                            <p class="m-0 fw-bold">Welcome, {{userLogin.username}}</p>
+                            <small class="text-dark-emphasis">Your personal dashboard</small>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
-        <div class="col-12 col-lg-6 p-0">
-            <div class="d-flex gap-2 px-1">
-                <div class="pill col centered p-0 rounded-4">
+        <div class="col-12 col-lg-6 p-0 pe-lg-2">
+            <div class="d-flex flex-column flex-lg-row gap-2 px-1">
+                <div class="pill col-12 col-lg-6 centered p-0 rounded-4 pb-1">
                     <span class="fw-bold m-0">Next meal</span>
-                    <span class="fs-6 fw-bold text-dark-emphasis m-0">Lunch</span>
-                    <span class="fs-6 fw-bold text-dark-emphasis">12:00 pm</span>
+                    <small class="text-dark-emphasis m-0">{{meals[completedMeals]}}</small>
+                    <small class="text-dark-emphasis">{{mealTimes[completedMeals]}}</small>
                 </div>
-                <div class="pill col centered p-0 rounded-4">
+                <div class="pill col-12 col-lg-6 centered p-0 rounded-4 pb-1">
                     <span class="fw-bold">Goal</span>
-                    <span class="fs-6 fw-bold text-dark-emphasis">{{userDietaryInfo.goal}}</span>
-                    <span class="fs-6 fw-bold text-dark-emphasis">{{userDietaryInfo.dietPreference}}</span>
+                    <small class="text-dark-emphasis">{{userDietaryInfo.goal}}</small>
+                    <small class="text-dark-emphasis">{{userDietaryInfo.dietPreference}}</small>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                             <tr>
                                 <td class="p-2 cardColor">
                                     <p class="m-0 fw-bold ">No Streak</p>
-                                    <p class="m-0 fw-bold text-dark-emphasis">Keep it up to build your streak!</p>
+                                    <small class="m-0 text-dark-emphasis">Keep it up to build your streak!</small>
                                 </td>
                             </tr>
                             <tr>
@@ -85,12 +85,12 @@
                         <div class="d-flex justify-content-between mx-3">
                             <div class="">
                                 <button class="btn centered rounded-circle p-3" (click)="updateWaterIntake(true)">
-                                    <img height="20" width="20" src="/icons/plus.png" alt="plus">
+                                    <img height="20px" width="20px" src="/icons/plus.png" alt="plus">
                                 </button>
                             </div>
                             <div class="centered my-2 mx-3 w-50">
                                 <p class="m-0">Glasses {{waterIntake}}/{{userDietaryInfo.waterIntake}}</p>
-                                <p class="m-0">Stay Hydrated!</p>
+                                <small class="m-0">Stay Hydrated!</small>
                             </div>
                             <div class="">
                                 <button class="btn centered rounded-circle p-3" (click)="updateWaterIntake(false)">
@@ -107,7 +107,8 @@
                 <p class="py-2 m-0 text-center">Meals for the day</p>
                 <div class="d-flex flex-column flex-lg-row my-3 text-center">
                     <a class="col-12 col-lg cardColor centered py-3 px-1 decorationNone"
-                        *ngFor="let meal of meals let i = index" [ngClass]="{'completed': completed == 'meals[i]'}" (click)="showDetails(i,meal)">
+                        *ngFor="let meal of meals let i = index" [ngClass]="{'completed': completed == 'meals[i]'}"
+                        (click)="showDetails(i,meal)">
                         <img src="/icons/breakfast.png" width="55em" class="img-fluid" alt="breakfast">
                         <p class="mt-4 m-0">{{meals[i]}}</p>
                     </a>
@@ -135,13 +136,30 @@
 <div class="modal fade" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable no-scrollbar modal-md">
-        <div class="modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;">
+        <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
+            *ngIf="isStarter">
+            <div class="modal-header">
+                <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">Welcome to SmartPlate
+                </h1>
+            </div>
+            <div class="modal-body">
+                <h1>Hi!{{userDetails.firstName}},</h1>
+                <p class="text-justify">Your personalized diet plan is ready to guide you toward your
+                    health goals. Let’s get started with selecting your meals for the day!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" (click)="setMeal()">Start</button>
+            </div>
+        </div>
+        <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
+            *ngIf="!isStarter">
             <div class="modal-header">
                 <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">{{title}}</h1>
             </div>
             <div class="modal-body">
+
                 <div class="row m-0">
-                    <h6 class="fw-bold bg-green-100 py-2 px-4 rounded-2 text-center">{{mealObj.mealName}}</h6>
+                    <h6 class="fw-bold bg-green-100 py-2 px-4 rounded-2 text-center">{{mealObj.recipeName}}</h6>
                     <div class="cols centered py-3">
                         <img class="img-fluid" src="{{mealObj.imageLink}}" alt="">
                     </div>
@@ -151,7 +169,7 @@
                         </p>
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Meal time</h6>
                         <p class="text-justify cardColor p-2">
-                            {{mealTimes[currentIndex-1]}}
+                            {{mealObj.mealTime}}
                         </p>
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Cuisines</h6>
                         <p class="text-justify cardColor p-2">
@@ -164,7 +182,7 @@
                             </p>
                         </div>
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Instructions</h6>
-                        <p class="text-justify cardColor p-2" [innerHTML]="mealObj.instructions">
+                        <p class="text-justify cardColor p-2 " [innerHTML]="mealObj.instructions">
                     </div>
                     <div class="m-3 d-flex justify-end">
                         <small class="fst-italic me-3">Credits: {{mealObj.credits}}</small>
@@ -174,14 +192,13 @@
             <div class="modal-footer">
                 <div class="d-flex justify-end me-3 gap-2" *ngIf="isSelecting">
                     <button type="button" class="btn btn-success" (click)="setMeal()">{{btnText}}</button>
-                    <button type="submit" class="btn btn-secondary" (click)="getSomethingElse(currentIndex-1)"><i
+                    <button type="submit" class="btn btn-secondary" (click)="getSomething(currentIndex)"><i
                             class="bi bi-arrow-clockwise"></i> Try Something
                         Else</button>
                 </div>
                 <div class="d-flex justify-end me-3 gap-2" *ngIf="!isSelecting">
                     <button type="button" class="btn btn-success" (click)="completeMeal()">Completed</button>
-                    <button type="button" class="btn btn-outline-danger" 
-                        data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

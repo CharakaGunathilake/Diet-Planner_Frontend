@@ -1,3 +1,4 @@
+import { NgIf } from '@angular/common';
 import { Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { Modal } from 'bootstrap';
@@ -7,15 +8,14 @@ let texts = document.getElementById("btnText") as HTMLElement;
 @Component({
   selector: 'app-dashboardnav',
   standalone: true,
-  imports: [RouterLink,RouterOutlet],
+  imports: [RouterLink,RouterOutlet, NgIf],
   templateUrl: './dashboardnav.component.html',
   styleUrl: './dashboardnav.component.css'
 })
 export class DashboardnavComponent implements OnInit{
   @Output() action = new EventEmitter<void>();
-
-  progress: String = '';
   screenWidth: number = window.innerWidth;
+  smallSideBar: boolean = false;
   ngOnInit() {
     this.onResize();
     initFlowbite();
@@ -38,13 +38,9 @@ export class DashboardnavComponent implements OnInit{
 
   handleResponsiveLogic(): void {
     if (this.screenWidth < 768) {
-      console.log('Screen width is less than 768px, applying mobile layout');
-      // Execute logic for mobile screens
-      this.progress = '';
+      this.smallSideBar = true;
     } else {
-      console.log('Screen width is 768px or greater, applying desktop layout');
-      // Execute logic for desktop screens
-      this.progress = 'Progress';
+      this.smallSideBar = false;
     }
   }
 }

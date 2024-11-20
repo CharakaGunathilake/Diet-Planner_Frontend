@@ -49,8 +49,9 @@ export class ProfileComponent implements OnInit {
     }
   }
   deleteCurrentPlan() {
-    this.http.delete(`${this.baseUrl}dietary-info/delete-dietary_info-byId/${this.userId}`).subscribe((data) => {
+    this.http.delete(`${this.baseUrl}user/delete-user-byId/${this.userId}`).subscribe((data) => {
       if (data) {
+        localStorage.clear();
         alert("plan deleted successfully");
       }
     })

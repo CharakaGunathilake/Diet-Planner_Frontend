@@ -18,7 +18,6 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router, private http: HttpClient) { }
   ngOnInit(): void {
     const currentUser = localStorage.getItem("currentUser");
-    console.log(currentUser);
   }
   protected login = {
     userName: "",
@@ -27,16 +26,23 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    this.checkLogin();
+    if (form.valid) {
+      this.checkLogin();
+    }
   }
 
   protected async checkLogin() {
-    if (await this.validLogin(this.login)) {
-      localStorage.setItem("rememberedLogin", this.login.rememberMe === true ? JSON.stringify(true) : JSON.stringify(false))
-      localStorage.setItem("isLoggedIn", JSON.stringify(true))
-      this.router.navigate(["/dashboard"]);
-      this.reloadPage();
-    } else {
+    try {
+      if (await this.validLogin(this.login)) {
+        localStorage.setItem("rememberedLogin", this.login.rememberMe === true ? JSON.stringify(true) : JSON.stringify(false))
+        localStorage.setItem("isLoggedIn", JSON.stringify(true))
+        // this.reloadPage();
+        console.log(localStorage.getItem("currentUserId"));
+        
+      } else {
+        alert("Invalid username or password");
+      }
+    } catch (error) {
       alert("Invalid username or password");
     }
   }

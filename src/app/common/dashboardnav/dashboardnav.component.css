@@ -14,3 +14,8 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.centered:hover{
+    background-color: white;
+    cursor: pointer;
+}

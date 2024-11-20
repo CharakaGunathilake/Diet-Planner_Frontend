@@ -7,10 +7,11 @@ import { HomeComponent } from './pages/home/home.component';
 import { initFlowbite } from 'flowbite';
 import { LoginComponent } from './pages/login/login.component';
 import { Modal } from 'bootstrap';
+import { NgIf } from '@angular/common';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,HeaderComponent,HeroComponent,DashboardComponent,LoginComponent],
+  imports: [RouterOutlet, HeaderComponent, HeroComponent, DashboardComponent, LoginComponent, NgIf],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 
@@ -18,26 +19,39 @@ import { Modal } from 'bootstrap';
 export class AppComponent implements OnInit {
   @ViewChild('staticBackdrop') loginModal!: ElementRef;
   title = 'SmartPlate';
+  disable: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
   ngOnInit(): void {
     initFlowbite();
+    // localStorage.clear();
     // localStorage.setItem("rememberedLogin",JSON.stringify(false));
     // localStorage.setItem("isLoggedIn",JSON.stringify(false));
     // localStorage.setItem("isSelecting",JSON.stringify(false));
+    // localStorage.setItem("isStarter",JSON.stringify(true));
     this.isCurrentUser();
   }
-  handleAction() {
-    this.openModal();
+
+  handleAction(index: number) {
+    switch (index) {
+      case 1:
+        this.openModal();
+        break;
+      case 2:
+        this.disable = true;
+        break;
+    }
   }
-  
-  private isCurrentUser(){
+
+  private isCurrentUser() {
     const currentUserId = localStorage.getItem("currentUserId");
-    if(currentUserId != null){
-      console.log(currentUserId);
-      localStorage.setItem("isLoggedIn",JSON.stringify(true));
-    }else{
-      localStorage.setItem("isLoggedIn",JSON.stringify(false));
+    const rememberedLogin = localStorage.getItem("rememberedLogin")
+    if (currentUserId != null && rememberedLogin) {
+      localStorage.setItem("isLoggedIn", JSON.stringify(true));
+    } else {
+      localStorage.setItem("isLoggedIn", JSON.stringify(false));
+      localStorage.setItem("isSelecting", JSON.stringify(true));
+      localStorage.setItem("isStarter", JSON.stringify(true));
     }
   }
 
@@ -46,4 +60,4 @@ export class AppComponent implements OnInit {
     modal.show();
   }
 }
-  
+

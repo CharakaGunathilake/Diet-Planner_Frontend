@@ -3,12 +3,14 @@
         <h4 class="text-center p-3">Give your plan a name and description (Optional)</h4>
         <div class="col-10 py-2">
             <div class="mb-3">
-                <label for="exampleFormControlInput1"  class="form-label">Name</label>
-                <input type="text" class="form-control" [(ngModel)]="dietPlan.name" id="exampleFormControlInput1" placeholder="ex- My Dietplan">
+                <label for="exampleFormControlInput1" class="form-label">Name</label>
+                <input type="text" class="form-control" [(ngModel)]="dietPlan.name" id="exampleFormControlInput1"
+                    placeholder="ex- My Dietplan">
             </div>
             <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label">Description</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" [(ngModel)]="dietPlan.description" rows="3"></textarea>
+                <textarea class="form-control" id="exampleFormControlTextarea1" [(ngModel)]="dietPlan.description"
+                    rows="3"></textarea>
             </div>
         </div>
         <button type="button" class="btn btn-success1" (click)="register()">Register</button>
@@ -17,9 +19,14 @@
 <div class="modal fade w-100" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-5">
+        <div class="modal-content rounded-4">
             <div class="modal-body">
-                <app-register [data]="userResponseObject"></app-register>
+                <div class="" *ngIf="showRegister">
+                    <app-register [data]="userResponseObject" (action)="handleAction()"></app-register>
+                </div>
+                <div class="" *ngIf="!showRegister">
+                    <app-login></app-login>
+                </div>
             </div>
         </div>
     </div>

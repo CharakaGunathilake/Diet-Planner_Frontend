@@ -32,6 +32,7 @@ export class DashboardComponent {
   logOut(){
     localStorage.setItem("rememberedLogin",JSON.stringify(false));
     localStorage.setItem("isLoggedIn",JSON.stringify(false));
+    localStorage.clear();
     this.router.navigate(["/"]);
   }
 }

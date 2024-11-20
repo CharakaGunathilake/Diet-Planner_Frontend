@@ -1,8 +1,8 @@
 <div class="p-2 overflow-hidden no-scrollbar::-webkit-scrollbar bg-green-50">
   <div class="row">
-    <div class="col mb-5">
+    <div class="col mb-2"  *ngIf="!disable">
       <div class="fixed-top p-2 z-10">
-        <app-header (action)="handleAction()"></app-header>
+        <app-header (action)="handleAction(1)"></app-header>
       </div>
     </div>
     <div class="mt-2">
@@ -14,9 +14,9 @@
 </div>
 <div class="modal fade w-100" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
   aria-labelledby="staticBackdropLabel1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-xl">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content rounded-5 p-0">
-      <div class="modal-body">
+      <div class="modal-body pill m-2 ">
         <button type="button" class="btn-close position-absolute end-0 mx-3" data-bs-dismiss="modal"
           aria-label="Close"></button>
         <app-login></app-login>

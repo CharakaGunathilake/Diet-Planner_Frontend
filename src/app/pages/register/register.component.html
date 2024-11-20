@@ -74,9 +74,7 @@
                 class="form-control rounded-4 validate" id="floatingPassword1" placeholder="ConfirmPassword" required
                 #passwordConfirm="ngModel">
             <label for="floatingPassword1">Confirm Password</label>
-            <div *ngIf="passwordConfirm.invalid && passwordConfirm.touched">
-                <small class="text-danger m-0 ms-2" *ngIf="invalidPassword">Passwords do not match.</small>
-            </div>
+            <small class="text-danger m-0 ms-2" *ngIf="invalidPassword">Passwords do not match.</small>
         </div>
         <div class="form-check my-2 ms-2">
             <input class="form-check-input" type="checkbox" name="privacyPolicy" [(ngModel)]="expression"
@@ -101,7 +99,7 @@
             </div>
         </div>
         <div class="text-center my-2">
-            <small class="text-dark-emphasis">Already have an account? <a routerLink="/login">Login</a></small>
+            <small class="text-dark-emphasis" (click)="emitEvent()">Already have an account? <a class="cursor-pointer underline to-blue-600">Login</a></small>
         </div>
     </form>
 </div>

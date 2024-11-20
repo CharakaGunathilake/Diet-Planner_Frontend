@@ -5,11 +5,12 @@ import { NgIf } from '@angular/common';
 import { RegisterComponent } from '../../pages/register/register.component';
 import { FormsModule } from '@angular/forms';
 import { Modal } from 'bootstrap';
+import { LoginComponent } from '../../pages/login/login.component';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [NgIf, RegisterComponent, FormsModule],
+  imports: [NgIf, RegisterComponent, FormsModule,LoginComponent],
   templateUrl: './details.component.html',
   styleUrl: './details.component.css'
 })
@@ -22,7 +23,7 @@ export class DetailsComponent implements OnInit {
     name: "",
     description:"",
   }
-  protected showRegister = false;
+  protected showRegister = true;
   constructor(private router: Router) {
     this.data = this.router.getCurrentNavigation()?.extras.state?.["userResponseObjectACTUAL"]
   }
@@ -64,6 +65,10 @@ export class DetailsComponent implements OnInit {
     } else {
       return null;
     }
+  }
+
+  handleAction(){
+    this.showRegister = !this.showRegister;
   }
 }
 
