@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { DietaryinfoserviceService } from '../../dietaryinfoservice.service';
+import { DietaryinfoserviceService } from '../../model/dietaryinfoservice.service';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { RegisterComponent } from '../../pages/register/register.component';

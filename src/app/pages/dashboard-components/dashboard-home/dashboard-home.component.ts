@@ -17,14 +17,14 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   @ViewChild('staticBackdrop') mealModal!: ElementRef
   private baseUrl: String = "http://localhost:8080/";
   private spoonacularBaseUrl: String = "https://api.spoonacular.com/recipes/";
-  private apiKey = "a4cc5dffa90c4777b649112d67c3cecc";
+  private apiKey = "eb486ae5bf864471b925f2f6d660ba1d";
   protected chart1: any;
   protected chart2: any;
   protected image = new Image();
   private userId: number = 0;
   protected userDetails: any = {};
   protected userDietaryInfo: any = {};
-  protected meals: string[] = ["Breakfast", "Lunch", "Dinner"];
+  protected meals: string[] = [""];
   protected mealTimes: string[] = [];
   protected currentIndex = 0;
   protected title: String = "";
@@ -37,21 +37,26 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   protected waterIntake = localStorage.getItem("waterIntake") ? JSON.parse(localStorage.getItem("waterIntake") || "0") : 0;
   protected isStarter = true;
   protected completedMeals = 0;
-  private date = new Date();
   protected userLogin: any = {};
 
   constructor(private http: HttpClient) { }
   ngAfterViewInit(): void {
-    // localStorage.setItem("waterIntake", JSON.stringify(0));
-    // localStorage.setItem("currentIndex", JSON.stringify(0));
     if (this.isStarter) {
       this.openModal("Welcome to SmartPlate!");
       this.btnText = "Start!";
+      // this.getRandomMeal("Breakfast");
     }
     this.getSelectedMeals();
     localStorage.setItem("completedMeals", JSON.stringify(0));
   }
 
+  getDate() {
+    const date = new Date();
+    const newdate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+
+    return newdate;
+
+  }
   mealObj = {
     mealId: 0,
     recipeName: "",
@@ -64,14 +69,20 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     calories: 0,
     mealTime: "",
     credits: "",
-    date: this.date
+    date: this.getDate(),
+    mealDate: this.getDate()
   }
 
   //---------------------------- This component's code starts here --------------------------------------//
   ngOnInit(): void {
-    this.userId = JSON.parse(localStorage.getItem("currentUserId") || "0")
+    if (!this.isSelecting) {
+      this.isSelecting = true;
+      this.isStarter = false;
+      this.userId = JSON.parse(localStorage.getItem("currentUserId") || "0")
+      this.getUserDetails(this.userId);
+    } else {
+    }
     this.image.src = 'icons/water.png';
-    this.getUserDetails(this.userId);
     this.chart1 = new Chart("progressChart", weeklyCalorieChart());
   }
 
@@ -107,8 +118,6 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   }
 
   private getUserDetails(userId: number): void {
-    console.log(userId);
-
     this.http.get<any>(`${this.baseUrl}user/get-userWithPlan-byId/${userId}`).subscribe((data: any) => {
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
@@ -120,7 +129,6 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   // ---------------------------- This component's code ends here  -------------------------------------// 
 
   showDetails(key: number, mealName: String) {
-    console.log(key + " + " + mealName);
     this.title = mealName;
     this.currentIndex = key;
     this.getThisMeal(this.selectedMeals.at(key).mealId);
@@ -148,29 +156,36 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getSomething(index: number) {
-    this.mealObj.mealName = this.meals[index];
-    this.mealObj.mealTime = this.mealTimes[index];
-    this.title = `Choose your ${this.meals[index]}`;
-    this.getRandomMeal(this.mealObj.mealName);
+  getSomething(mealName: string) {
+    this.getRandomMeal(mealName);
   }
 
-  protected async setMeal() {
-    if (this.isStarter) {
-      this.isStarter = false;
-      this.btnText = "Next"
-      this.getSomething(this.currentIndex);
-      this.isSelecting = JSON.parse(localStorage.getItem("isSelecting") || "false");
+  handleClick() {
+    this.isStarter = false;
+    this.btnText = "Next"
+    this.isSelecting = JSON.parse(localStorage.getItem("isSelecting") || "false");
+    this.getRandomMeal(this.meals[this.currentIndex]);
+    this.title = `Choose your ${this.meals[this.currentIndex]}`;
+    this.mealObj.mealName = this.meals.at(this.currentIndex)!;
+    this.mealObj.mealTime = this.mealTimes.at(this.currentIndex)!;
+  }
+
+  protected async setMealRecipe() {
+    this.mealObj.mealName = this.meals.at(this.currentIndex)!;
+    this.mealObj.mealTime = this.mealTimes.at(this.currentIndex)!;
+    this.title = `Choose your ${this.meals[this.currentIndex]}`;
+    console.log(this.mealObj);
+    this.selectedMeals.push(this.mealObj);
+    if (this.currentIndex != this.meals.length - 1) {
+      this.currentIndex++
+      this.getSomething(this.meals[this.currentIndex]);
+      console.log(this.selectedMeals);
     } else {
-      if (this.currentIndex != this.meals.length) {
-        this.getSomething(this.currentIndex++);
-        this.selectedMeals.push(this.mealObj);
-        console.log(this.selectedMeals);
-      } else {
-        localStorage.setItem("isSelecting", JSON.stringify(this.isSelecting = false))
-        await this.addMeal(this.selectedMeals)
-        this.getSelectedMeals();
-      }
+      this.btnText = "Done!";
+      localStorage.setItem("isSelecting", JSON.stringify(this.isSelecting = false))
+      localStorage.setItem("currentDate", JSON.stringify(this.getDate()))
+      await this.addMeal(this.selectedMeals)
+      this.getSelectedMeals();
     }
   }
 
@@ -187,6 +202,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       this.mealObj.instructions = data.instructions
       this.mealObj.calories = data.nutrition.nutrients[0].amount,
         this.mealObj.credits = data.creditsText
+      this.mealObj.mealTime = this.mealTimes[this.currentIndex];
     });
   }
 
@@ -200,30 +216,35 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
 
   // brings meals from the database
   private getSelectedMeals() {
-    this.http.get<any>(`${this.baseUrl}meal-info/getAllMealInfo-byUserId/${this.userId}`).subscribe((data) => {
+    const date = this.getDate();
+    this.http.get<any>(`${this.baseUrl}meal-info/getAllMealInfo-byUserId/${this.userId}/${date}`).subscribe((data) => {
       this.selectedMeals = data;
       console.log(data);
-
     });
   }
 
   // gets a random meal from source
   private getRandomMeal(mealName: string) {
-    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&include-tags=${mealName.toLowerCase()}`).subscribe((data) => {
+    console.log(mealName);
+    const intolerances = this.userDietaryInfo.intolerances != 'none' ? this.userDietaryInfo.intolerances : "";
+    const cuisines = this.userDietaryInfo.specificCuisine != 'none' ? this.userDietaryInfo.specificCuisine : "";
+    const preferences = `${intolerances.toLowerCase()},${cuisines.toLowerCase()}`;
+    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&include-tags=${mealName.toLowerCase()},${intolerances}&exclude-tags=${cuisines}`).subscribe((data) => {
       data = data.recipes[0];
       this.mealObj = {
         mealId: data.id,
-        mealName: this.mealObj.mealName,
+        mealName: "mealName",
         recipeName: data.title,
         description: data.summary,
         ingredients: getSplittedString(1, data.extendedIngredients),
         cuisines: getSplittedString(2, data.cuisines),
         imageLink: data.image,
         instructions: data.instructions,
-        mealTime: this.mealObj.mealTime,
+        mealTime: this.mealTimes[this.currentIndex],
         calories: 0,
         credits: data.creditsText,
-        date: new Date()
+        date: this.getDate(),
+        mealDate: this.getDate()
       }
     });
   }

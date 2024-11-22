@@ -36,8 +36,7 @@ export class LoginComponent implements OnInit {
       if (await this.validLogin(this.login)) {
         localStorage.setItem("rememberedLogin", this.login.rememberMe === true ? JSON.stringify(true) : JSON.stringify(false))
         localStorage.setItem("isLoggedIn", JSON.stringify(true))
-        // this.reloadPage();
-        console.log(localStorage.getItem("currentUserId"));
+        this.router.navigate(["/dashboard/home"]);
         
       } else {
         alert("Invalid username or password");

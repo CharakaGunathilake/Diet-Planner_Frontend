@@ -3,11 +3,13 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Modal } from 'bootstrap';
 import { Chart, registerables } from 'chart.js';
+import { MealInfoserviceService } from '../../../model/meal-infoservice.service';
+import { FormsModule } from '@angular/forms';
 Chart.register(...registerables);
 @Component({
   selector: 'app-meals',
   standalone: true,
-  imports: [HttpClientModule,NgFor],
+  imports: [HttpClientModule, NgFor, FormsModule],
   templateUrl: './meals.component.html',
   styleUrl: './meals.component.css'
 })
@@ -16,17 +18,20 @@ export class MealsComponent implements OnInit {
   public chart: any;
 
   ngOnInit() {
+    this.userId = localStorage.getItem("currentUserId") ? JSON.parse(localStorage.getItem("currentUserId") || "0") : 0;
     this.getUserDetails(this.userId);
     this.chart = new Chart("nutritionChart", createNutritionChart());
   }
-  // // 
+
+
   private baseUrl: String = "http://localhost:8080/";
   private spoonacularBaseUrl: String = "https://api.spoonacular.com/recipes/";
   private apiKey = "a4cc5dffa90c4777b649112d67c3cecc";
   protected image = new Image();
-  private userId: number = 2;
+  private userId: number = 0;
   protected userDetails: any = {};
   protected userDietaryInfo: any = {};
+  protected userMealInfo: any = [];
   protected meals: string[] = ["Breakfast", "Lunch", "Dinner"];
   protected mealTimes: string[] = [];
   protected currentIndex = 0;
@@ -36,11 +41,12 @@ export class MealsComponent implements OnInit {
   protected selectedMeals: any[] = [];
   protected completed: String = "";
   protected completedMeals = 0;
-  private date = new Date();
+  private date = localStorage.getItem("currentDate") || new Date();
+  protected searchQuery = "";
 
   constructor(private http: HttpClient) { }
   ngAfterViewInit(): void {
-    this.getSelectedMeals();
+    // this.getSelectedMeals();
     localStorage.setItem("completedMeals", JSON.stringify(0));
   }
 
@@ -60,7 +66,7 @@ export class MealsComponent implements OnInit {
   }
 
   //---------------------------- This component's code starts here --------------------------------------//
-   openModal(title: String) {
+  openModal(title: String) {
     this.title = title;
     const modal = new Modal(this.mealModal.nativeElement);
     modal.show();
@@ -73,16 +79,21 @@ export class MealsComponent implements OnInit {
     this.http.get<any>(`${this.baseUrl}user/get-userWithPlan-byId/${userId}`).subscribe((data: any) => {
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
+      this.userMealInfo = data.mealInfo;
+      console.log(data);
       this.setMealTimes(data.dietaryInfo.mealPlan);
+      this.getSelectedMeals();
     })
   }
+
+
+
   // ---------------------------- This component's code ends here  -------------------------------------// 
 
   showDetails(key: number, mealName: String) {
-    console.log(key + " + " + mealName);
     this.title = mealName;
     this.currentIndex = key;
-    this.getThisMeal(this.selectedMeals.at(key).mealId, key);
+    this.getThisMeal(this.selectedMeals.at(key).mealId, this.meals[0]);
     this.openModal(`${mealName} Details`);
   }
 
@@ -120,30 +131,53 @@ export class MealsComponent implements OnInit {
     if (this.currentIndex != this.meals.length) {
       this.btnText = "Next"
       this.selectedMeals.push(this.mealObj.mealId == 0 ? this.selectedMeals.at(this.currentIndex) : this.mealObj);
-      console.log(this.selectedMeals);
-
       this.getSomething(this.currentIndex++);
     } else {
       localStorage.setItem("isSelecting", JSON.stringify(false))
       this.isSelecting = false;
       await this.addMeal(this.selectedMeals)
-      this.getSelectedMeals();
+      // this.getSelectedMeals();
     }
+  }
+
+  handleSearch(){
+    this.http.get<any>(`${this.spoonacularBaseUrl}search?apiKey=${this.apiKey}&query=${this.searchQuery}`).subscribe((data) => {
+      // this.searchResults = data.results;
+      console.log(data.results);  
+    });
   }
 
   // ------------------------------- http requests are here ------------------------- //
   // gets infomation from spoonacular about the meal selected by the user
-  getThisMeal(mealId: number, key: number): any {
+  protected getThisMeal(mealId: number, mealTime: string): any {
     this.http.get<any>(`${this.spoonacularBaseUrl}${mealId}/information?apiKey=${this.apiKey}&includeNutrition=true`).subscribe((data) => {
-      this.mealObj.mealId = data.id
-      this.mealObj.recipeName = data.title
-      this.mealObj.description = data.summary
-      this.mealObj.ingredients = getSplittedString(1, data.extendedIngredients)
-      this.mealObj.cuisines = getSplittedString(2, data.cuisines)
-      this.mealObj.imageLink = data.image
-      this.mealObj.instructions = data.instructions
-      this.mealObj.calories = data.nutrition.nutrients[0].amount,
-        this.mealObj.credits = data.creditsText
+      this.selectedMeals.push(new MealInfoserviceService(
+        data.id,
+        data.title,
+        data.summary,
+        getSplittedString(1, data.extendedIngredients),
+        getSplittedString(2, data.cuisines),
+        data.image,
+        data.instructions,
+        data.nutrition.nutrients[0].amount,
+        mealTime,
+        data.creditsText,
+        this.userId,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount,
+        data.nutrition.nutrients[0].amount
+      ));
     });
   }
 
@@ -157,10 +191,11 @@ export class MealsComponent implements OnInit {
 
   // brings meals from the database
   private getSelectedMeals() {
-    this.http.get<any>(`${this.baseUrl}meal-info/getAllMealInfo-byUserId/${this.userId}`).subscribe((data) => {
+    const date = this.date
+    // this.http.get<any>(`${this.baseUrl}meal-info/getAllMealInfo-byUserId/${this.userId}/${date}`).subscribe((data) => {
+    this.http.get<any>(`${this.baseUrl}meal-info/getAll`).subscribe((data) => {
       this.selectedMeals = data;
       console.log(data);
-
     });
   }
 

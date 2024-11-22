@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
     // localStorage.clear();
     // localStorage.setItem("rememberedLogin",JSON.stringify(false));
     // localStorage.setItem("isLoggedIn",JSON.stringify(false));
-    // localStorage.setItem("isSelecting",JSON.stringify(false));
+    // localStorage.setItem("isSelecting",JSON.stringify(true));
     // localStorage.setItem("isStarter",JSON.stringify(true));
     this.isCurrentUser();
   }

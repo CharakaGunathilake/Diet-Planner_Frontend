@@ -44,7 +44,7 @@
                             </tr>
                             <tr>
                                 <td class="px-2 cardColor">
-                                    <p class="m-0 fw-bold">Weight</p>
+                                    <p class="m-0 fw-bold">Target Weight</p>
                                     <div class="progress p-0 h-100 progressBody rounded-5">
                                         <div class="progressWeight rounded-5 progress-bar-striped progress-bar-animated"
                                             role="progressbar" aria-valuemin="0" aria-valuemax="100"
@@ -105,12 +105,12 @@
         <div class="col-12 col-lg-6 p-0 px-1">
             <div class="pill">
                 <p class="py-2 m-0 text-center">Meals for the day</p>
-                <div class="d-flex flex-column flex-lg-row my-3 text-center">
+                <div class="d-flex flex-column flex-lg-row my-3 text-center h-40">
                     <a class="col-12 col-lg cardColor centered py-3 px-1 decorationNone"
                         *ngFor="let meal of meals let i = index" [ngClass]="{'completed': completed == 'meals[i]'}"
                         (click)="showDetails(i,meal)">
-                        <img src="/icons/breakfast.png" width="55em" class="img-fluid" alt="breakfast">
-                        <p class="mt-4 m-0">{{meals[i]}}</p>
+                        <img src="selectedMeals[i].imageLink" class="img-fluid p-2" alt="breakfast">
+                        <p class="mb-1 m-0">{{meals[i]}}</p>
                     </a>
                 </div>
                 <a routerLink="../meals" class="mb-0 decorationNone d-inline-flex"><span>Change your meals</span> <i
@@ -128,9 +128,30 @@
             </div>
         </div>
         <div class="col-6 p-0 px-1">
-            <div class="pill"></div>
+            <div class="pill">
+                <div id="carouselExample" class="carousel slide">
+                    <div class="carousel-inner">
+                      <div class="carousel-item active">
+                        <img src="..." class="d-block w-100" alt="...">
+                      </div>
+                      <div class="carousel-item">
+                        <img src="..." class="d-block w-100" alt="...">
+                      </div>
+                      <div class="carousel-item">
+                        <img src="..." class="d-block w-100" alt="...">
+                      </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+            </div>
         </div>
-
     </div>
 </div>
 <div class="modal fade" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -148,11 +169,25 @@
                     health goals. Let’s get started with selecting your meals for the day!</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" (click)="setMeal()">Start</button>
+                <button type="button" class="btn btn-success" (click)="handleClick()">Start</button>
             </div>
         </div>
         <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
-            *ngIf="!isStarter">
+            *ngIf="!isSelecting && !isStarter">
+            <div class="modal-header">
+                <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">Welcome to SmartPlate
+                </h1>
+            </div>
+            <div class="modal-body">
+                <h1>Interesting choices!</h1>
+                <p class="text-justify">Meals are ready for you!. Let’s get started!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Let's go!</button>
+            </div>
+        </div>
+        <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
+            *ngIf="!isStarter && isSelecting">
             <div class="modal-header">
                 <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">{{title}}</h1>
             </div>
@@ -191,12 +226,12 @@
             </div>
             <div class="modal-footer">
                 <div class="d-flex justify-end me-3 gap-2" *ngIf="isSelecting">
-                    <button type="button" class="btn btn-success" (click)="setMeal()">{{btnText}}</button>
-                    <button type="submit" class="btn btn-secondary" (click)="getSomething(currentIndex)"><i
+                    <button type="button" class="btn btn-success" (click)="setMealRecipe()">{{btnText}}</button>
+                    <button type="submit" class="btn btn-secondary" (click)="getSomething(mealObj.mealName)"><i
                             class="bi bi-arrow-clockwise"></i> Try Something
                         Else</button>
                 </div>
-                <div class="d-flex justify-end me-3 gap-2" *ngIf="!isSelecting">
+                <div class="d-flex justify-end me-3 gap-2" *ngIf="isSelecting && !isStarter">
                     <button type="button" class="btn btn-success" (click)="completeMeal()">Completed</button>
                     <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
                 </div>

@@ -14,21 +14,31 @@
                         characters long and can only contain a-z, 0-9, ., _, -, &#64;</small>
                 </div>
             </div>
-        </form>
-        <div class="mb-3 text-center">
-            <small class="text-green-900 m-0 ms-2" *ngIf="seconds!=0">code not received? Resend in 0:{{seconds}}</small>
-        </div>
-        <div class="mb-3" *ngIf="show">
-                <label for="otpFormControlInput" class="form-label">OTP</label>
-                <input type="number" class="form-control" name="otp" #otp="ngModel" id="otpFormControlInput"
-                    [(ngModel)]="otp" required>
-                <div class="" *ngIf="otp.invalid && otp.touched">
-                    <small class="text-danger m-0 ms-2" *ngIf="otp.errors?.['required'] ">OTP is required.</small>
-                    <small class="text-danger m-0 ms-2" *ngIf="invalidOTP">Invalid OTP</small>
-
-                </div>
+            <div class="centered">
+                <button type="submit" class="btn btn-success1" (click)="handleSubmit()"
+                    [disabled]="verifyEmailForm.invalid" *ngIf="!show">{{btnText}}</button>
             </div>
-        <button type="submit" class="btn btn-success1" (click)="handleSubmit()" [disabled]="verifyEmailForm.invalid || clicked">{{btnText}}</button>
+        </form>
+        <div class="mb-3 text-center" *ngIf="seconds!=0">
+            <small class="text-green-900 m-0 ms-2">code not received? Resend in 0:{{seconds}}</small>
+        </div>
+        <div class="centered">
+            <button class="btn btn-outline-success text-green-900" *ngIf="show" [disabled]="clicked"
+                (click)="handleSubmit()">resend</button>
+        </div>
+        <form class="mb-3" #otpForm="ngForm" *ngIf="show">
+            <label for="otpFormControlInput" class="form-label">OTP</label>
+            <input type="number" class="form-control" name="otp" #otp="ngModel" id="otpFormControlInput"
+                [(ngModel)]="login.otp" required>
+                <small class="text-danger m-0 ms-2" *ngIf="invalidOTP">Invalid OTP</small>
+            <div class="" *ngIf="otp.invalid && otp.touched">
+                <small class="text-danger m-0 ms-2" *ngIf="otp.errors?.['required']">OTP is required.</small>
+            </div>
+            <div class="centered mt-2">
+                <button type="submit" class="btn btn-success1" (click)="confirmOTP()"
+                    [disabled]="otpForm.invalid">Verify</button>
+            </div>
+        </form>
     </div>
 </div>
 <div class="modal fade w-100" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="true" tabindex="-1"

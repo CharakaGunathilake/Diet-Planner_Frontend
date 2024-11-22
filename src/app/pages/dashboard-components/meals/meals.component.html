@@ -4,11 +4,11 @@
             <div class="row mb-1">
                 <div class="pill flex-column">
                     <p class="fw-bold px-3 w-100 m-0">Search your Favourites</p>
-                    <div class="input-group p-0 px-3">
-                        <input type="text" class="form-control" placeholder="Enter Ingredient or Meal name"
-                            aria-label="Recipient's username" aria-describedby="button-addon2">
-                        <button class="btn btn-success1 rounded-end-5" type="button" id="button-addon2">Search</button>
-                    </div>
+                    <form ngSubmit="search()" #searchForm="ngForm" class="input-group p-0 px-3">
+                        <input type="text" class="form-control" name="search" [(ngModel)]="searchQuery" placeholder="Enter Ingredient or Meal name"
+                            aria-label="Recipient's username" aria-describedby="button-addon2" required>
+                        <button class="btn btn-success1 rounded-end-5" type="button" id="button-addon2" [disabled]="!searchForm.valid">Search</button>
+                    </form>
                 </div>
             </div>
             <div class="row p-0 mb-1">
@@ -62,10 +62,9 @@
         </div>
         <div class="col-12 col-lg me-2 m-1">
             <div class="row mb-1">
-
                 <div class="pill flex-column">
-                    <div class="col-12 card rounded-4 mb-2 border-0 border-bottom" 
-                    *ngFor="let meal of meals let i = index" (click)="showDetails(i,meal)">
+                    <div class="col-12 card rounded-4 mb-2 border-0 border-bottom"
+                        *ngFor="let meal of selectedMeals let i = index" (click)="showDetails(i,meal)">
                         <div class="card-body d-flex py-1 align-items-center">
                             <div class="rounded-circle border p-2 col-2">
                                 <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
@@ -107,7 +106,7 @@
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;">
         <div class="modal-header">
-            <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">{{title}}</h1>
+            <h1 class="modal-title text-center w-100 fs-5" id="staticBackdropLabel">{{title}}</h1>
         </div>
         <div class="modal-body">
             <div class="row m-0">
@@ -142,7 +141,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <div class="d-flex justify-end me-3 gap-2" >
+            <div class="d-flex justify-end me-3 gap-2">
                 <button type="button" class="btn btn-success" (click)="setMeal()">{{btnText}}</button>
                 <button type="submit" class="btn btn-secondary" (click)="getSomething(currentIndex-1)"><i
                         class="bi bi-arrow-clockwise"></i> Try Something
