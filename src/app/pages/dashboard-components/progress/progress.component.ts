@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { BmicalculatorComponent } from '../../../common/bmicalculator/bmicalculator.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 Chart.register(...registerables);
 @Component({
   selector: 'app-progress',
   standalone: true,
-  imports: [BmicalculatorComponent],
+  imports: [BmicalculatorComponent, HttpClientModule],
   templateUrl: './progress.component.html',
   styleUrl: './progress.component.css'
 })
@@ -15,12 +16,35 @@ export class ProgressComponent implements OnInit {
   waterChart: any;
   caloricChart: any;
   mealHourChart: any;
+  stressChart: any;
+  private userId: number = 0;
+  protected userDetails: any = {};
+  protected userDietaryInfo: any = {};
+  private baseUrl: String = "http://localhost:8080/";
+  protected userPlan: any;
+
   ngOnInit(): void {
+    this.userId = localStorage.getItem("currentUserId") ? JSON.parse(localStorage.getItem("currentUserId") || "0") : 0;
     this.createWeightChart();
     this.createWaterChart();
     this.createCaloricChart();
     this.createMealHourChart();
+    this.createStressChart();
+    this.getUserDetails(this.userId);
   }
+
+  constructor(private http: HttpClient) { }
+
+
+  private getUserDetails(userId: number): void {
+    
+    this.http.get<any>(`${this.baseUrl}user/get-userWithPlan-byId/${userId}`).subscribe((data: any) => {
+      this.userDetails = data.user;
+      this.userDietaryInfo = data.dietaryInfo;
+      this.userPlan = data.dietPlan;
+    })
+  }
+
   createWeightChart(): void {
     const labels = ["Week 1", "Week 2", "Week 3", "Week 4"];
     const data = {
@@ -38,6 +62,24 @@ export class ProgressComponent implements OnInit {
       data: data,
     };
     this.weightChart = new Chart("weightChart", config);
+  }
+  createStressChart(): void {
+    const labels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: 'Stress',
+        data: [26, 39, 60, 21],
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      }]
+    };
+    const config: any = {
+      type: 'line',
+      data: data,
+    };
+    this.stressChart = new Chart("stressChart", config);
   }
   createWaterChart(): void {
     const labels = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

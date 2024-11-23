@@ -17,7 +17,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   @ViewChild('staticBackdrop') mealModal!: ElementRef
   private baseUrl: String = "http://localhost:8080/";
   private spoonacularBaseUrl: String = "https://api.spoonacular.com/recipes/";
-  private apiKey = "eb486ae5bf864471b925f2f6d660ba1d";
+  private apiKey = "4e17416fa2b3412897f061c2d9df1cbd";
   protected chart1: any;
   protected chart2: any;
   protected image = new Image();
@@ -35,16 +35,17 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   protected weightPercentage = 1;
   protected caloriePercentage = 1;
   protected waterIntake = localStorage.getItem("waterIntake") ? JSON.parse(localStorage.getItem("waterIntake") || "0") : 0;
-  protected isStarter = true;
+  protected isStarter = localStorage.getItem("isStarter") ? JSON.parse(localStorage.getItem("isStarter") || "false") : false;
   protected completedMeals = 0;
   protected userLogin: any = {};
+  protected bool = false;
 
   constructor(private http: HttpClient) { }
   ngAfterViewInit(): void {
     if (this.isStarter) {
       this.openModal("Welcome to SmartPlate!");
       this.btnText = "Start!";
-      // this.getRandomMeal("Breakfast");
+      this.isStarter = false;
     }
     this.getSelectedMeals();
     localStorage.setItem("completedMeals", JSON.stringify(0));
@@ -53,7 +54,12 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   getDate() {
     const date = new Date();
     const newdate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-
+    // if (newdate != localStorage.getItem("currentDate")) {
+    //   this.waterIntake;
+    //   localStorage.setItem("waterIntake", JSON.stringify(0));
+    //   this.isSelecting = JSON.parse(localStorage.getItem("isSelecting") || "false");
+    //   this.getUserDetails(this.userId);
+    // }
     return newdate;
 
   }
@@ -76,12 +82,10 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   //---------------------------- This component's code starts here --------------------------------------//
   ngOnInit(): void {
     if (!this.isSelecting) {
-      this.isSelecting = true;
-      this.isStarter = false;
+      this.bool = true;
       this.userId = JSON.parse(localStorage.getItem("currentUserId") || "0")
       this.getUserDetails(this.userId);
-    } else {
-    }
+    } 
     this.image.src = 'icons/water.png';
     this.chart1 = new Chart("progressChart", weeklyCalorieChart());
   }
@@ -93,16 +97,15 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   }
 
   protected completeMeal() {
-    this.caloriePercentage = (this.mealObj.calories / this.userDietaryInfo.dcr) * 100;
+    this.caloriePercentage = (356 / this.userDietaryInfo.dcr) * 100;
     const obj = this.getThisMeal(this.selectedMeals.at(this.currentIndex).mealId);
-    this.setMealCompleted(true, this.userId, obj.mealId, new Date());
+    this.setMealCompleted(true, this.userId, obj.mealId, this.getDate());
     this.completed = this.meals[this.currentIndex];
   }
 
   // set the selected meal as completed
-  setMealCompleted(status: boolean, userId: number, mealId: number, dateCompleted: Date) {
+  setMealCompleted(status: boolean, userId: number, mealId: number, dateCompleted: string) {
     this.http.get<any>(`${this.baseUrl}meal-Info/setMealCompleted/${status}/${userId}/${mealId}/${dateCompleted}`).subscribe((data) => {
-      console.log(data);
     });
   }
 
@@ -119,10 +122,14 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
 
   private getUserDetails(userId: number): void {
     this.http.get<any>(`${this.baseUrl}user/get-userWithPlan-byId/${userId}`).subscribe((data: any) => {
+      console.log(data);      
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
       this.userLogin = data.login;
       this.setMealTimes(data.dietaryInfo.mealPlan);
+      this.getSelectedMeals();
+      console.log(this.selectedMeals);
+      
       this.chart2 = new Chart("waterChart", dailyWaterIntakerChart(this.image, this.waterIntake, this.userDietaryInfo.waterIntake));
     })
   }
@@ -173,7 +180,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   protected async setMealRecipe() {
     this.mealObj.mealName = this.meals.at(this.currentIndex)!;
     this.mealObj.mealTime = this.mealTimes.at(this.currentIndex)!;
-    this.title = `Choose your ${this.meals[this.currentIndex]}`;
+    this.title = `Choose your ${this.meals[this.currentIndex + 1]}`;
     console.log(this.mealObj);
     this.selectedMeals.push(this.mealObj);
     if (this.currentIndex != this.meals.length - 1) {
@@ -185,6 +192,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       localStorage.setItem("isSelecting", JSON.stringify(this.isSelecting = false))
       localStorage.setItem("currentDate", JSON.stringify(this.getDate()))
       await this.addMeal(this.selectedMeals)
+      this.selectedMeals = [];
       this.getSelectedMeals();
     }
   }
@@ -201,7 +209,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       this.mealObj.imageLink = data.image
       this.mealObj.instructions = data.instructions
       this.mealObj.calories = data.nutrition.nutrients[0].amount,
-        this.mealObj.credits = data.creditsText
+      this.mealObj.credits = data.creditsText
       this.mealObj.mealTime = this.mealTimes[this.currentIndex];
     });
   }
@@ -217,15 +225,16 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   // brings meals from the database
   private getSelectedMeals() {
     const date = this.getDate();
-    this.http.get<any>(`${this.baseUrl}meal-info/getAllMealInfo-byUserId/${this.userId}/${date}`).subscribe((data) => {
-      this.selectedMeals = data;
-      console.log(data);
+    this.http.get<any[]>(`${this.baseUrl}meal-info/getAllMealInfo-byUserId/${this.userId}/${date}`).subscribe((data) => {
+      data.forEach(meal => {
+        this.getThisMeal(meal.mealId);
+        this.selectedMeals = data;          
+      })
     });
   }
 
   // gets a random meal from source
   private getRandomMeal(mealName: string) {
-    console.log(mealName);
     const intolerances = this.userDietaryInfo.intolerances != 'none' ? this.userDietaryInfo.intolerances : "";
     const cuisines = this.userDietaryInfo.specificCuisine != 'none' ? this.userDietaryInfo.specificCuisine : "";
     const preferences = `${intolerances.toLowerCase()},${cuisines.toLowerCase()}`;
@@ -233,7 +242,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       data = data.recipes[0];
       this.mealObj = {
         mealId: data.id,
-        mealName: "mealName",
+        mealName: mealName,
         recipeName: data.title,
         description: data.summary,
         ingredients: getSplittedString(1, data.extendedIngredients),
@@ -388,4 +397,8 @@ function dailyWaterIntakerChart(image: any, current: number, target: number): an
   return config;
 }
 
+
+function reloadPage() {
+  window.location.reload();
+}
 

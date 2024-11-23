@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { BmicalculatorComponent } from '../../common/bmicalculator/bmicalculator.component';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { DetailsComponent } from '../../common/details/details.component';
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [NgIf, NgFor, BmicalculatorComponent, DetailsComponent, FormsModule, HttpClientModule],
+  imports: [NgIf, NgFor, BmicalculatorComponent, DetailsComponent, FormsModule, HttpClientModule, NgStyle, NgClass],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css',
 })
@@ -23,8 +23,7 @@ export class ModalComponent implements AfterViewInit {
   constructor(private router: Router, private http: HttpClient) {
     this.getQuiz();
   }
-
-
+  
   private async getQuiz() {
     this.http.get<any[]>(`${this.baseUrl}quiz/getAll`).subscribe((data) => {
       this.quizObjectList = data;
@@ -48,12 +47,13 @@ export class ModalComponent implements AfterViewInit {
   public userResponseObjectACTUAL: any = [];
   protected response: any = null;
   private multipleChoice: any = [];
-  private questionType: string = "";
+  protected questionType: string = "";
   protected color: string = "secondary";
   protected min: any = "";
   protected max: any = "";
   protected warn: boolean = false;
-
+  private selectedItems: Set<number> = new Set<number>();
+  
   changeUnit() {
     if (this.unit === "cm") {
       this.unit = "ft";
@@ -87,13 +87,26 @@ export class ModalComponent implements AfterViewInit {
     }
   }
 
+  toggleSelection(itemId: number) {
+    if (this.selectedItems.has(itemId)) {
+      this.selectedItems.delete(itemId);
+    } else {
+      this.selectedItems.add(itemId);
+    }
+  }
+
+  isSelected(itemId: number): boolean {
+    return this.selectedItems.has(itemId);
+  }
+
   protected handleClick(response: any): void {
     this.response = response;
     this.catchByType();
   }
 
-  catchResponse(response: any) {
+  protected catchResponse(response: any) {
     this.multipleChoice.push(response);
+
   }
 
   protected catchByType() {
@@ -117,16 +130,17 @@ export class ModalComponent implements AfterViewInit {
         this.nextQuestion();
       } else if (this.questionType === "MULTIPLE") {
         this.catchResponse(this.response);
-      } 
+      }
     }
   }
 
   protected nextQuestion(): void {
+    this.selectedItems = new Set<number>();
     if (this.questionType === "MULTIPLE") {
       this.multipleChoice.length === 0 ? this.multipleChoice.push("none") : this.multipleChoice;
       this.userResponseObjectACTUAL.push(this.multipleChoice);
       this.multipleChoice = [];
-    }else if (this.questionType === "CALCULATION") {
+    } else if (this.questionType === "CALCULATION") {
       this.userResponseObjectACTUAL.push(localStorage.getItem("BMI"));
       console.log(localStorage.getItem("BMI"))
       localStorage.removeItem("BMI");

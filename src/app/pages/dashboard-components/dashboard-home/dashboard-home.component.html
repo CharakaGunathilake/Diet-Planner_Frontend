@@ -107,9 +107,8 @@
                 <p class="py-2 m-0 text-center">Meals for the day</p>
                 <div class="d-flex flex-column flex-lg-row my-3 text-center h-40">
                     <a class="col-12 col-lg cardColor centered py-3 px-1 decorationNone"
-                        *ngFor="let meal of meals let i = index" [ngClass]="{'completed': completed == 'meals[i]'}"
-                        (click)="showDetails(i,meal)">
-                        <img src="selectedMeals[i].imageLink" class="img-fluid p-2" alt="breakfast">
+                        *ngFor="let meal of meals let i = index" (click)="showDetails(i,meal)">
+                        <img src="{{selectedMeals[i].imageLink}}" class="img-fluid p-2" alt="breakfast">
                         <p class="mb-1 m-0">{{meals[i]}}</p>
                     </a>
                 </div>
@@ -128,28 +127,70 @@
             </div>
         </div>
         <div class="col-6 p-0 px-1">
-            <div class="pill">
+            <div class="pill centered" style=" height:20rem;">
                 <div id="carouselExample" class="carousel slide">
                     <div class="carousel-inner">
-                      <div class="carousel-item active">
-                        <img src="..." class="d-block w-100" alt="...">
-                      </div>
-                      <div class="carousel-item">
-                        <img src="..." class="d-block w-100" alt="...">
-                      </div>
-                      <div class="carousel-item">
-                        <img src="..." class="d-block w-100" alt="...">
-                      </div>
+                        <div class="carousel-item active">
+                            <a class="col-12 col-lg cardColor centered py-3 px-1 decorationNone">
+                                <!-- <img src="/icons/breakfast.png" class="img-fluid p-2" alt="breakfast"> -->
+                                <h5>General Distribution:</h5>
+                                <div class="d-flex">
+                                    <h6>Protein: </h6><small>
+                                        25–30% (e.g., lean meats, tofu, legumes).
+                                    </small>
+                                </div>
+                                <div class="d-flex">
+                                    <h6>Carbohydrates: </h6><small>
+                                        40–50% (e.g., whole grains, fruits, vegetables).
+                                    </small>
+                                </div>
+                                <div class="d-flex">
+                                    <h6>Fats: </h6><small>
+                                        20–30% (e.g., nuts, seeds, olive oil).
+                                    </small>
+                                </div>
+                                <h5 class="fw-bold">
+                                    Adjust these ratios based on goals:
+                                </h5>
+                                <p class="mb-1 m-0">
+                                    Higher Protein for muscle gain.
+                                    Lower Carbs for weight loss (e.g., ketogenic diet).
+                                </p>
+                            </a>
+                        </div>
+                        <div class="carousel-item">
+                            <h5 class="fw-bold">Suggestions:</h5>
+                            <p> Cardio: Start with brisk walking (30 minutes, 5 times a week) or cycling.
+                                Strength Training: Bodyweight exercises like squats, push-ups, and planks (2–3 times a
+                                week).
+                                Flexibility: Gentle yoga or stretching for 10–15 minutes daily.</p>
+                            <h5>Tips:</h5>
+                            <p> Set achievable goals (e.g., 3 workouts/week).
+                                Focus on consistency over intensity</p>
+                        </div>
+                        <div class="carousel-item">
+                            <h5 class="fw-bold">Mindful Movement:</h5>
+                            <p class="mb-1">Try Tai Chi or yoga with breathing exercises.</p>
+                            <h5 class="fw-bold">Low-Intensity Cardio:</h5>
+                            <p class="mb-1">Activities like hiking, dancing, or swimming.</p>
+                            <h5 class="fw-bold">Meditation:</h5>
+                            <p class="mb-1">End workouts with a 5–10 minute mindfulness session.</p>
+                            <h5 class="fw-bold">Tips:</h5>
+                            <p class="mb-1">Work out in nature for an added mental health boost.
+                                Choose activities you enjoy to stay consistent.</p>
+                        </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Previous</span>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Next</span>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
                     </button>
-                  </div>
+                </div>
             </div>
         </div>
     </div>
@@ -158,7 +199,7 @@
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable no-scrollbar modal-md">
         <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
-            *ngIf="isStarter">
+            *ngIf="isStarter && !bool">
             <div class="modal-header">
                 <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">Welcome to SmartPlate
                 </h1>
@@ -173,7 +214,7 @@
             </div>
         </div>
         <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
-            *ngIf="!isSelecting && !isStarter">
+            *ngIf="!isSelecting && !isStarter && !bool">
             <div class="modal-header">
                 <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">Welcome to SmartPlate
                 </h1>
@@ -187,7 +228,7 @@
             </div>
         </div>
         <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
-            *ngIf="!isStarter && isSelecting">
+            *ngIf="!isStarter">
             <div class="modal-header">
                 <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">{{title}}</h1>
             </div>
@@ -231,7 +272,7 @@
                             class="bi bi-arrow-clockwise"></i> Try Something
                         Else</button>
                 </div>
-                <div class="d-flex justify-end me-3 gap-2" *ngIf="isSelecting && !isStarter">
+                <div class="d-flex justify-end me-3 gap-2" *ngIf="bool">
                     <button type="button" class="btn btn-success" (click)="completeMeal()">Completed</button>
                     <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
                 </div>

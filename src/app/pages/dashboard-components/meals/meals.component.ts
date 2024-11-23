@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Modal } from 'bootstrap';
@@ -9,12 +9,12 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-meals',
   standalone: true,
-  imports: [HttpClientModule, NgFor, FormsModule],
+  imports: [HttpClientModule, NgFor, NgIf, FormsModule],
   templateUrl: './meals.component.html',
   styleUrl: './meals.component.css'
 })
 export class MealsComponent implements OnInit {
-  @ViewChild('staticBackdrop') mealModal!: ElementRef;
+  @ViewChild('staticBackdrop1') mealModal!: ElementRef;
   public chart: any;
 
   ngOnInit() {
@@ -26,7 +26,7 @@ export class MealsComponent implements OnInit {
 
   private baseUrl: String = "http://localhost:8080/";
   private spoonacularBaseUrl: String = "https://api.spoonacular.com/recipes/";
-  private apiKey = "a4cc5dffa90c4777b649112d67c3cecc";
+  private apiKey = "4e17416fa2b3412897f061c2d9df1cbd";
   protected image = new Image();
   private userId: number = 0;
   protected userDetails: any = {};
@@ -41,8 +41,10 @@ export class MealsComponent implements OnInit {
   protected selectedMeals: any[] = [];
   protected completed: String = "";
   protected completedMeals = 0;
-  private date = localStorage.getItem("currentDate") || new Date();
+  private date = JSON.parse(localStorage.getItem("currentDate") || "new Date()");
   protected searchQuery = "";
+  protected randomMeals: any = [];
+  protected suggestedMeals: any = [];
 
   constructor(private http: HttpClient) { }
   ngAfterViewInit(): void {
@@ -61,8 +63,7 @@ export class MealsComponent implements OnInit {
     instructions: "",
     calories: 0,
     mealTime: "",
-    credits: "",
-    date: this.date
+    credits: ""
   }
 
   //---------------------------- This component's code starts here --------------------------------------//
@@ -80,9 +81,11 @@ export class MealsComponent implements OnInit {
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
       this.userMealInfo = data.mealInfo;
-      console.log(data);
+      console.log(this.userDietaryInfo);
       this.setMealTimes(data.dietaryInfo.mealPlan);
       this.getSelectedMeals();
+      this.getRandomMeal("Breakfast");
+
     })
   }
 
@@ -122,7 +125,6 @@ export class MealsComponent implements OnInit {
     this.mealObj.mealName = this.meals[index];
     this.mealObj.mealTime = this.mealTimes[index];
     this.title = `Choose your ${this.meals[index]}`;
-    console.log(this.mealObj.mealName + " + " + this.mealObj.mealTime + " + " + index);
     this.getRandomMeal(this.mealObj.mealName);
   }
 
@@ -140,10 +142,9 @@ export class MealsComponent implements OnInit {
     }
   }
 
-  handleSearch(){
-    this.http.get<any>(`${this.spoonacularBaseUrl}search?apiKey=${this.apiKey}&query=${this.searchQuery}`).subscribe((data) => {
-      // this.searchResults = data.results;
-      console.log(data.results);  
+  handleSearch() {
+    this.http.get<any>(`${this.spoonacularBaseUrl}complexSearch?apiKey=${this.apiKey}&query=${this.searchQuery}&addRecipeNutrition=true`).subscribe((data) => {
+      this.randomMeals = data.results;
     });
   }
 
@@ -192,8 +193,8 @@ export class MealsComponent implements OnInit {
   // brings meals from the database
   private getSelectedMeals() {
     const date = this.date
-    // this.http.get<any>(`${this.baseUrl}meal-info/getAllMealInfo-byUserId/${this.userId}/${date}`).subscribe((data) => {
-    this.http.get<any>(`${this.baseUrl}meal-info/getAll`).subscribe((data) => {
+    this.http.get<any>(`${this.baseUrl}meal-info/getAllMealInfo-byUserId/${this.userId}/${date}`).subscribe((data) => {
+    // this.http.get<any>(`${this.baseUrl}meal-info/getAll`).subscribe((data) => {
       this.selectedMeals = data;
       console.log(data);
     });
@@ -201,18 +202,30 @@ export class MealsComponent implements OnInit {
 
   // gets a random meal from source
   private getRandomMeal(mealName: string) {
-    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&include-tags=${mealName.toLowerCase()}`).subscribe((data) => {
-      data = data.recipes[0];
-      this.mealObj.mealId = data.id
-      this.mealObj.recipeName = data.title
-      this.mealObj.description = data.summary
-      this.mealObj.ingredients = getSplittedString(1, data.extendedIngredients)
-      this.mealObj.cuisines = getSplittedString(2, data.cuisines)
-      this.mealObj.imageLink = data.image
-      this.mealObj.instructions = data.instructions
-      this.mealObj.calories = data.nutrition.nutrients[0].amount,
-        this.mealObj.credits = data.creditsText
-    });
+    const intolerances = this.userDietaryInfo.intolerances != 'none' ? this.userDietaryInfo.intolerances : "";
+    const cuisines = this.userDietaryInfo.specificCuisine != 'none' ? this.userDietaryInfo.specificCuisine : "";
+
+    this.http.get<any>(`${this.spoonacularBaseUrl}random?apiKey=${this.apiKey}&exclude-tags=${intolerances.toLowerCase}&number=2`).subscribe((data) => {
+      console.log(data);
+      data = data.recipes;
+      data.forEach((obj: any) => {
+        this.suggestedMeals.push(obj);
+        this.mealObj = {
+          mealId: obj.id,
+          mealName: mealName,
+          recipeName: obj.title,
+          description: obj.summary,
+          ingredients: getSplittedString(1, obj.extendedIngredients),
+          cuisines: getSplittedString(2, obj.cuisines),
+          imageLink: obj.image,
+          instructions: obj.instructions,
+          mealTime: this.mealTimes[this.currentIndex],
+          calories: 0,
+          credits: obj.creditsText,
+        }
+      });
+    })
+
   }
 }
 

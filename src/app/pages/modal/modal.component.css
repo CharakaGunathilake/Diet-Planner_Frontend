@@ -3,6 +3,7 @@
     cursor: pointer;
 }
 
+
 .btn-success1 {
     --bs-btn-color: #fff;
     --bs-btn-bg: #16E011;
@@ -24,3 +25,20 @@
     border: 2px solid;
     border-radius: 15px;
 }
+
+.selected {
+    background-color: #16E011;
+    color: white;
+    cursor: pointer;
+    border: 2px solid rgba(0, 0, 0, 0.672);
+  }
+
+  .not-selected {
+    background-color: rgb(255, 255, 255);
+    color: black;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    border: 2px solid #000000;
+  }
+  

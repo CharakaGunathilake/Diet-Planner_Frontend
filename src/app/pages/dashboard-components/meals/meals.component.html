@@ -1,14 +1,49 @@
-<div class="container-fluid p-0 position-relative z-30">
+<div class="container-fluid p-0 position-relative z-30 mt-1">
     <div class="row pe-3 pe-lg-0">
         <div class="col-12 col-lg-6 m-1">
             <div class="row mb-1">
                 <div class="pill flex-column">
                     <p class="fw-bold px-3 w-100 m-0">Search your Favourites</p>
-                    <form ngSubmit="search()" #searchForm="ngForm" class="input-group p-0 px-3">
-                        <input type="text" class="form-control" name="search" [(ngModel)]="searchQuery" placeholder="Enter Ingredient or Meal name"
-                            aria-label="Recipient's username" aria-describedby="button-addon2" required>
-                        <button class="btn btn-success1 rounded-end-5" type="button" id="button-addon2" [disabled]="!searchForm.valid">Search</button>
+                    <form #searchForm="ngForm" class="input-group p-0 px-3">
+                        <input type="text" class="form-control" name="search" [(ngModel)]="searchQuery"
+                            placeholder="Enter Ingredient or Meal name" aria-label="Recipient's username"
+                            aria-describedby="button-addon2" required>
+                        <button class="btn btn-success1 rounded-end-5" type="button" id="button-addon2"
+                            [disabled]="!searchForm.valid" (click)="handleSearch()">Search</button>
                     </form>
+                    <div class="row mb-1">
+                        <div class="centered flex-column " style="height: 17em;">
+                            <div class="container-fluid w-100 overflow-auto" *ngIf="randomMeals.length > 0" style="height: 17em;">
+                                <div class="col-12 card rounded-4 mb-2 border-0 border-bottom"
+                                    *ngFor="let meal of randomMeals let i = index" (click)="showDetails(i,meal)">
+                                    <div class="card-body d-flex py-1 align-items-center">
+                                        <div class="border p-2 col-2">
+                                            <img src="{{meal.image}}" class="img-fluid" alt="{{searchQuery}} png">
+                                        </div>
+                                        <div class="d-block px-4">
+                                            <p class="fw-bold m-0">{{meal.title}}</p>
+                                            <small class="text-dark-emphasis">
+                                                {{meal.description}}
+                                            </small>
+                                        </div>
+                                        <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px"
+                                                src="/icons/right-arrow.png" class="img-fluid"
+                                                alt="arrowhead png"></button>
+                                    </div>
+                                    <small class="end-0 bottom-0 me-5 position-absolute">{{
+                                        meal.nutrition.nutrients[0].amount}} kcal</small>
+                                </div>
+                            </div>
+                            <div class="centered">
+                                <div class="d-flex justify-center" *ngIf="randomMeals.length == 0 && searchQuery !=''">
+                                    <p class="fw-bold px-2 w-100 m-0 mb-2">No Results Found</p>
+                                </div>
+                                <div class="d-flex justify-center" *ngIf="randomMeals.length == 0 && searchQuery ==''">
+                                    <p class="fw-bold px-2 w-100 m-0 mb-2">Results will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row p-0 mb-1">
@@ -18,91 +53,59 @@
                     </div>
                 </div>
             </div>
-            <div class="row mb-1">
-                <div class="pill flex-column">
-                    <p class="fw-bold px-2 w-100 m-0 mb-2">Suggestions</p>
-                    <div class="col-12 card border-0 border-bottom mb-2 rounded-4" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                        <div class="card-body d-flex py-1 align-items-center ">
-                            <div class="rounded-circle border p-2 col-2">
-                                <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
-                            </div>
-                            <div class="d-block px-4">
-                                <p class="fw-bold m-0">Meal Name</p>
-                                <small class="text-dark-emphasis">
-                                    Ingredients, Ingredients, Ingredients, Ingredients
-                                </small>
-                                <button class="btn btn-outline-success d-flex align-items-center" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop2"><span class="m-0 me-2 text-da-emphasis">How to
-                                        Cook</span><img height="10px" width="10px" src="/icons/right-arrow.png"
-                                        alt="arrowhead png"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 card border-0 border-bottom mb-2 rounded-4" data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop">
-                        <div class="card-body d-flex py-1 align-items-center">
-                            <div class="rounded-circle border p-2 col-2">
-                                <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
-                            </div>
-                            <div class="d-block px-4">
-                                <p class="fw-bold m-0">Meal Name</p>
-                                <small class="text-dark-emphasis">
-                                    Ingredients, Ingredients, Ingredients, Ingredients
-                                </small>
-                                <button class="btn btn-outline-success d-flex align-items-center" data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop2"><span class="m-0 me-2 text-da-emphasis">How to
-                                        Cook</span><img height="10px" width="10px" src="/icons/right-arrow.png"
-                                        alt="arrowhead png"></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
         <div class="col-12 col-lg me-2 m-1">
             <div class="row mb-1">
                 <div class="pill flex-column">
                     <div class="col-12 card rounded-4 mb-2 border-0 border-bottom"
                         *ngFor="let meal of selectedMeals let i = index" (click)="showDetails(i,meal)">
-                        <div class="card-body d-flex py-1 align-items-center">
-                            <div class="rounded-circle border p-2 col-2">
-                                <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
+                        <div class="card-body d-flex py-1 align-items-center my-2">
+                            <div class="border p-2 col-2">
+                                <img src="{{meal.imageLink}}" class="img-fluid bi-image-fill" alt="breakfast png">
                             </div>
                             <div class="d-block px-4">
                                 <p class="fw-bold m-0">{{meals[i]}}</p>
                                 <small class="text-dark-emphasis">
-                                    This is some text within a card body.
+                                    {{mealTimes[i]}}
                                 </small>
                             </div>
                             <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px"
                                     src="/icons/right-arrow.png" class="img-fluid" alt="arrowhead png"></button>
                         </div>
-                        <small class="end-0 bottom-0 me-5 position-absolute">240kcal</small>
+                        <small class="end-0 bottom-0 me-5 position-absolute"></small>
                     </div>
                 </div>
             </div>
             <div class="row mb-1">
-                <div class="pill">
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus, cupiditate doloribus aut
-                    laborum
-                    quibusdam magnam itaque omnis harum blanditiis fuga ducimus consequatur sunt! Excepturi consequuntur
-                    ea
-                    nihil inventore fuga commodi.
-                    Reiciendis neque nostrum saepe soluta veritatis ducimus assumenda quae et, error repudiandae beatae
-                    sequi ipsa nam natus numquam. Modi eaque vel incidunt exercitationem odio. Quis quod dolor placeat
-                    at
-                    totam.
-                    Veniam hic facere eligendi natus ab aliquam illum ipsam. Perferendis, deleniti ex nihil odio ipsum
-                    iure
-                    voluptatem tempore accusantium adipisci quidem voluptas, suscipit atque a qui vel explicabo autem
-                    nobis.
+                <div class="pill flex-column">
+                    <p class="fw-bold px-2 w-100 m-0 mb-2">Suggestions</p>
+                    <div class="col-12 card border-0 border-bottom mb-2 rounded-4"
+                        *ngFor="let meal of suggestedMeals let i = index" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop">
+                        <div class="card-body d-flex py-1 align-items-center">
+                            <div class="rounded-circle border p-2 col-2">
+                                <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
+                            </div>
+                            <div class="d-block px-4">
+                                <p class="fw-bold m-0">{{suggestedMeals[i].title}}</p>
+                                <div class="overflow-auto" style="height: 5em;">
+                                    <small class="text-dark-emphasis" [innerHTML]="suggestedMeals[i].summary">
+                                    </small>
+                                </div>
+                                <button class="btn btn-outline-success d-flex align-items-center" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdrop2"><span class="m-0 me-2 text-da-emphasis">How to
+                                        Cook</span><img height="10px" width="10px" src="/icons/right-arrow.png"
+                                        alt="arrowhead png"></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade" #staticBackdrop1 data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;">
         <div class="modal-header">

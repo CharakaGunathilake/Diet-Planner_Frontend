@@ -5,8 +5,8 @@
                 <div class="col-12 col-lg-6 p-2 p-lg-1">
                     <div class="pill centered flex-row flex-lg-column gap-2 h-100">
                         <p class="m-0 fs-4 fw-bold">Duration</p>
-                        <p class="m-0">Start Date</p>
-                        <p class="m-0">End Date</p>
+                        <p class="m-0">{{userPlan.startDate}}</p>
+                        <p class="m-0">{{userPlan.endDate}}</p>
                     </div>
                 </div>
                 <div class="col-12 col-lg-6 p-2 p-lg-1">
@@ -27,41 +27,8 @@
             </div>
         </div>
         <div class="col-12 col-lg-6 p-1 pe-2">
-            <div class="pill py-3">
-                <p class="fw-bold px-2 w-100 m-0">BMI Calculator</p>
-                <table class="w-100 mt-2">
-                    <tr>
-                        <td class="px-2">
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Height"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <span class="input-group-text" id="basic-addon2">unit</span>
-                            </div>
-                        </td>
-                        <td class="px-2">
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Weight"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                <span class="input-group-text" id="basic-addon2">unit</span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="px-2 ">
-                            <div class="input-group mb-3 ">
-                                <input type="text" class="form-control" placeholder="BMI"
-                                    aria-label="Recipient's username" aria-describedby="basic-addon2" disabled readonly>
-                                <span class="input-group-text" id="basic-addon2">unit</span>
-                            </div>
-                        </td>
-                        <td>
-                        </td>
-                    </tr>
-                </table>
-                <div class="centered me-3 justify-content-end">
-                    <button
-                        class="btn btn-success1 px-3 rounded-5 border-2 border-black text-black fw-bold">Calculate</button>
-                </div>
+            <div class="pill centered" style=" height:17rem;">
+                <canvas id="stressChart">{{stressChart}}></canvas>                
             </div>
             <div class="mt-2">
                 <div class="pill centered" style=" height:17rem;">
