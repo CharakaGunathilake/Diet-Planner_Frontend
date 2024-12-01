@@ -81,8 +81,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
 
   //---------------------------- This component's code starts here --------------------------------------//
   ngOnInit(): void {
+
     if (!this.isSelecting) {
-      this.bool = true;
       this.userId = JSON.parse(localStorage.getItem("currentUserId") || "0")
       this.getUserDetails(this.userId);
     } 
@@ -128,7 +128,6 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       this.userLogin = data.login;
       this.setMealTimes(data.dietaryInfo.mealPlan);
       this.getSelectedMeals();
-      console.log(this.selectedMeals);
       
       this.chart2 = new Chart("waterChart", dailyWaterIntakerChart(this.image, this.waterIntake, this.userDietaryInfo.waterIntake));
     })
