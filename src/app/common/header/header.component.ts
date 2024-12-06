@@ -21,8 +21,7 @@ export class HeaderComponent implements OnInit {
   protected dashboard: String = "";
   constructor(private router: Router) { }
   ngOnInit(): void {
-    // this.dashboard = "Log In";
-    this.rememberedLogin = JSON.parse(localStorage.getItem("rememberedLogin") || "false");
+    this.dashboard = "Log In";
     this.alreadyLoggedIn();
   }
 
@@ -49,7 +48,7 @@ export class HeaderComponent implements OnInit {
 
   protected navigateToDashboard() {
     this.alreadyLoggedIn();
-    if (this.rememberedLogin || this.isLoggedIn) {
+    if (localStorage.getItem("token") != null || sessionStorage.getItem("token") != null) {
       this.router.navigate(["/dashboard/home"]);
     } else {
       this.emitEvent();

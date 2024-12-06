@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from "@angular/forms";
 import { NgIf } from '@angular/common';
@@ -12,7 +12,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   styleUrl: './register.component.css'
 })
 
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   private baseUrl: String = "http://localhost:8080/";
   private header = { "Content-Type": "application/json" };
   @Output() action = new EventEmitter<void>();
@@ -25,9 +25,6 @@ export class RegisterComponent implements OnInit {
   }
   @Input() data: any;
 
-  ngOnInit() {
-
-  }
   protected expression: boolean = false;
   protected responseObj: any = [];
   protected uniqueUsername = true;
@@ -76,9 +73,8 @@ export class RegisterComponent implements OnInit {
   }
 
   protected async registerUser(): Promise<void> {
-    this.uniqueUsername = await this.checkUserName(this.login.username);
-    this.uniqueEmail = await this.checkEmail(this.userObj.email)
-    console.log(this.uniqueEmail + " and " + this.uniqueUsername);
+    this.uniqueUsername = this.checkUserName(this.login.username);
+    this.uniqueEmail = this.checkEmail(this.userObj.email)
     if (this.uniqueUsername && this.uniqueEmail) {
       if (!this.notMatching()) {
         this.invalidPassword = true;
@@ -105,30 +101,26 @@ export class RegisterComponent implements OnInit {
       dietaryInfo: this.data[0],
       dietPlan: this.data[1]
     }
-    this.http.post(`${this.baseUrl}user/add-user-with-plan`, requestBody, { headers: this.header }).subscribe((data) => {
+    this.http.post(`${this.baseUrl}user/register-with-plan`, requestBody, { headers: this.header }).subscribe((data) => {
       console.log(data);
     });
   }
 
-  private async checkUserName(username: String): Promise<boolean> {
-    try {
-      const data = await this.http.get<boolean>(this.baseUrl + "login/check-username/" + `${username}`).toPromise()
-      // this.uniqueUsername = !data;
-      return !data;
-    } catch (error) {
-      return false;
-    }
+  private checkUserName(username: String): boolean {
+    let bool = false;
+    this.http.get<boolean>(this.baseUrl + `login/valid?username=${username}`).subscribe((data) => {
+      bool = !data;
+    });
+    return bool;
   }
 
 
-  private async checkEmail(email: String): Promise<boolean> {
-    try {
-      const data = await this.http.get<boolean>(`${this.baseUrl}user/verify-email/${email}`).toPromise()
-      // this.uniqueEmail = !data;
-      return !data;
-    } catch (error) {
-      return false;
-    }
+  private checkEmail(email: String): boolean {
+    let bool = false;
+    this.http.get<boolean>(`${this.baseUrl}user/valid?email=${email}`).subscribe((data) => {
+      bool = !data
+    });
+    return bool;
   }
 
   emitEvent() {

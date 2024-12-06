@@ -3,7 +3,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Modal } from 'bootstrap';
 import { Chart, registerables } from 'chart.js';
-import { MealInfoserviceService } from '../../../model/meal-infoservice.service';
 import { FormsModule } from '@angular/forms';
 Chart.register(...registerables);
 @Component({
@@ -152,33 +151,8 @@ export class MealsComponent implements OnInit {
   // gets infomation from spoonacular about the meal selected by the user
   protected getThisMeal(mealId: number, mealTime: string): any {
     this.http.get<any>(`${this.spoonacularBaseUrl}${mealId}/information?apiKey=${this.apiKey}&includeNutrition=true`).subscribe((data) => {
-      this.selectedMeals.push(new MealInfoserviceService(
-        data.id,
-        data.title,
-        data.summary,
-        getSplittedString(1, data.extendedIngredients),
-        getSplittedString(2, data.cuisines),
-        data.image,
-        data.instructions,
-        data.nutrition.nutrients[0].amount,
-        mealTime,
-        data.creditsText,
-        this.userId,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount,
-        data.nutrition.nutrients[0].amount
-      ));
+      console.log(data);
+      
     });
   }
 

@@ -205,7 +205,7 @@
                 </h1>
             </div>
             <div class="modal-body">
-                <h1>Hi!{{userDetails.firstName}},</h1>
+                <h1>Hi!{{userDetails.user.firstName}},</h1>
                 <p class="text-justify">Your personalized diet plan is ready to guide you toward your
                     health goals. Let’s get started with selecting your meals for the day!</p>
             </div>
@@ -235,40 +235,44 @@
             <div class="modal-body">
 
                 <div class="row m-0">
-                    <h6 class="fw-bold bg-green-100 py-2 px-4 rounded-2 text-center">{{mealObj.recipeName}}</h6>
+                    <h6 class="fw-bold bg-green-100 py-2 px-4 rounded-2 text-center">{{recipe.title}}</h6>
                     <div class="cols centered py-3">
-                        <img class="img-fluid" src="{{mealObj.imageLink}}" alt="">
+                        <img class="img-fluid" src="{{recipe.image}}" alt="">
                     </div>
                     <div class="cols px-2">
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Description</h6>
-                        <p class="text-justify cardColor p-2" [innerHTML]="mealObj.description">
+                        <p class="text-justify cardColor p-2" [innerHTML]="recipe.summary">
+                        </p>
+                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Preparation time</h6>
+                        <p class="text-justify cardColor p-2">
+                            {{recipe.readyInMinutes}} minutes
                         </p>
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Meal time</h6>
                         <p class="text-justify cardColor p-2">
-                            {{mealObj.mealTime}}
+                            {{mealTimes.at(this.currentIndex)}}
                         </p>
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Cuisines</h6>
                         <p class="text-justify cardColor p-2">
-                            {{mealObj.cuisines}}
+                            {{getRecipeCuisines(recipe.cuisines)}}
                         </p>
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Ingredients</h6>
                         <div class="d-flex">
                             <p class="cardColor p-2">
-                                {{mealObj.ingredients}}
+                                {{getMealIngredients(recipe.extendedIngredients)}}
                             </p>
                         </div>
                         <h6 class="fw-bold bg-green-100 p-2 rounded-2">Instructions</h6>
-                        <p class="text-justify cardColor p-2 " [innerHTML]="mealObj.instructions">
+                        <p class="text-justify cardColor p-2 " [innerHTML]="recipe.instructions">
                     </div>
                     <div class="m-3 d-flex justify-end">
-                        <small class="fst-italic me-3">Credits: {{mealObj.credits}}</small>
+                        <small class="fst-italic me-3">Credits: {{recipe.credits}}</small>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="d-flex justify-end me-3 gap-2" *ngIf="isSelecting">
                     <button type="button" class="btn btn-success" (click)="setMealRecipe()">{{btnText}}</button>
-                    <button type="submit" class="btn btn-secondary" (click)="getSomething(mealObj.mealName)"><i
+                    <button type="submit" class="btn btn-secondary" (click)="getRandomMeal(meals.at(this.currentIndex-1)!)"><i
                             class="bi bi-arrow-clockwise"></i> Try Something
                         Else</button>
                 </div>

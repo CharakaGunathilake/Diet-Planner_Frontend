@@ -1,11 +1,11 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { DietaryinfoserviceService } from '../../model/dietaryinfoservice.service';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { RegisterComponent } from '../../pages/register/register.component';
 import { FormsModule } from '@angular/forms';
 import { Modal } from 'bootstrap';
 import { LoginComponent } from '../../pages/login/login.component';
+import { DietaryinfoserviceService } from '../../model/dietaryinfoservice.service';
 
 @Component({
   selector: 'app-details',

@@ -9,7 +9,7 @@
     <form #loginForm="ngForm" class="col-10 " (ngSubmit)="onSubmit(loginForm)">
         <h1 class="py-3 text-center">Log In</h1>
         <div class="form-floating mb-2">
-            <input type="text" [(ngModel)]="login.userName" name="username" class="form-control rounded-4"
+            <input type="text" [(ngModel)]="login.username" name="username" class="form-control rounded-4"
                 id="floatingUsername" placeholder="Username" #username="ngModel" required>
             <label for="floatingUsername">Username</label>
             <div class="" *ngIf="username.invalid && username.touched">
