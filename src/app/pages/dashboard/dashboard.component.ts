@@ -21,10 +21,10 @@ export class DashboardComponent implements OnInit {
   }
   constructor(private router: Router) { }
   ngOnInit(): void {
-    if (localStorage.getItem("token") == null || sessionStorage.getItem("token") == null) {
-      this.router.navigate([""]);
-      return;
-    }
+    // if (localStorage.getItem("token") == null || sessionStorage.getItem("token") == null) {
+    //   this.router.navigate([""]);
+    //   return;
+    // }
   }
 
   openModal() {

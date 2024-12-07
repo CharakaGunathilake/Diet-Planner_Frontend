@@ -1,14 +1,13 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { HttpClientModule } from '@angular/common/http';
 
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class JwtServiceService {
   private baseUrl: String = "http://localhost:8080/"
-  private userDetails: any = {};
   private headers: HttpHeaders | undefined;
   private userId: number | undefined;
   constructor(
@@ -17,18 +16,24 @@ export class JwtServiceService {
     if (localStorage.getItem("token") || sessionStorage.getItem("token")) {
       const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
       this.userId = JSON.parse(sessionStorage.getItem("currentUserId") || "0");
-      this.getUserData(this.userId || 0);
       this.headers = new HttpHeaders({
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       });
+      this.getUserData(this.userId || 0);
     }
   }
-  private getUserData(id: number) {
-    this.http.get(this.baseUrl + "user/byPlanId/" + 6, { headers: this.headers }).subscribe((data) => {
-      console.log(data);
-      this.userDetails = data;
-    })
+
+  validLogin(login: any) {
+    return this.http.post<any>(`${this.baseUrl}login`, login);
+  }
+
+  getUserData(id: number): any {
+    return this.http.get(this.baseUrl + "user/byPlanId/" + id, { headers: this.headers })
+  }
+
+  getSelectedMeals(userId: number,date: String): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}meal-info/mealsById?id=${userId}&date=${date}`, { headers: this.headers })
   }
 
   addMealsForDay(mealArray: any[]) {
@@ -44,19 +49,5 @@ export class JwtServiceService {
       bool = data
     });
     return bool;
-  }
-
-  getSelectedMeals(date: String): any[] {
-    let selectedMeals: any[] = [];
-    this.http.get<any[]>(`${this.baseUrl}meal-info/mealsById?userId=${this.userId}&date=${date}`, { headers: this.headers }).subscribe(
-      (data) => {
-       selectedMeals = data;
-      }
-    );
-    return selectedMeals;
-  }
-
-  public getUserDetails() {
-    return this.userDetails;
   }
 }

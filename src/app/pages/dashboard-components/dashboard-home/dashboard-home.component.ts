@@ -15,6 +15,7 @@ interface Meal {
   recipeName: string;
   mealName: string;
   mealTime: string;
+  imageLink: string;
 }
 
 interface DietaryInfo {
@@ -26,16 +27,17 @@ interface DietaryInfo {
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [RouterLink, NgIf, NgStyle, NgFor, HttpClientModule],
+  imports: [RouterLink, NgIf, NgStyle, NgFor, HttpClientModule,],
   templateUrl: './dashboard-home.component.html',
-  styleUrl: './dashboard-home.component.css'
+  styleUrl: './dashboard-home.component.css',
+  providers: [JwtServiceService, SpoonacularServiceService, ChartServiceService]
 })
-export class DashboardHomeComponent implements OnInit, AfterViewInit {
+export class DashboardHomeComponent implements OnInit {
   @ViewChild('staticBackdrop') private mealModal!: ElementRef;
 
   protected chart1?: Chart;
   protected chart2?: Chart;
-  protected userDetails: any = {};
+  protected userDetails: any;
   protected userDietaryInfo: any = {};
   protected meals: string[] = [];
   protected mealTimes: string[] = [];
@@ -51,7 +53,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   protected completedMeals = 0;
   protected userLogin: any = {};
   protected recipe: any;
-  bool =  false;
+  bool = false;
+  userPlan: any = {};
 
   constructor(
     private jwtService: JwtServiceService,
@@ -62,29 +65,16 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     this.isStarter = JSON.parse(localStorage.getItem('isStarter') || 'false');
   }
 
-  ngAfterViewInit(): void {
-    if (this.isStarter) {
-      this.openModal('Welcome to SmartPlate!');
-      this.btnText = 'Start!';
-      this.isStarter = false;
-      localStorage.setItem('isStarter', 'false');
-    }
-    this.getSelectedMeals();
-    localStorage.setItem('completedMeals', '0');
-  }
-
   ngOnInit(): void {
-    this.userDetails = this.jwtService.getUserDetails();
-    if (!this.isSelecting) {
-      this.getUserDetails();
-    }
-    
     this.initializeCharts();
+    this.initializeUser();
+    this.isStarter = true;
+    this.openModal('Dashboard');
   }
 
   private initializeCharts(): void {
     this.chart1 = new Chart('progressChart', this.chartService.weeklyCalorieChart());
-    this.chart2 = new Chart('waterChart', 
+    this.chart2 = new Chart('waterChart',
       this.chartService.dailyWaterIntakerChart(this.waterIntake, this.userDietaryInfo.waterIntake)
     );
   }
@@ -120,39 +110,38 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.waterIntake = increment ? 
-      this.waterIntake + 1 : 
+    this.waterIntake = increment ?
+      this.waterIntake + 1 :
       Math.max(0, this.waterIntake - 1);
-
     localStorage.setItem('waterIntake', this.waterIntake.toString());
-    
+
     if (this.chart2) {
       this.chart2.data = this.chartService.dailyWaterIntakerChart(
-        this.waterIntake, 
+        this.waterIntake,
         this.userDietaryInfo.waterIntake
       ).data;
       this.chart2.update();
     }
   }
 
-  private getUserDetails(): void {
-    this.userDietaryInfo = this.userDetails.dietaryInfo;
-    this.userDetails 
-    this.setMealTimes(this.userDetails.dietaryInfo.mealPlan);
+  private initializeUser(): void {
+    this.jwtService.getUserData(8).subscribe((data: any) => {
+      this.userDetails = data.user;
+      this.userDietaryInfo = data.dietaryInfo;
+      this.setMealTimes(this.userDietaryInfo.mealPlan);
+    });
     this.getSelectedMeals();
   }
 
-  protected showDetails(key: number, mealName: string): void {
-    this.title = mealName;
+  protected showDetails(key: number): void {
     this.currentIndex = key;
     const meal = this.selectedMeals[key];
     if (meal) {
       this.getThisMeal(meal.mealId);
-      this.openModal(`${mealName} Details`);
+      this.openModal(`${meal.mealName} Details`);
     }
   }
 
- 
   setMealTimes(mealPlan: number) {
     switch (mealPlan) {
       case 3:
@@ -182,25 +171,26 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     this.title = `Choose your ${this.meals[this.currentIndex]}`;
   }
 
-  protected setMealRecipe() {
-    this.title = `Choose your ${this.meals[this.currentIndex]}`;
-    this.selectedMeals.push({
-      mealId: this.recipe.id,
-      recipeName: this.recipe.title,
-      mealName: this.meals[this.currentIndex],
-      mealTime: this.mealTimes[this.currentIndex],
-    });
-    if (this.currentIndex != this.meals.length - 1) {
-      this.getRandomMeal(this.meals[this.currentIndex++]);
-      console.log(this.selectedMeals);
-    } else {
-      this.btnText = "Done!";
-      localStorage.setItem("isSelecting", JSON.stringify(this.isSelecting = false))
-      this.jwtService.addMealsForDay(this.selectedMeals);
-      this.selectedMeals = [];
-      this.getSelectedMeals();
-    }
-  }
+  // protected setMealRecipe() {
+  //   this.title = `Choose your ${this.meals[this.currentIndex]}`;
+  //   this.selectedMeals.push({
+  //     mealId: this.recipe.id,
+  //     recipeName: this.recipe.title,
+  //     mealName: this.meals[this.currentIndex],
+  //     mealTime: this.mealTimes[this.currentIndex],
+  //     imageLink: this.recipe.image
+  //   });
+  //   if (this.currentIndex != this.meals.length - 1) {
+  //     this.getRandomMeal(this.meals[this.currentIndex++]);
+  //     console.log(this.selectedMeals);
+  //   } else {
+  //     this.btnText = "Done!";
+  //     localStorage.setItem("isSelecting", JSON.stringify(this.isSelecting = false))
+  //     this.jwtService.addMealsForDay(this.selectedMeals);
+  //     this.selectedMeals = [];
+  //     this.getSelectedMeals();
+  //   }
+  // }
 
   getMealIngredients(ingredients: any) {
     return getSplittedString(1, ingredients);
@@ -210,21 +200,22 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     return getSplittedString(2, cuisines);
   }
 
+  // brings meals from the database
+  private getSelectedMeals() {
+    this.jwtService.getSelectedMeals(5, "2024-11-22").subscribe((data) => {
+      this.selectedMeals = data;
+    });
+  }
+
   // gets infomation from spoonacular about the meal selected by the user
   getThisMeal(mealId: number): any {
     this.recipe = this.spoonacularService.getRecipeById(mealId);
-  }
-
-  // brings meals from the database
-  private getSelectedMeals() {
-    this.selectedMeals = this.jwtService.getSelectedMeals(this.getDate());
   }
 
   // gets a random meal from source
   protected getRandomMeal(mealName: string) {
     this.recipe = this.spoonacularService.getRandomRecipe(mealName, this.userDetails.dietaryInfo);
   }
- // ... rest of the methods remain the same but with proper type annotations
 }
 
 function getSplittedString(index: number, array: any[]): string {

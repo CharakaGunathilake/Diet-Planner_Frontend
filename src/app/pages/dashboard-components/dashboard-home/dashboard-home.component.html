@@ -19,7 +19,7 @@
             <div class="d-flex flex-column flex-lg-row gap-2 px-1">
                 <div class="pill col-12 col-lg-6 centered p-0 rounded-4 pb-1">
                     <span class="fw-bold m-0">Next meal</span>
-                    <small class="text-dark-emphasis m-0">{{meals[completedMeals]}}</small>
+                    <small class="text-dark-emphasis m-0">{{selectedMeals[completedMeals].mealName}}</small>
                     <small class="text-dark-emphasis">{{mealTimes[completedMeals]}}</small>
                 </div>
                 <div class="pill col-12 col-lg-6 centered p-0 rounded-4 pb-1">
@@ -107,9 +107,10 @@
                 <p class="py-2 m-0 text-center">Meals for the day</p>
                 <div class="d-flex flex-column flex-lg-row my-3 text-center h-40">
                     <a class="col-12 col-lg cardColor centered py-3 px-1 decorationNone"
-                        *ngFor="let meal of meals let i = index" (click)="showDetails(i,meal)">
-                        <img src="" class="img-fluid p-2" alt="breakfast">
-                        <p class="mb-1 m-0">{{meals[i]}}</p>
+                        *ngFor="let meal of selectedMeals let i = index" (click)="showDetails(i)">
+                        <img src={{selectedMeals[i].imageLink}} class="img-fluid p-2" alt="breakfast">
+                        <p class="mb-1 m-0">{{meal.mealName}}</p>
+                        <!-- <small class="m-0 text-dark-emphasis">{{mealTimes[i]}}</small> -->
                     </a>
                 </div>
                 <a routerLink="../meals" class="mb-0 decorationNone d-inline-flex"><span>Change your meals</span> <i
@@ -205,7 +206,7 @@
                 </h1>
             </div>
             <div class="modal-body">
-                <h1>Hi!{{userDetails.user.firstName}},</h1>
+                <h1>Hi!{{userDetails.firstName}},</h1>
                 <p class="text-justify">Your personalized diet plan is ready to guide you toward your
                     health goals. Let’s get started with selecting your meals for the day!</p>
             </div>
@@ -229,58 +230,6 @@
         </div>
         <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
             *ngIf="!isStarter">
-            <div class="modal-header">
-                <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">{{title}}</h1>
-            </div>
-            <div class="modal-body">
-
-                <div class="row m-0">
-                    <h6 class="fw-bold bg-green-100 py-2 px-4 rounded-2 text-center">{{recipe.title}}</h6>
-                    <div class="cols centered py-3">
-                        <img class="img-fluid" src="{{recipe.image}}" alt="">
-                    </div>
-                    <div class="cols px-2">
-                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Description</h6>
-                        <p class="text-justify cardColor p-2" [innerHTML]="recipe.summary">
-                        </p>
-                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Preparation time</h6>
-                        <p class="text-justify cardColor p-2">
-                            {{recipe.readyInMinutes}} minutes
-                        </p>
-                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Meal time</h6>
-                        <p class="text-justify cardColor p-2">
-                            {{mealTimes.at(this.currentIndex)}}
-                        </p>
-                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Cuisines</h6>
-                        <p class="text-justify cardColor p-2">
-                            {{getRecipeCuisines(recipe.cuisines)}}
-                        </p>
-                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Ingredients</h6>
-                        <div class="d-flex">
-                            <p class="cardColor p-2">
-                                {{getMealIngredients(recipe.extendedIngredients)}}
-                            </p>
-                        </div>
-                        <h6 class="fw-bold bg-green-100 p-2 rounded-2">Instructions</h6>
-                        <p class="text-justify cardColor p-2 " [innerHTML]="recipe.instructions">
-                    </div>
-                    <div class="m-3 d-flex justify-end">
-                        <small class="fst-italic me-3">Credits: {{recipe.credits}}</small>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="d-flex justify-end me-3 gap-2" *ngIf="isSelecting">
-                    <button type="button" class="btn btn-success" (click)="setMealRecipe()">{{btnText}}</button>
-                    <button type="submit" class="btn btn-secondary" (click)="getRandomMeal(meals.at(this.currentIndex-1)!)"><i
-                            class="bi bi-arrow-clockwise"></i> Try Something
-                        Else</button>
-                </div>
-                <div class="d-flex justify-end me-3 gap-2" *ngIf="bool">
-                    <button type="button" class="btn btn-success" (click)="completeMeal()">Completed</button>
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
         </div>
     </div>
 </div>

@@ -30,7 +30,6 @@ export class DetailsComponent implements OnInit {
 
   register() {
     this.userResponseObject.push(this.initObject(this.data));
-    console.log(this.userResponseObject);
     this.userResponseObject.push(this.dietPlan)
     this.openModal();
   }

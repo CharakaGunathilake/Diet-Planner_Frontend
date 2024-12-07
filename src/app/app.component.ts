@@ -25,7 +25,8 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     initFlowbite();
     // localStorage.clear();
-    this.isCurrentUser();
+    // sessionStorage.clear();
+    // this.isCurrentUser();
   }
 
   handleAction(index: number) {

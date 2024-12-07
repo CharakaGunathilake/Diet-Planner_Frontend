@@ -49,7 +49,7 @@ export class HeaderComponent implements OnInit {
   protected navigateToDashboard() {
     this.alreadyLoggedIn();
     if (localStorage.getItem("token") != null || sessionStorage.getItem("token") != null) {
-      this.router.navigate(["/dashboard/home"]);
+      this.router.navigate(["/dashboard"]);
     } else {
       this.emitEvent();
     }

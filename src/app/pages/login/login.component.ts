@@ -1,23 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { RegisterComponent } from '../register/register.component';
 import { FormsModule, NgForm } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { JwtServiceService } from '../../model/jwt-service.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RegisterComponent, FormsModule, NgIf, HttpClientModule],
+  imports: [ FormsModule, NgIf, HttpClientModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
+  providers: [JwtServiceService]
 })
-export class LoginComponent implements OnInit {
-  private baseUrl: String = "http://localhost:8080/";
-  constructor(private router: Router, private http: HttpClient) { }
-  ngOnInit(): void {
-  }
+export class LoginComponent {
+  constructor(
+    private router: Router,
+    private jwtService: JwtServiceService
+  ) { }
+
   protected login = {
     username: "",
     password: "",
@@ -31,7 +32,7 @@ export class LoginComponent implements OnInit {
   }
 
   protected checkLogin() {
-    this.validLogin(this.login).subscribe(
+    this.jwtService.validLogin(this.login).subscribe(
       {
         next: (data) => {
           console.log(data);
@@ -45,7 +46,7 @@ export class LoginComponent implements OnInit {
             sessionStorage.setItem("token", data.jwt);
           }
           localStorage.setItem("currentUserId", JSON.stringify(data.id));
-          this.router.navigate(["dashboard"]);
+          this.router.navigate(["dashboard/home"]);
         },
         error: (error) => {
           console.log(error.error.message);
@@ -54,9 +55,5 @@ export class LoginComponent implements OnInit {
     )
   }
 
-  private validLogin(login: any) {
-    console.log(login);
-    return this.http.post<any>(`${this.baseUrl}login`, login);
-  }
 }
 
