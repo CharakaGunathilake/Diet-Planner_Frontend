@@ -6,16 +6,16 @@
                     <p class="fw-bold px-3 w-100 m-0">Search your Favourites</p>
                     <form #searchForm="ngForm" class="input-group p-0 px-3">
                         <input type="text" class="form-control" name="search" [(ngModel)]="searchQuery"
-                            placeholder="Enter Ingredient or Meal name" aria-label="Recipient's username"
-                            aria-describedby="button-addon2" required>
-                        <button class="btn btn-success1 rounded-end-5" type="button" id="button-addon2"
-                            [disabled]="!searchForm.valid" (click)="handleSearch()">Search</button>
+                            placeholder="Enter Ingredient or Meal name" required>
+                        <button class="btn btn-success1 rounded-end-5" type="button" [disabled]="!searchForm.valid"
+                            (click)="handleSearch()">Search</button>
                     </form>
                     <div class="row mb-1">
                         <div class="centered flex-column " style="height: 17em;">
-                            <div class="container-fluid w-100 overflow-auto" *ngIf="randomMeals.length > 0" style="height: 17em;">
+                            <div class="container-fluid w-100 overflow-auto" *ngIf="resultSet.length > 0"
+                                style="height: 17em;">
                                 <div class="col-12 card rounded-4 mb-2 border-0 border-bottom"
-                                    *ngFor="let meal of randomMeals let i = index" (click)="showDetails(i,meal)">
+                                    *ngFor="let meal of resultSet let i = index" (click)="showDetails(i)">
                                     <div class="card-body d-flex py-1 align-items-center">
                                         <div class="border p-2 col-2">
                                             <img src="{{meal.image}}" class="img-fluid" alt="{{searchQuery}} png">
@@ -35,10 +35,10 @@
                                 </div>
                             </div>
                             <div class="centered">
-                                <div class="d-flex justify-center" *ngIf="randomMeals.length == 0 && searchQuery !=''">
+                                <div class="d-flex justify-center" *ngIf="resultSet.length == 0 && searchQuery !=''">
                                     <p class="fw-bold px-2 w-100 m-0 mb-2">No Results Found</p>
                                 </div>
-                                <div class="d-flex justify-center" *ngIf="randomMeals.length == 0 && searchQuery ==''">
+                                <div class="d-flex justify-center" *ngIf="resultSet.length == 0 && searchQuery ==''">
                                     <p class="fw-bold px-2 w-100 m-0 mb-2">Results will appear here</p>
                                 </div>
                             </div>
@@ -59,15 +59,15 @@
             <div class="row mb-1">
                 <div class="pill flex-column">
                     <div class="col-12 card rounded-4 mb-2 border-0 border-bottom"
-                        *ngFor="let meal of selectedMeals let i = index" (click)="showDetails(i,meal)">
+                        *ngFor="let meal of selectedMeals let i = index" (click)="showDetails(i)">
                         <div class="card-body d-flex py-1 align-items-center my-2">
                             <div class="border p-2 col-2">
-                                <img src="{{meal.imageLink}}" class="img-fluid bi-image-fill" alt="breakfast png">
+                                <img src="{{meal.imageLink}}" class="img-fluid bi-image-fill" alt="{{meal.mealName}} png">
                             </div>
                             <div class="d-block px-4">
-                                <p class="fw-bold m-0">{{meals[i]}}</p>
+                                <p class="fw-bold m-0">{{meal.mealName}}</p>
                                 <small class="text-dark-emphasis">
-                                    {{mealTimes[i]}}
+                                    {{meal.mealTime}}
                                 </small>
                             </div>
                             <button class="btn end-0 position-absolute me-2"><img height="10px" width="10px"
@@ -84,8 +84,8 @@
                         *ngFor="let meal of suggestedMeals let i = index" data-bs-toggle="modal"
                         data-bs-target="#staticBackdrop">
                         <div class="card-body d-flex py-1 align-items-center">
-                            <div class="rounded-circle border p-2 col-2">
-                                <img src="icons/breakfast.png" class="img-fluid" alt="breakfast png">
+                            <div class="border p-2 col-2">
+                                <img src="{{meal.image}}"  alt="{{suggestedMeals[i].title}} png">
                             </div>
                             <div class="d-block px-4">
                                 <p class="fw-bold m-0">{{suggestedMeals[i].title}}</p>
@@ -107,49 +107,9 @@
 </div>
 <div class="modal fade" #staticBackdrop1 data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;">
-        <div class="modal-header">
-            <h1 class="modal-title text-center w-100 fs-5" id="staticBackdropLabel">{{title}}</h1>
-        </div>
-        <div class="modal-body">
-            <div class="row m-0">
-                <h6 class="fw-bold bg-green-100 py-2 px-4 rounded-2 text-center">{{mealObj.recipeName}}</h6>
-                <div class="cols centered py-3">
-                    <img class="img-fluid" src="{{mealObj.imageLink}}" alt="">
-                </div>
-                <div class="cols px-2">
-                    <h6 class="fw-bold bg-green-100 p-2 rounded-2">Description</h6>
-                    <p class="text-justify cardColor p-2" [innerHTML]="mealObj.description">
-                    </p>
-                    <h6 class="fw-bold bg-green-100 p-2 rounded-2">Meal time</h6>
-                    <p class="text-justify cardColor p-2">
-                        {{mealObj.mealTime}}
-                    </p>
-                    <h6 class="fw-bold bg-green-100 p-2 rounded-2">Cuisines</h6>
-                    <p class="text-justify cardColor p-2">
-                        {{mealObj.cuisines}}
-                    </p>
-                    <h6 class="fw-bold bg-green-100 p-2 rounded-2">Ingredients</h6>
-                    <div class="d-flex">
-                        <p class="cardColor p-2">
-                            {{mealObj.ingredients}}
-                        </p>
-                    </div>
-                    <h6 class="fw-bold bg-green-100 p-2 rounded-2">Instructions</h6>
-                    <p class="text-justify cardColor p-2 " [innerHTML]="mealObj.instructions">
-                </div>
-                <div class="m-3 d-flex justify-end">
-                    <small class="fst-italic me-3">Credits: {{mealObj.credits}}</small>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <div class="d-flex justify-end me-3 gap-2">
-                <button type="button" class="btn btn-success" (click)="setMeal()">{{btnText}}</button>
-                <button type="submit" class="btn btn-secondary" (click)="getSomething(currentIndex-1)"><i
-                        class="bi bi-arrow-clockwise"></i> Try Something
-                    Else</button>
-            </div>
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable no-scrollbar modal-md">
+        <div class="overflow-hidden" style="height: 80vh;" *ngIf="isSelecting">
+            <app-meal-modal [dietaryInfo]="userDietaryInfo"></app-meal-modal>
         </div>
     </div>
 </div>

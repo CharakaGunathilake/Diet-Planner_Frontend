@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { JwtServiceService } from '../../model/jwt-service.service';
+import { JwtService } from '../../model/jwt.service';
 
 @Component({
   selector: 'app-login',
@@ -11,12 +11,12 @@ import { JwtServiceService } from '../../model/jwt-service.service';
   imports: [ FormsModule, NgIf, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
-  providers: [JwtServiceService]
+  providers: [JwtService]
 })
 export class LoginComponent {
   constructor(
     private router: Router,
-    private jwtService: JwtServiceService
+    private jwtService: JwtService
   ) { }
 
   protected login = {

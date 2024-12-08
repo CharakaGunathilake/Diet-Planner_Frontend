@@ -1,12 +1,13 @@
 import { NgFor, NgIf, NgStyle } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Modal } from 'bootstrap';
 import { Chart, registerables } from 'chart.js';
-import { JwtServiceService } from '../../../model/jwt-service.service';
-import { SpoonacularServiceService } from '../../../model/spoonacular-service.service';
-import { ChartServiceService } from '../../../model/chart-service.service';
+import { JwtService } from '../../../model/jwt.service';
+import { SpoonacularService } from '../../../model/spoonacular.service';
+import { ChartService } from '../../../model/chart.service';
 import { HttpClientModule } from '@angular/common/http';
+import { MealModalComponent } from '../../../common/meal-modal/meal-modal.component';
 
 Chart.register(...registerables);
 
@@ -18,58 +19,47 @@ interface Meal {
   imageLink: string;
 }
 
-interface DietaryInfo {
-  mealPlan: number;
-  waterIntake: number;
-  dcr: number;
-}
-
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [RouterLink, NgIf, NgStyle, NgFor, HttpClientModule,],
+  imports: [RouterLink, NgIf, NgStyle, NgFor, HttpClientModule, MealModalComponent],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
-  providers: [JwtServiceService, SpoonacularServiceService, ChartServiceService]
+  providers: [JwtService, SpoonacularService, ChartService]
 })
 export class DashboardHomeComponent implements OnInit {
-  @ViewChild('staticBackdrop') private mealModal!: ElementRef;
+  @ViewChild('staticBackdrop') mealModal!: ElementRef;
 
   protected chart1?: Chart;
   protected chart2?: Chart;
-  protected userDetails: any;
+  protected userLogin: any = {};
+  protected userDetails: any = {};
   protected userDietaryInfo: any = {};
-  protected meals: string[] = [];
-  protected mealTimes: string[] = [];
+  protected selectedMeals: Meal[];
   protected currentIndex = 0;
-  protected title = '';
-  protected isSelecting = false;
-  protected btnText = 'Choose This';
-  protected selectedMeals: Meal[] = [];
   protected weightPercentage = 1;
   protected caloriePercentage = 1;
   protected waterIntake: number;
+  protected isSelecting: boolean;
   protected isStarter: boolean;
   protected completedMeals = 0;
-  protected userLogin: any = {};
-  protected recipe: any;
-  bool = false;
-  userPlan: any = {};
 
   constructor(
-    private jwtService: JwtServiceService,
-    private chartService: ChartServiceService,
-    private spoonacularService: SpoonacularServiceService
+    private jwtService: JwtService,
+    private chartService: ChartService,
+    private spoonacularService: SpoonacularService
   ) {
     this.waterIntake = Number(localStorage.getItem('waterIntake')) || 0;
     this.isStarter = JSON.parse(localStorage.getItem('isStarter') || 'false');
+    this.isSelecting = JSON.parse(localStorage.getItem('isSelecting') || 'false');
+    this.selectedMeals = new Array({ mealId: 0, recipeName: '', mealName: '', mealTime: '', imageLink: '' });
   }
 
   ngOnInit(): void {
+    // this.isStarter = true;
     this.initializeCharts();
     this.initializeUser();
-    this.isStarter = true;
-    this.openModal('Dashboard');
+    this.getSelectedMeals();
   }
 
   private initializeCharts(): void {
@@ -79,19 +69,20 @@ export class DashboardHomeComponent implements OnInit {
     );
   }
 
-  private openModal(title: string): void {
-    this.title = title;
-    const modal = new Modal(this.mealModal.nativeElement);
-    modal.show();
+  private openModal(index: number): void {
+    if(index = 1)this.spoonacularService.getRecipeById(this.selectedMeals[this.currentIndex].mealId);
+    if(index = 2)this.spoonacularService.getRandomRecipe(this.selectedMeals[this.currentIndex].mealName,this.userDietaryInfo);
+    new Modal(this.mealModal.nativeElement).show();
   }
 
   protected completeMeal(): void {
     this.caloriePercentage = (356 / this.userDietaryInfo.dcr) * 100;
-    const selectedMeal = this.selectedMeals[this.currentIndex];
-    if (selectedMeal) {
-      const meal = this.getThisMeal(selectedMeal.mealId);
-      this.jwtService.setMealCompleted(meal.mealId, this.getTime());
-    }
+    const mealName = this.selectedMeals[this.currentIndex].mealName;
+    this.jwtService.setMealCompleted(mealName, this.getTime()).subscribe((data) => {
+      if(data){
+        alert(`meal ${mealName} is completed!`);
+      }
+    });;
   }
 
   private getTime(): string {
@@ -109,7 +100,6 @@ export class DashboardHomeComponent implements OnInit {
       alert('Congratulations!! you have completed today\'s Hydration target.');
       return;
     }
-
     this.waterIntake = increment ?
       this.waterIntake + 1 :
       Math.max(0, this.waterIntake - 1);
@@ -125,139 +115,34 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   private initializeUser(): void {
-    this.jwtService.getUserData(8).subscribe((data: any) => {
+    this.jwtService.getUserData().subscribe((data: any) => {
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
-      this.setMealTimes(this.userDietaryInfo.mealPlan);
+      this.userLogin = data.login;
+      this.openModal(2);
     });
-    this.getSelectedMeals();
   }
 
   protected showDetails(key: number): void {
     this.currentIndex = key;
     const meal = this.selectedMeals[key];
-    if (meal) {
-      this.getThisMeal(meal.mealId);
-      this.openModal(`${meal.mealName} Details`);
-    }
-  }
-
-  setMealTimes(mealPlan: number) {
-    switch (mealPlan) {
-      case 3:
-        this.meals = ["Breakfast", "Lunch", "Dinner"];
-        this.mealTimes = ["9:00 AM", "Between 12:00 PM and 2:00 PM", "7:00 PM"];
-        break;
-      case 2:
-        this.meals = ["Meal 1", "Meal 2"];
-        this.mealTimes = ["Between 10:00 AM and 12:00 PM", "Between 12:00 PM and 6:00 PM"];
-        break;
-      case 4:
-        this.meals = ["Breakfast", "Lunch", "Snack", "Dinner"];
-        this.mealTimes = ["Between 8:00 AM and 10:00 AM", "Between 11:00 AM and 1:00 PM", "Between 3:00 PM and 5:00 PM", "7:00 PM"];
-        break;
-      case 5:
-        this.meals = ["Breakfast", "Second Breakfast", "Lunch", "Afternoon Snack", "Dinner"];
-        this.mealTimes = ["Between 6:00 AM and 8:00 AM", "Between 8:00 AM and 11:00 AM", "Between 11:00 AM and 1:00 PM", "Between 3:00 PM and 5:00 PM", "7:00 PM"];
-        break;
+    this.isSelecting = true;
+    if (meal != null) {
+      this.openModal(1);
     }
   }
 
   handleClick() {
     this.isStarter = false;
-    this.btnText = "Next"
     this.isSelecting = JSON.parse(localStorage.getItem("isSelecting") || "false");
-    this.getRandomMeal(this.meals[this.currentIndex]);
-    this.title = `Choose your ${this.meals[this.currentIndex]}`;
+    this.isSelecting = true;
   }
-
-  // protected setMealRecipe() {
-  //   this.title = `Choose your ${this.meals[this.currentIndex]}`;
-  //   this.selectedMeals.push({
-  //     mealId: this.recipe.id,
-  //     recipeName: this.recipe.title,
-  //     mealName: this.meals[this.currentIndex],
-  //     mealTime: this.mealTimes[this.currentIndex],
-  //     imageLink: this.recipe.image
-  //   });
-  //   if (this.currentIndex != this.meals.length - 1) {
-  //     this.getRandomMeal(this.meals[this.currentIndex++]);
-  //     console.log(this.selectedMeals);
-  //   } else {
-  //     this.btnText = "Done!";
-  //     localStorage.setItem("isSelecting", JSON.stringify(this.isSelecting = false))
-  //     this.jwtService.addMealsForDay(this.selectedMeals);
-  //     this.selectedMeals = [];
-  //     this.getSelectedMeals();
-  //   }
-  // }
-
-  getMealIngredients(ingredients: any) {
-    return getSplittedString(1, ingredients);
-  }
-
-  getRecipeCuisines(cuisines: any) {
-    return getSplittedString(2, cuisines);
-  }
-
-  // brings meals from the database
+  
   private getSelectedMeals() {
     this.jwtService.getSelectedMeals(5, "2024-11-22").subscribe((data) => {
       this.selectedMeals = data;
     });
   }
-
-  // gets infomation from spoonacular about the meal selected by the user
-  getThisMeal(mealId: number): any {
-    this.recipe = this.spoonacularService.getRecipeById(mealId);
-  }
-
-  // gets a random meal from source
-  protected getRandomMeal(mealName: string) {
-    this.recipe = this.spoonacularService.getRandomRecipe(mealName, this.userDetails.dietaryInfo);
-  }
 }
 
-function getSplittedString(index: number, array: any[]): string {
-  if (!array || array.length === 0) {
-    return index === 2 ? 'Common' : '';
-  }
-
-  switch (index) {
-    case 1:
-      return array.map(obj => {
-        const name = obj.name.charAt(0).toUpperCase() + obj.name.slice(1);
-        return `${obj.amount} ${obj.unit} ${name}`;
-      }).join(', ');
-    case 2:
-      return array.join(', ');
-    default:
-      return 'none';
-  }
-}
-
-// function getSplittedString(index: number, array: any): string {
-//   let names = "";
-//   switch (index) {
-//     case 1: {
-//       array.forEach((obj: any) => {
-//         obj.name = obj.name.charAt(0).toUpperCase() + obj.name.slice(1);
-//         names += obj.amount + " " + obj.unit + " " + obj.name + ", ";
-//       })
-//       return names = names.substring(0, names.length - 2);
-//     }
-//     case 2: {
-//       if (array.length == 0) {
-//         return "Common"
-//       } else {
-//         array.forEach((obj: any) => {
-//           names += obj + ", ";
-//         })
-//         return names = names.substring(0, names.length - 2);
-//       }
-//     } default: {
-//       return "none";
-//     }
-//   }
-// }
 

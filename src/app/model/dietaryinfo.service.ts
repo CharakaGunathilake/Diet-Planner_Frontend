@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class DietaryinfoserviceService {
+export class DietaryinfoService {
 
   private gender: String; 
   private birthDay: Date; 

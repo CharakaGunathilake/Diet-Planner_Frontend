@@ -20,6 +20,7 @@ h1 {
     border-radius: 20px;
     padding: 2%;
     background-color: white;
+    box-shadow: 20px 20px 100px 10px #c8deb79a;
 }
 
 .pill1 {

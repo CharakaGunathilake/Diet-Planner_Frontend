@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class JwtServiceService {
+export class JwtService {
   private baseUrl: String = "http://localhost:8080/"
   private headers: HttpHeaders | undefined;
   private userId: number | undefined;
@@ -20,7 +20,6 @@ export class JwtServiceService {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       });
-      this.getUserData(this.userId || 0);
     }
   }
 
@@ -28,8 +27,8 @@ export class JwtServiceService {
     return this.http.post<any>(`${this.baseUrl}login`, login);
   }
 
-  getUserData(id: number): any {
-    return this.http.get(this.baseUrl + "user/byPlanId/" + id, { headers: this.headers })
+  getUserData(): any {
+    return this.http.get(this.baseUrl + "user/byPlanId/" + 8, { headers: this.headers })
   }
 
   getSelectedMeals(userId: number,date: String): Observable<any[]> {
@@ -43,11 +42,7 @@ export class JwtServiceService {
     });
   }
 
-  setMealCompleted(mealName: string, timeCompleted: string): boolean {
-    let bool = false;
-    this.http.get<boolean>(`${this.baseUrl}meal-Info/mealCompleted?status=${true}&userId=${this.userId}&mealName=${mealName}&timeCompleted=${timeCompleted}`).subscribe((data) => {
-      bool = data
-    });
-    return bool;
+  setMealCompleted(mealName: string, timeCompleted: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.baseUrl}meal-Info/mealCompleted?status=${true}&userId=${5}&mealName=${mealName}&timeCompleted=${timeCompleted}`);
   }
 }

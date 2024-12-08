@@ -1,4 +1,4 @@
-<div class="container p-0 position-relative z-30 pe-2 mt-1">
+<div class="container p-0 position-relative pe-2 mt-1">
     <div class="row  d-flex justify-content-between gap-2">
         <div class="col-12 col-lg-5 p-0 d-flex px-1 ">
             <div class="pill col-12 col-lg-7 centered rounded-4">
@@ -20,7 +20,7 @@
                 <div class="pill col-12 col-lg-6 centered p-0 rounded-4 pb-1">
                     <span class="fw-bold m-0">Next meal</span>
                     <small class="text-dark-emphasis m-0">{{selectedMeals[completedMeals].mealName}}</small>
-                    <small class="text-dark-emphasis">{{mealTimes[completedMeals]}}</small>
+                    <small class="text-dark-emphasis">{{selectedMeals[completedMeals].mealTime}}</small>
                 </div>
                 <div class="pill col-12 col-lg-6 centered p-0 rounded-4 pb-1">
                     <span class="fw-bold">Goal</span>
@@ -104,13 +104,13 @@
         </div>
         <div class="col-12 col-lg-6 p-0 px-1">
             <div class="pill">
-                <p class="py-2 m-0 text-center">Meals for the day</p>
-                <div class="d-flex flex-column flex-lg-row my-3 text-center h-40">
-                    <a class="col-12 col-lg cardColor centered py-3 px-1 decorationNone"
+                <p class="m-0 pb-1 text-center">Meals for the day</p>
+                <div class="d-flex flex-column flex-lg-row text-center pt-1">
+                    <a class="col-12 col-lg cardColor centered px-1 decorationNone"
                         *ngFor="let meal of selectedMeals let i = index" (click)="showDetails(i)">
-                        <img src={{selectedMeals[i].imageLink}} class="img-fluid p-2" alt="breakfast">
-                        <p class="mb-1 m-0">{{meal.mealName}}</p>
-                        <!-- <small class="m-0 text-dark-emphasis">{{mealTimes[i]}}</small> -->
+                        <img src={{selectedMeals[i].imageLink}} class="img-fluid " alt="breakfast">
+                        <p class="mb-1 m-0">{{selectedMeals[i].mealName}}</p>
+                        <small class="m-0 text-dark-emphasis">{{selectedMeals[i].mealTime}}</small>
                     </a>
                 </div>
                 <a routerLink="../meals" class="mb-0 decorationNone d-inline-flex"><span>Change your meals</span> <i
@@ -127,7 +127,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 p-0 px-1">
+        <div class="col-12 col-lg p-0 px-1">
             <div class="pill centered" style=" height:20rem;">
                 <div id="carouselExample" class="carousel slide">
                     <div class="carousel-inner">
@@ -195,41 +195,41 @@
             </div>
         </div>
     </div>
-</div>
-<div class="modal fade" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable no-scrollbar modal-md">
-        <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
-            *ngIf="isStarter && !bool">
-            <div class="modal-header">
-                <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">Welcome to SmartPlate
-                </h1>
+    <div class="modal fade" #staticBackdrop data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable no-scrollbar modal-md">
+            <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
+                *ngIf="isStarter">
+                <div class="modal-header">
+                    <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">Welcome to SmartPlate
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <h1>Hi!{{userDetails.firstName}},</h1>
+                    <p class="text-justify">Your personalized diet plan is ready to guide you toward your
+                        health goals. Let’s get started with selecting your meals for the day!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" (click)="handleClick()">Start</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <h1>Hi!{{userDetails.firstName}},</h1>
-                <p class="text-justify">Your personalized diet plan is ready to guide you toward your
-                    health goals. Let’s get started with selecting your meals for the day!</p>
+            <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
+                *ngIf="!isStarter && !isSelecting">
+                <div class="modal-header">
+                    <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">Welcome to SmartPlate
+                    </h1>
+                </div>
+                <div class="modal-body">
+                    <h1>Interesting choices!</h1>
+                    <p class="text-justify">Meals are ready for you!. Let’s get started!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Let's go!</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" (click)="handleClick()">Start</button>
+            <div class="overflow-hidden" style="height: 80vh;" *ngIf="isSelecting">
+                <app-meal-modal [dietaryInfo]="userDietaryInfo"></app-meal-modal>
             </div>
-        </div>
-        <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
-            *ngIf="!isSelecting && !isStarter && !bool">
-            <div class="modal-header">
-                <h1 class="modal-title text-center w-100 fs-5 " id="staticBackdropLabel">Welcome to SmartPlate
-                </h1>
-            </div>
-            <div class="modal-body">
-                <h1>Interesting choices!</h1>
-                <p class="text-justify">Meals are ready for you!. Let’s get started!</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Let's go!</button>
-            </div>
-        </div>
-        <div class="p-2 modal-content rounded-4 no-scrollbar" style="height: 80vh; overflow-y: scroll;"
-            *ngIf="!isStarter">
         </div>
     </div>
 </div>

@@ -14,11 +14,9 @@ import { DetailsComponent } from '../../common/details/details.component';
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css',
 })
-export class ModalComponent implements AfterViewInit {
+export class ModalComponent {
   @ViewChild('staticBackdrop') detailsModal!: ElementRef;
   @ViewChild("responseField") responseField!: ElementRef;
-  ngAfterViewInit() {
-  }
   private baseUrl: String = "http://localhost:8080/";
   constructor(private router: Router, private http: HttpClient) {
     this.getQuiz();

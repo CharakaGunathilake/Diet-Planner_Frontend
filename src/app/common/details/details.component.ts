@@ -5,7 +5,7 @@ import { RegisterComponent } from '../../pages/register/register.component';
 import { FormsModule } from '@angular/forms';
 import { Modal } from 'bootstrap';
 import { LoginComponent } from '../../pages/login/login.component';
-import { DietaryinfoserviceService } from '../../model/dietaryinfoservice.service';
+import { DietaryinfoService } from '../../model/dietaryinfo.service';
 
 @Component({
   selector: 'app-details',
@@ -41,7 +41,7 @@ export class DetailsComponent implements OnInit {
 
   initObject(userResponseObject: any[]) {
     if (userResponseObject != null) {
-      return new DietaryinfoserviceService(
+      return new DietaryinfoService(
         userResponseObject.at(0),
         userResponseObject.at(1),
         calculateAge(userResponseObject.at(1)),
