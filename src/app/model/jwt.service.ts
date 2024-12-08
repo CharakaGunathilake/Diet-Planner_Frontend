@@ -22,6 +22,11 @@ export class JwtService {
       });
     }
   }
+  
+  private getDate(): string {
+    const date = new Date();
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  }
 
   validLogin(login: any) {
     return this.http.post<any>(`${this.baseUrl}login`, login);
@@ -31,8 +36,9 @@ export class JwtService {
     return this.http.get(this.baseUrl + "user/byPlanId/" + 8, { headers: this.headers })
   }
 
-  getSelectedMeals(userId: number,date: String): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}meal-info/mealsById?id=${userId}&date=${date}`, { headers: this.headers })
+  getSelectedMeals(): Observable<any[]> {
+    //use the the getDate method in production
+    return this.http.get<any[]>(`${this.baseUrl}meal-info/mealsById?id=${5}&date=${"2024-11-22"}`, { headers: this.headers })
   }
 
   addMealsForDay(mealArray: any[]) {

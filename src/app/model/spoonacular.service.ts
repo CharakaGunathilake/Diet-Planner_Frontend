@@ -1,5 +1,6 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,20 +17,21 @@ export class SpoonacularService {
     return this.http.get<any>(`${this.baseUrl}complexSearch?apiKey=${this.apiKey}&query=${searchQuery}&addRecipeNutrition=true`);
   }
 
-  getRecipeById(mealId: number): any {
+  getRecipeById(mealId: number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}${mealId}/information?apiKey=${this.apiKey}&includeNutrition=true`);
   }
 
   getRandomRecipe(mealName: string, userDietaryInfo: any): any {
     const intolerances = userDietaryInfo.intolerances != 'none' ? userDietaryInfo.intolerances : "";
     const cuisines = userDietaryInfo.specificCuisine != 'none' ? userDietaryInfo.specificCuisine : "";
-    return this.http.get<any>(`${this.baseUrl}random?apiKey=${this.apiKey}&include-tags=${mealName.toLowerCase()}`);
+    return this.http.get<any>(`${this.baseUrl}random?apiKey=${this.apiKey}&include-tags=${mealName.toLowerCase()}&includeTags=${cuisines}`);
   }
 
-  getSuggestions(mealId: number): any {
-    return this.http.get<any[]>(`${this.baseUrl}complexSearch?apiKey=${this.apiKey}&number=2&intolerances=dairy&cuisine=asian&addRecipeInformation=true&instructionsRequired=true`);
+  getSuggestions(mealName: string, userDietaryInfo: any): any {
+    const intolerances = userDietaryInfo.intolerances != 'none' ? userDietaryInfo.intolerances : "";
+    const cuisines = userDietaryInfo.specificCuisine != 'none' ? userDietaryInfo.specificCuisine : "";
+    return this.http.get<any[]>(`${this.baseUrl}complexSearch?apiKey=${this.apiKey}&query=${mealName}&number=2&intolerances=${intolerances}&cuisine=${cuisines}&addRecipeInformation=true&instructionsRequired=true`);
   }
-
 }
 
 

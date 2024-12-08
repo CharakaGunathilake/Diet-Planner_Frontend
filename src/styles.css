@@ -21,6 +21,11 @@ h1 {
     padding: 2%;
     background-color: white;
     box-shadow: 20px 20px 100px 10px #c8deb79a;
+    transition: ease-in-out 0.2s;
+}
+
+.pill:hover{
+    scale: 101%;
 }
 
 .pill1 {

@@ -108,9 +108,9 @@
                 <div class="d-flex flex-column flex-lg-row text-center pt-1">
                     <a class="col-12 col-lg cardColor centered px-1 decorationNone"
                         *ngFor="let meal of selectedMeals let i = index" (click)="showDetails(i)">
-                        <img src={{selectedMeals[i].imageLink}} class="img-fluid " alt="breakfast">
-                        <p class="mb-1 m-0">{{selectedMeals[i].mealName}}</p>
-                        <small class="m-0 text-dark-emphasis">{{selectedMeals[i].mealTime}}</small>
+                        <img src={{meal.imageLink}} alt="{{meal.mealName}}">
+                        <p class="mb-1 m-0">{{meal.mealName}}</p>
+                        <small class="m-0 text-dark-emphasis">{{meal.mealTime}}</small>
                     </a>
                 </div>
                 <a routerLink="../meals" class="mb-0 decorationNone d-inline-flex"><span>Change your meals</span> <i
@@ -119,7 +119,7 @@
         </div>
     </div>
     <div class="row my-1">
-        <div class="col-12 col-lg-6 px-1">
+        <div class="col-12 col-lg-6 ps-1 pe-0">
             <div class="pill">
                 <p class="fw-bold m-0 text-center">This week's Calorie Intake</p>
                 <div class="container p-0 centered" style=" height:17rem;">

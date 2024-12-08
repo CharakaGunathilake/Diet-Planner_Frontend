@@ -82,17 +82,12 @@ export class DashboardHomeComponent implements OnInit {
       if(data){
         alert(`meal ${mealName} is completed!`);
       }
-    });;
+    });
   }
 
   private getTime(): string {
     const date = new Date();
     return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-  }
-
-  private getDate(): string {
-    const date = new Date();
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 
   protected updateWaterIntake(increment: boolean): void {
@@ -139,7 +134,7 @@ export class DashboardHomeComponent implements OnInit {
   }
   
   private getSelectedMeals() {
-    this.jwtService.getSelectedMeals(5, "2024-11-22").subscribe((data) => {
+    this.jwtService.getSelectedMeals().subscribe((data) => {
       this.selectedMeals = data;
     });
   }

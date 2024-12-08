@@ -28,8 +28,8 @@ interface Meal {
 
 })
 export class MealsComponent implements OnInit {
-  @ViewChild('staticBackdrop1') mealModal!: ElementRef;
 
+  @ViewChild('staticBackdrop1') mealModal!: ElementRef;
   public chart?: Chart;
   protected userDetails: any = {};
   protected userDietaryInfo: any = {};
@@ -61,17 +61,6 @@ export class MealsComponent implements OnInit {
     this.chart = new Chart("nutritionChart", this.chartService.createNutritionChart());
   }
 
-  private getTime(): string {
-    const date = new Date();
-    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-  }
-
-  private getDate(): string {
-    const date = new Date();
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-  }
-
-  //---------------------------- This component's code starts here --------------------------------------//
   private openModal(index: number): void {
     if (index = 1) this.spoonacularService.getRecipeById(this.selectedMeals[this.currentIndex].mealId);
     if (index = 2) this.spoonacularService.getRandomRecipe(this.selectedMeals[this.currentIndex].mealName, this.userDietaryInfo);
@@ -101,7 +90,7 @@ export class MealsComponent implements OnInit {
   }
 
   private getSelectedMeals() {
-    this.jwtService.getSelectedMeals(5, "2024-11-22").subscribe((data) => {
+    this.jwtService.getSelectedMeals().subscribe((data) => {
       this.selectedMeals = data;
       this.getSuggestions();
     });
@@ -110,7 +99,7 @@ export class MealsComponent implements OnInit {
   private getSuggestions() {
     const meal = this.selectedMeals[this.currentIndex];
     console.log("meal", meal);
-    this.spoonacularService.getSuggestions(meal.mealId).subscribe((data: { results: any; }) => {
+    this.spoonacularService.getSuggestions(meal.mealName,this.userDietaryInfo).subscribe((data: { results: any; }) => {
       this.suggestedMeals = data.results;
       console.log(this.suggestedMeals);
 
