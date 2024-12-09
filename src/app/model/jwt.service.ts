@@ -42,7 +42,7 @@ export class JwtService {
 
   getSelectedMeals(): Observable<any[]> {
     //use the the getDate method in production
-    return this.http.get<any[]>(`${this.baseUrl}meal-info/mealsById?id=${5}&date=${"2024-11-22"}`, { headers: this.headers })
+    return this.http.get<any[]>(`${this.baseUrl}meal-info/mealsById?id=${this.userId}&date=${this.getDate()}`, { headers: this.headers })
   }
 
   addMealsForDay(mealArray: any[]) {

@@ -33,8 +33,7 @@ export class DashboardComponent implements OnInit {
   }
 
   logOut() {
-    localStorage.clear();
-    sessionStorage.clear();
+    localStorage.removeItem("token");
     this.router.navigate(["/"]);
   }
 }

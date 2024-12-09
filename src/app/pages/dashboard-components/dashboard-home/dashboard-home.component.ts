@@ -50,15 +50,17 @@ export class DashboardHomeComponent implements OnInit {
     private spoonacularService: SpoonacularService
   ) {
     this.waterIntake = Number(localStorage.getItem('waterIntake')) || 0;
-    this.isStarter = JSON.parse(localStorage.getItem('isStarter') || 'false');
-    this.isSelecting = JSON.parse(localStorage.getItem('isSelecting') || 'false');
+    // this.isStarter = JSON.parse(localStorage.getItem('isStarter') || 'false');
+    // this.isSelecting = JSON.parse(localStorage.getItem('isSelecting') || 'false');
+    
+    this.isStarter = true;
     this.selectedMeals = new Array({ mealId: 0, recipeName: '', mealName: '', mealTime: '', imageLink: '' });
+     this.isSelecting = true;
   }
 
   ngOnInit(): void {
-    // this.isStarter = true;
-    this.initializeCharts();
     this.initializeUser();
+    this.initializeCharts();
     this.getSelectedMeals();
   }
 
