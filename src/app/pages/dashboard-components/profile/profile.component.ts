@@ -5,17 +5,18 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Modal } from 'bootstrap';
 import { createPopper } from '@popperjs/core';
+import { JwtService } from '../../../model/jwt.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [NgIf, NgClass, HttpClientModule, FormsModule],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css'
+  styleUrl: './profile.component.css',
+  providers: [JwtService]
 })
 export class ProfileComponent implements OnInit {
   @ViewChild('staticBackdrop') staticBackdrop!: ElementRef
-  private baseUrl: String = "http://localhost:8080/";
   protected userDetails: any = {};
 
   protected formName: String = "";
@@ -26,12 +27,14 @@ export class ProfileComponent implements OnInit {
   protected userDietaryInfo: any = {};
   protected userLogin: any = {};
   protected userPlan: any = {};
-  protected userId: number = 0;
   protected btnText: string = "Edit";
   protected unitHeight: String = "cm";
   protected unitWeight: String = "kg";
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(
+    private jwtService: JwtService,
+    private router: Router
+  ) { }
 
   toggleDisable() {
     if (this.formName == "personal") {
@@ -49,17 +52,16 @@ export class ProfileComponent implements OnInit {
     }
   }
   deleteCurrentPlan() {
-    this.http.delete(`${this.baseUrl}user/delete-user-byId/${this.userId}`).subscribe((data) => {
+    this.jwtService.deleteCurrentPlan().subscribe((data) => {
       if (data) {
         localStorage.clear();
         alert("plan deleted successfully");
       }
     })
   }
-  
+
   ngOnInit(): void {
-    this.userId = JSON.parse(localStorage.getItem("currentUserId") || "0");
-    this.getUserDetails(this.userId);
+    this.initializeUser();
   }
 
   openModal(name: String) {
@@ -67,21 +69,21 @@ export class ProfileComponent implements OnInit {
       this.formName = name;
       const modal = new Modal(this.staticBackdrop.nativeElement);
       modal.show();
-    }else{
+    } else {
       this.toggleDisable();
       this.updateDetails(name);
     }
   }
   updateDetails(name: String) {
     if (name == "personal") {
-      this.http.put(`${this.baseUrl}user/update-user`, this.userDetails).subscribe((data) => {
+      this.jwtService.updateUser(this.userDetails).subscribe((data) => {
         if (data) {
           alert("updated successfully");
         }
       })
     }
     else if (name == "account") {
-      this.http.put(`${this.baseUrl}login/update-login`, this.userLogin).subscribe((data) => {
+      this.jwtService.updateLogin(this.userLogin).subscribe((data) => {
         if (data) {
           alert("updated successfully");
         }
@@ -89,9 +91,8 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  private getUserDetails(userId: number): void {
-    this.http.get<any>(`${this.baseUrl}user/get-userWithPlan-byId/${userId}`).subscribe((data: any) => {
-      console.log(data);
+  private initializeUser(): void {
+    this.jwtService.getUserData().subscribe((data: any) => {
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
       this.userLogin = data.login;
@@ -99,21 +100,21 @@ export class ProfileComponent implements OnInit {
     })
   }
 
-  changeUnitHeight(){
-    if(this.unitHeight == "cm"){
+  changeUnitHeight() {
+    if (this.unitHeight == "cm") {
       this.unitHeight = "ft";
-      this.userDietaryInfo.height /= 30; 
-    }else{
+      this.userDietaryInfo.height /= 30;
+    } else {
       this.unitHeight = "cm";
       this.userDietaryInfo.height *= 30;
     }
   }
-  changeUnitWeight(){
-    if(this.unitWeight == "kg"){
+  changeUnitWeight() {
+    if (this.unitWeight == "kg") {
       this.unitWeight = "lb";
       this.userDietaryInfo.weight *= 2.205;
       this.userDietaryInfo.weight.toFixed(2);
-    }else{
+    } else {
       this.unitWeight = "kg";
       this.userDietaryInfo.weight /= 2.205;
     }

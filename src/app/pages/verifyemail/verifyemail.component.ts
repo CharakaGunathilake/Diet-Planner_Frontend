@@ -5,6 +5,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Modal } from 'bootstrap';
 import emailjs from 'emailjs-com';
+import { JwtService } from '../../model/jwt.service';
 
 
 @Component({
@@ -12,7 +13,8 @@ import emailjs from 'emailjs-com';
   standalone: true,
   imports: [FormsModule, NgIf, HttpClientModule],
   templateUrl: './verifyemail.component.html',
-  styleUrl: './verifyemail.component.css'
+  styleUrl: './verifyemail.component.css',
+  providers: [JwtService]
 })
 export class VerifyemailComponent implements AfterViewInit {
   @ViewChild('staticBackdrop') confirmModal!: ElementRef
@@ -24,8 +26,6 @@ export class VerifyemailComponent implements AfterViewInit {
 
 
   private otpCode: number = 0;
-  // email: String = "example@example.com";
-  private baseUrl: String = "http://localhost:8080/";
   protected show = false;
   protected message = "";
   protected title = "";
@@ -36,7 +36,10 @@ export class VerifyemailComponent implements AfterViewInit {
   protected clicked = false;
   protected seconds = 0;
 
-  constructor(private http: HttpClient,private router: Router) { }
+  constructor(
+    private router: Router,
+    private jwtService: JwtService
+  ) { }
   ngAfterViewInit(): void {
     setInterval(() => {
       if (this.seconds > 0) {
@@ -59,7 +62,7 @@ export class VerifyemailComponent implements AfterViewInit {
 
 
   verifyEmail() {
-    this.http.get<boolean>(`${this.baseUrl}user/verify-email/${this.login.email}`).subscribe((data) => {
+    this.jwtService.validEmail(this.login.email).subscribe((data) => {
       data ? this.show = true : this.show = false;
       if (this.show) {
         this.title = "Email verification";

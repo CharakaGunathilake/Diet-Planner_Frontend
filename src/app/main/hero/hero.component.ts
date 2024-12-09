@@ -14,11 +14,7 @@ export class HeroComponent {
 
   constructor(private router: Router) { }
   handleClick() {
-    const isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn") || "false")
-    const isRememberedLogin = JSON.parse(localStorage.getItem("rememberedLogin") || "false")
-    console.log(isRememberedLogin);
-
-    if (isLoggedIn || isRememberedLogin) {
+    if (localStorage.getItem("token") != null || sessionStorage.getItem("token") != null) {
       this.router.navigate(["/dashboard/home"]);
     } else {
       this.emitEvent();

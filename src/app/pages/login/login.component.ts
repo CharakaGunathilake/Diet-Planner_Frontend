@@ -45,7 +45,7 @@ export class LoginComponent {
           } else {
             sessionStorage.setItem("token", data.jwt);
           }
-          localStorage.setItem("currentUserId", JSON.stringify(data.id));
+          localStorage.setItem("currentUserId", JSON.stringify(data.loginId));
           this.router.navigate(["dashboard/home"]);
         },
         error: (error) => {

@@ -3,13 +3,15 @@ import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from "@angular/forms";
 import { NgIf } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { JwtService } from '../../model/jwt.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [RouterLink, FormsModule, NgIf, HttpClientModule, ReactiveFormsModule,],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrl: './register.component.css',
+  providers: [JwtService]
 })
 
 export class RegisterComponent {
@@ -18,10 +20,16 @@ export class RegisterComponent {
   @Output() action = new EventEmitter<void>();
 
   registerForm: FormGroup;
-  constructor(private router: Router, private http: HttpClient, private fb: FormBuilder) {
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private jwtService: JwtService
+  ) {
     this.registerForm = this.fb.group({
       Username: ['', [Validators.required, Validators.minLength(3)]],
     });
+
   }
   @Input() data: any;
 
@@ -106,21 +114,19 @@ export class RegisterComponent {
     });
   }
 
-  private checkUserName(username: String): boolean {
-    let bool = false;
-    this.http.get<boolean>(this.baseUrl + `login/valid?username=${username}`).subscribe((data) => {
-      bool = !data;
+  private checkUserName(username: string): boolean {
+    this.jwtService.validUsername(username).subscribe((data) => {
+      return !data;
     });
-    return bool;
+    return true;
   }
 
 
-  private checkEmail(email: String): boolean {
-    let bool = false;
-    this.http.get<boolean>(`${this.baseUrl}user/valid?email=${email}`).subscribe((data) => {
-      bool = !data
-    });
-    return bool;
+  private checkEmail(email: string): boolean {
+    this.jwtService.validEmail(email).subscribe((data) => {
+      return !data;
+    })
+    return true;
   }
 
   emitEvent() {

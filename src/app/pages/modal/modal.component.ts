@@ -6,6 +6,7 @@ import { Modal } from 'bootstrap';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DetailsComponent } from '../../common/details/details.component';
+import { JwtService } from '../../model/jwt.service';
 
 @Component({
   selector: 'app-modal',
@@ -13,17 +14,20 @@ import { DetailsComponent } from '../../common/details/details.component';
   imports: [NgIf, NgFor, BmicalculatorComponent, DetailsComponent, FormsModule, HttpClientModule, NgStyle, NgClass],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css',
+  providers: [JwtService]
 })
 export class ModalComponent {
   @ViewChild('staticBackdrop') detailsModal!: ElementRef;
   @ViewChild("responseField") responseField!: ElementRef;
-  private baseUrl: String = "http://localhost:8080/";
-  constructor(private router: Router, private http: HttpClient) {
+  constructor(
+    private router: Router,
+    private jwtService: JwtService,
+  ) {    
     this.getQuiz();
   }
   
-  private async getQuiz() {
-    this.http.get<any[]>(`${this.baseUrl}quiz/getAll`).subscribe((data) => {
+  private getQuiz() {
+    this.jwtService.getAllQuizzes().subscribe((data) => {
       this.quizObjectList = data;
       this.displayQuiz(0);
     });
@@ -144,7 +148,6 @@ export class ModalComponent {
       localStorage.removeItem("BMI");
     }
     this.response = null;
-    console.log(this.userResponseObjectACTUAL);
     this.displayQuiz(this.currentIndex++);
   }
 
