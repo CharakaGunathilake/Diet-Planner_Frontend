@@ -25,6 +25,7 @@ export class DashboardComponent implements OnInit {
     //   this.router.navigate([""]);
     //   return;
     // }
+    localStorage.setItem("isSelecting", JSON.stringify(true));
   }
 
   openModal() {

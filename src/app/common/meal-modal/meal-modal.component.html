@@ -18,7 +18,7 @@
                 </p>
                 <h6 class="fw-bold bg-green-100 p-2 rounded-2">Meal time</h6>
                 <p class="text-justify cardColor p-2">
-                    {{mealTimes.at(this.currentIndex)}}
+                    {{selectedMeals.at(this.currentIndex).mealTime}}
                 </p>
                 <h6 class="fw-bold bg-green-100 p-2 rounded-2">Cuisines</h6>
                 <p class="text-justify cardColor p-2">
@@ -41,7 +41,7 @@
     <div class="modal-footer">
         <div class="d-flex justify-end me-3 gap-2" *ngIf="isSelecting">
             <button type="button" class="btn btn-success" (click)="setMealRecipe()">{{btnText}}</button>
-            <button type="submit" class="btn btn-secondary" (click)="getRandomMeal(meals.at(this.currentIndex)!)"><i
+            <button type="submit" class="btn btn-secondary" (click)="getRandomMeal(selectedMeals.at(this.currentIndex).mealName)"><i
                     class="bi bi-arrow-clockwise"></i> Try Something
                 Else</button>
         </div>

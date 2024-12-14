@@ -10,7 +10,7 @@ import { DietaryinfoService } from '../../model/dietaryinfo.service';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [NgIf, RegisterComponent, FormsModule,LoginComponent],
+  imports: [NgIf, RegisterComponent, FormsModule, LoginComponent],
   templateUrl: './details.component.html',
   styleUrl: './details.component.css'
 })
@@ -19,13 +19,15 @@ export class DetailsComponent implements OnInit {
   public userResponseObject: any = []
   ngOnInit() { }
   protected data: any[] = [];
-  public dietPlan ={
+  public dietPlan = {
     name: "",
-    description:"",
+    description: "",
   }
   protected showRegister = true;
   constructor(private router: Router) {
     this.data = this.router.getCurrentNavigation()?.extras.state?.["userResponseObjectACTUAL"]
+    console.log(this.data);
+
   }
 
   register() {
@@ -42,31 +44,31 @@ export class DetailsComponent implements OnInit {
   initObject(userResponseObject: any[]) {
     if (userResponseObject != null) {
       return new DietaryinfoService(
-        userResponseObject.at(0),
-        userResponseObject.at(1),
-        calculateAge(userResponseObject.at(1)),
-        userResponseObject.at(2),
-        userResponseObject.at(3),
-        userResponseObject.at(4),
-        userResponseObject.at(5),
-        userResponseObject.at(6),
-        getSplittedString(userResponseObject.at(7)),
-        getSplittedString(userResponseObject.at(8)),
-        userResponseObject.at(9),
-        userResponseObject.at(10),
-        getCaloriesDeficit(userResponseObject.at(11)),
-        getWaterIntake(userResponseObject.at(13)),
-        userResponseObject.at(14),
-        userResponseObject.at(15),
-        getMealPlan(userResponseObject.at(16)),
-        userResponseObject.at(17)
+/*gender*/          userResponseObject.at(0),
+/*birthday*/        userResponseObject.at(1),
+/*age*/             calculateAge(userResponseObject.at(1)),
+/*height*/          userResponseObject.at(2),
+/*weight*/          userResponseObject.at(3),
+/*diet type*/       userResponseObject.at(4),
+/*activity level*/  userResponseObject.at(5),
+/*goal*/            userResponseObject.at(6),
+/*cuisines*/        getSplittedString(userResponseObject.at(7)),
+/*intolerances*/    getSplittedString(userResponseObject.at(8)),
+/*target weight*/   userResponseObject.at(9),
+/*target date*/     userResponseObject.at(10),
+/*calorie deficit*/ getCaloriesDeficit(userResponseObject.at(11)),
+/*water intake*/    getWaterIntake(userResponseObject.at(13)),
+/*sleep habit*/     userResponseObject.at(14),
+/*stress frequency*/userResponseObject.at(15),
+/*meal plan*/       getMealPlan(userResponseObject.at(16)),
+/*cooking habit*/   userResponseObject.at(17)
       )
     } else {
       return null;
     }
   }
 
-  handleAction(){
+  handleAction() {
     this.showRegister = !this.showRegister;
   }
 }

@@ -102,7 +102,6 @@ export class MealsComponent implements OnInit {
     this.spoonacularService.getSuggestions(meal.mealName,this.userDietaryInfo).subscribe((data: { results: any; }) => {
       this.suggestedMeals = data.results;
       console.log(this.suggestedMeals);
-
     });
   }
 }

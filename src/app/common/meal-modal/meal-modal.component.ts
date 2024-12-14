@@ -19,10 +19,8 @@ export class MealModalComponent implements OnInit {
   protected recipe: any = {};
   btnText: string;
   currentIndex: any;
-  isSelecting: any;
-  meals: string[] = [];
-  mealTimes: string[] = [];
-  selectedMeals: any = [];
+  isSelecting: Boolean;
+  selectedMeals: any;
   title: string;
   userDetails: any;
   caloriePercentage: number;
@@ -31,58 +29,34 @@ export class MealModalComponent implements OnInit {
     private jwtService: JwtService,
     private spoonacularService: SpoonacularService
   ) {
-    this.setMealTimes(3);
     this.caloriePercentage = 1;
     this.btnText = "Next";
     this.currentIndex = 0;
-    this.title = `Choose your ${this.meals[this.currentIndex]}`;
+    this.selectedMeals = new Array({ mealId: 0, recipeName: '', mealName: '', mealTime: '', imageLink: '' });
     this.isSelecting = JSON.parse(localStorage.getItem("isSelecting") || "false");
-    this.isSelecting = true;
+    this.title = "";
   }
   ngOnInit(): void {
-    this.getRandomMeal(this.meals[this.currentIndex]);
-  }
-
-  setMealTimes(mealPlan: number) {
-    switch (mealPlan) {
-      case 3:
-        this.meals = ["Breakfast", "Lunch", "Dinner"];
-        this.mealTimes = ["9:00 AM", "Between 12:00 PM and 2:00 PM", "7:00 PM"];
-        break;
-      case 2:
-        this.meals = ["Meal 1", "Meal 2"];
-        this.mealTimes = ["Between 10:00 AM and 12:00 PM", "Between 12:00 PM and 6:00 PM"];
-        break;
-      case 4:
-        this.meals = ["Breakfast", "Lunch", "Snack", "Dinner"];
-        this.mealTimes = ["Between 8:00 AM and 10:00 AM", "Between 11:00 AM and 1:00 PM", "Between 3:00 PM and 5:00 PM", "7:00 PM"];
-        break;
-      case 5:
-        this.meals = ["Breakfast", "Second Breakfast", "Lunch", "Afternoon Snack", "Dinner"];
-        this.mealTimes = ["Between 6:00 AM and 8:00 AM", "Between 8:00 AM and 11:00 AM", "Between 11:00 AM and 1:00 PM", "Between 3:00 PM and 5:00 PM", "7:00 PM"];
-        break;
-    }
-  }
-
-  private getDate(): string {
-    const date = new Date();
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    this.jwtService.getSelectedMeals().subscribe((data) => {
+      this.selectedMeals = data;
+      console.log(this.isSelecting);
+      if(this.isSelecting)  {
+        this.getRandomMeal(this.selectedMeals[this.currentIndex].mealName);
+      }else{
+        this.getThisMeal(this.selectedMeals[this.currentIndex].mealId);
+      }
+    }); 
   }
 
   protected setMealRecipe() {
-    this.selectedMeals.push({
-      mealId: this.recipe.id,
-      recipeName: this.recipe.title,
-      mealName: this.meals[this.currentIndex],
-      mealTime: this.mealTimes[this.currentIndex],
-      imageLink: this.recipe.image,
-      mealDate: this.getDate(),
-      cuisines: getSplittedString(2, this.recipe.cuisines),
-    });
-    if (this.currentIndex != this.meals.length-1) {
+    this.selectedMeals.at(this.currentIndex).mealId = this.recipe.id;
+    this.selectedMeals.at(this.currentIndex).recipeName = this.recipe.title;
+    this.selectedMeals.at(this.currentIndex).imageLink = this.recipe.image;
+    this.selectedMeals.at(this.currentIndex).cuisines = getSplittedString(2, this.recipe.cuisines);
+    console.log(this.selectedMeals);
+    if (this.currentIndex != this.selectedMeals.length-1) {
       this.currentIndex++;
-      this.title = `Choose your ${this.meals[this.currentIndex]}`;
-      this.getRandomMeal(this.meals[this.currentIndex]);
+      this.getRandomMeal(this.selectedMeals[this.currentIndex].mealName);
     } else {
       this.btnText = "Done!";
       localStorage.setItem("isSelecting", JSON.stringify(this.isSelecting = false))
@@ -121,6 +95,7 @@ export class MealModalComponent implements OnInit {
 
   // gets a random meal from source
   protected getRandomMeal(mealName: string) {
+    this.title = `Choose your ${mealName}`;
     this.recipe = this.spoonacularService.getRandomRecipe(mealName, this.dietaryInfo).subscribe((data: { recipes: any[]; }) => {
       data = data.recipes[0];
       this.recipe = data;

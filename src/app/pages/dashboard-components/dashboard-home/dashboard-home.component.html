@@ -227,7 +227,7 @@
                     <button type="button" class="btn btn-success" data-bs-dismiss="modal">Let's go!</button>
                 </div>
             </div>
-            <div class="overflow-hidden" style="height: 80vh;" *ngIf="isSelecting">
+            <div class="overflow-hidden" style="height: 80vh;" *ngIf="!isStarter && isSelecting">
                 <app-meal-modal [dietaryInfo]="userDietaryInfo"></app-meal-modal>
             </div>
         </div>

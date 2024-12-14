@@ -122,12 +122,10 @@ export class ModalComponent {
         } else if (this.unit === "lb") {
           this.response = this.response * 0.4536;
         }
-        console.log(this.response);
         this.userResponseObjectACTUAL.push(this.response);
         this.nextQuestion();
       } else if (this.questionType === "SINGLE") {
         this.response == null ? this.response = "none" : this.response;
-        console.log(this.response);
         this.userResponseObjectACTUAL.push(this.response);
         this.nextQuestion();
       } else if (this.questionType === "MULTIPLE") {
@@ -137,6 +135,7 @@ export class ModalComponent {
   }
 
   protected nextQuestion(): void {
+    console.log(this.userResponseObjectACTUAL);    
     this.selectedItems = new Set<number>();
     if (this.questionType === "MULTIPLE") {
       this.multipleChoice.length === 0 ? this.multipleChoice.push("none") : this.multipleChoice;

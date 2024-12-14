@@ -48,7 +48,7 @@ export class JwtService {
   addMealsForDay(mealArray: any[]) {
     mealArray.forEach(mealObj => {
       mealObj.userId = this.userId;
-      this.http.post<boolean>(`${this.baseUrl}meal-info/add-meal-info`, mealObj, { headers: this.headers });
+      this.http.post<boolean>(`${this.baseUrl}meal-info/update-meal-info`, mealObj, { headers: this.headers });
     });
   }
 

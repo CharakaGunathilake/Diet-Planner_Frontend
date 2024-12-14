@@ -43,6 +43,7 @@ export class DashboardHomeComponent implements OnInit {
   protected isSelecting: boolean;
   protected isStarter: boolean;
   protected completedMeals = 0;
+  protected userPlan: any = {};
 
   constructor(
     private jwtService: JwtService,
@@ -52,10 +53,9 @@ export class DashboardHomeComponent implements OnInit {
     this.waterIntake = Number(localStorage.getItem('waterIntake')) || 0;
     // this.isStarter = JSON.parse(localStorage.getItem('isStarter') || 'false');
     // this.isSelecting = JSON.parse(localStorage.getItem('isSelecting') || 'false');
-    
     this.isStarter = true;
     this.selectedMeals = new Array({ mealId: 0, recipeName: '', mealName: '', mealTime: '', imageLink: '' });
-     this.isSelecting = true;
+    this.isSelecting = true;
   }
 
   ngOnInit(): void {
@@ -72,8 +72,8 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   private openModal(index: number): void {
-    if(index = 1)this.spoonacularService.getRecipeById(this.selectedMeals[this.currentIndex].mealId);
-    if(index = 2)this.spoonacularService.getRandomRecipe(this.selectedMeals[this.currentIndex].mealName,this.userDietaryInfo);
+    if (index = 1) this.spoonacularService.getRecipeById(this.selectedMeals[this.currentIndex].mealId);
+    if (index = 2) this.spoonacularService.getRandomRecipe(this.selectedMeals[this.currentIndex].mealName, this.userDietaryInfo);
     new Modal(this.mealModal.nativeElement).show();
   }
 
@@ -81,7 +81,7 @@ export class DashboardHomeComponent implements OnInit {
     this.caloriePercentage = (356 / this.userDietaryInfo.dcr) * 100;
     const mealName = this.selectedMeals[this.currentIndex].mealName;
     this.jwtService.setMealCompleted(mealName, this.getTime()).subscribe((data) => {
-      if(data){
+      if (data) {
         alert(`meal ${mealName} is completed!`);
       }
     });
@@ -97,11 +97,8 @@ export class DashboardHomeComponent implements OnInit {
       alert('Congratulations!! you have completed today\'s Hydration target.');
       return;
     }
-    this.waterIntake = increment ?
-      this.waterIntake + 1 :
-      Math.max(0, this.waterIntake - 1);
+    this.waterIntake = increment ? this.waterIntake + 1 : Math.max(0, this.waterIntake - 1);
     localStorage.setItem('waterIntake', this.waterIntake.toString());
-
     if (this.chart2) {
       this.chart2.data = this.chartService.dailyWaterIntakerChart(
         this.waterIntake,
@@ -116,6 +113,7 @@ export class DashboardHomeComponent implements OnInit {
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
       this.userLogin = data.login;
+      this.userPlan = data.dietPlan;      
       this.openModal(2);
     });
   }
@@ -134,7 +132,7 @@ export class DashboardHomeComponent implements OnInit {
     this.isSelecting = JSON.parse(localStorage.getItem("isSelecting") || "false");
     this.isSelecting = true;
   }
-  
+
   private getSelectedMeals() {
     this.jwtService.getSelectedMeals().subscribe((data) => {
       this.selectedMeals = data;
