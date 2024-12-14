@@ -26,12 +26,7 @@
     border-radius: 15px;
 }
 
-.selected {
-    background-color: #16E011;
-    color: white;
-    cursor: pointer;
-    border: 2px solid rgba(0, 0, 0, 0.672);
-  }
+
 
   .not-selected {
     background-color: rgb(255, 255, 255);

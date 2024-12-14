@@ -1,4 +1,4 @@
-import { NgFor, NgIf, NgStyle } from '@angular/common';
+import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Modal } from 'bootstrap';
@@ -17,12 +17,13 @@ interface Meal {
   mealName: string;
   mealTime: string;
   imageLink: string;
+  completedMeal: boolean;
 }
 
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [RouterLink, NgIf, NgStyle, NgFor, HttpClientModule, MealModalComponent],
+  imports: [RouterLink, NgIf, NgStyle, NgFor, NgClass, HttpClientModule, MealModalComponent],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
   providers: [JwtService, SpoonacularService, ChartService]
@@ -44,6 +45,7 @@ export class DashboardHomeComponent implements OnInit {
   protected isStarter: boolean;
   protected completedMeals = 0;
   protected userPlan: any = {};
+  protected passingObj: any = {};
 
   constructor(
     private jwtService: JwtService,
@@ -54,7 +56,7 @@ export class DashboardHomeComponent implements OnInit {
     // this.isStarter = JSON.parse(localStorage.getItem('isStarter') || 'false');
     // this.isSelecting = JSON.parse(localStorage.getItem('isSelecting') || 'false');
     this.isStarter = true;
-    this.selectedMeals = new Array({ mealId: 0, recipeName: '', mealName: '', mealTime: '', imageLink: '' });
+    this.selectedMeals = new Array({ mealId: 0, recipeName: '', mealName: '', mealTime: '', imageLink: '', completedMeal: false });
     this.isSelecting = true;
   }
 
@@ -77,20 +79,15 @@ export class DashboardHomeComponent implements OnInit {
     new Modal(this.mealModal.nativeElement).show();
   }
 
-  protected completeMeal(): void {
-    this.caloriePercentage = (356 / this.userDietaryInfo.dcr) * 100;
-    const mealName = this.selectedMeals[this.currentIndex].mealName;
-    this.jwtService.setMealCompleted(mealName, this.getTime()).subscribe((data) => {
-      if (data) {
-        alert(`meal ${mealName} is completed!`);
-      }
-    });
-  }
-
-  private getTime(): string {
-    const date = new Date();
-    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-  }
+  // protected completeMeal(): void {
+  //   this.caloriePercentage = (356 / this.userDietaryInfo.dcr) * 100;
+  //   const mealName = this.selectedMeals[this.currentIndex].mealName;
+  //   this.jwtService.setMealCompleted(mealName).subscribe((data) => {
+  //     if (data) {
+  //       alert(`meal ${mealName} is completed!`);
+  //     }
+  //   });
+  // }
 
   protected updateWaterIntake(increment: boolean): void {
     if (this.waterIntake === this.userDietaryInfo.waterIntake) {
@@ -113,7 +110,8 @@ export class DashboardHomeComponent implements OnInit {
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
       this.userLogin = data.login;
-      this.userPlan = data.dietPlan;      
+      this.userPlan = data.dietPlan;
+      this.passingObj = this.userDietaryInfo;
       this.openModal(2);
     });
   }
@@ -136,6 +134,12 @@ export class DashboardHomeComponent implements OnInit {
   private getSelectedMeals() {
     this.jwtService.getSelectedMeals().subscribe((data) => {
       this.selectedMeals = data;
+      this.selectedMeals.forEach((meal: any) => {
+        if (meal.completedMeal) {
+          this.completedMeals++;
+          console.log(this.completedMeals + " completed meals");
+        }
+      })
     });
   }
 }

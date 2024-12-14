@@ -55,6 +55,7 @@ export class ProfileComponent implements OnInit {
     this.jwtService.deleteCurrentPlan().subscribe((data) => {
       if (data) {
         localStorage.clear();
+        sessionStorage.clear();
         alert("plan deleted successfully");
       }
     })

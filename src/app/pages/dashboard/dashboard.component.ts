@@ -4,7 +4,6 @@ import { DashboardnavComponent } from '../../common/dashboardnav/dashboardnav.co
 import { DashboardHomeComponent } from '../dashboard-components/dashboard-home/dashboard-home.component';
 import { Router, RouterOutlet } from '@angular/router';
 import { Modal } from 'bootstrap';
-import { HomeComponent } from '../home/home.component';
 
 
 @Component({
@@ -21,11 +20,7 @@ export class DashboardComponent implements OnInit {
   }
   constructor(private router: Router) { }
   ngOnInit(): void {
-    // if (localStorage.getItem("token") == null || sessionStorage.getItem("token") == null) {
-    //   this.router.navigate([""]);
-    //   return;
-    // }
-    localStorage.setItem("isSelecting", JSON.stringify(true));
+    // localStorage.setItem("isSelecting", JSON.stringify(true));
   }
 
   openModal() {
@@ -35,6 +30,7 @@ export class DashboardComponent implements OnInit {
 
   logOut() {
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     this.router.navigate(["/"]);
   }
 }

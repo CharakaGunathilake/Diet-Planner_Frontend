@@ -49,7 +49,7 @@ export class HeaderComponent implements OnInit {
   protected navigateToDashboard() {
     this.alreadyLoggedIn();
     if (localStorage.getItem("token") != null || sessionStorage.getItem("token") != null) {
-      this.router.navigate(["/dashboard"]);
+      this.router.navigate(["/dashboard/home"]);
     } else {
       this.emitEvent();
     }
@@ -67,7 +67,6 @@ export class HeaderComponent implements OnInit {
   private alreadyLoggedIn() {
     this.rememberedLogin = JSON.parse(localStorage.getItem("rememberedLogin") || "false");
     this.isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn") || "false");
-    console.log(this.rememberedLogin + " this " + this.isLoggedIn);
     this.isLoggedIn === true || this.rememberedLogin === true ? this.dashboard = "Dashboard" : this.dashboard = "Log In";
   }
 }

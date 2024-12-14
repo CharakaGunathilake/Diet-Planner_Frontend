@@ -42,6 +42,7 @@ export class MealsComponent implements OnInit {
   protected searchQuery = "";
   protected resultSet: any = [];
   protected suggestedMeals: any = [];
+  protected passingObj: any;
 
   constructor(
     private jwtService: JwtService,
@@ -71,6 +72,7 @@ export class MealsComponent implements OnInit {
     this.jwtService.getUserData().subscribe((data: any) => {
       this.userDetails = data.user;
       this.userDietaryInfo = data.dietaryInfo;
+      this.passingObj = this.userDietaryInfo;
     });
   }
 
@@ -99,7 +101,7 @@ export class MealsComponent implements OnInit {
   private getSuggestions() {
     const meal = this.selectedMeals[this.currentIndex];
     console.log("meal", meal);
-    this.spoonacularService.getSuggestions(meal.mealName,this.userDietaryInfo).subscribe((data: { results: any; }) => {
+    this.spoonacularService.getSuggestions(meal.mealName, this.userDietaryInfo).subscribe((data: { results: any; }) => {
       this.suggestedMeals = data.results;
       console.log(this.suggestedMeals);
     });

@@ -124,6 +124,7 @@ export class RegisterComponent {
 
   private checkEmail(email: string): boolean {
     this.jwtService.validEmail(email).subscribe((data) => {
+      console.log(data);
       return !data;
     })
     return true;

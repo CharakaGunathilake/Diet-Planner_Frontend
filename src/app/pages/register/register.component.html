@@ -33,7 +33,7 @@
                 id="floatingUsername" placeholder="Bob" required minlength="3" pattern="[a-zA-Z][a-zA-Z0-9._-]{3,15}"
                 #username="ngModel">
             <label for="floatingUsername">Username</label>
-            <small class="text-danger m-0 ms-2" *ngIf="!uniqueUsername">Username already exists!</small>
+            <small class="text-danger m-0 ms-2" *ngIf="uniqueUsername">Username already exists!</small>
             <div *ngIf="username.invalid && username.touched">
                 <small class="text-danger m-0 ms-2" *ngIf="username.errors?.['required']">Username is required.</small>
                 <small class="text-danger m-0 ms-2" *ngIf="username.errors?.['minlength']">Username must be at least 3
@@ -47,7 +47,7 @@
                 id="floatingEmail" placeholder="name@example.com" required #email="ngModel" minlength="10"
                 pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
             <label for="floatingEmail">Email address</label>
-            <small class="text-danger m-0 ms-2" *ngIf="!uniqueEmail">Email already exists!</small>
+            <small class="text-danger m-0 ms-2" *ngIf="uniqueEmail">Email already exists!</small>
             <div *ngIf="email.invalid && email.touched">
                 <small class="text-danger m-0 ms-2" *ngIf="email.errors?.['required'] ">E-mail is required.</small>
                 <small class="text-danger m-0 ms-2"
@@ -65,8 +65,7 @@
                     required.</small>
                 <small class="text-danger m-0 ms-2"
                     *ngIf="passwordNew.errors?.['pattern']||passwordNew.errors?.['minlength']">Password must be at least
-                    6
-                    characters with one UpperCase, LowerCase, Number and Special Character</small>
+                    6 characters with one UpperCase, LowerCase, Number and Special Character</small>
             </div>
         </div>
         <div class="form-floating">

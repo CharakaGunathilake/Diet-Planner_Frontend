@@ -1,5 +1,5 @@
 .cardColor:hover {
-    background-color: #d7e2c972;
+    scale: 105%;
     border-radius: 20px;
     cursor: pointer;
 }

@@ -106,8 +106,9 @@
             <div class="pill">
                 <p class="m-0 pb-1 text-center">Meals for the day</p>
                 <div class="d-flex flex-column flex-lg-row text-center pt-1">
-                    <a class="col-12 col-lg cardColor centered px-1 decorationNone"
-                        *ngFor="let meal of selectedMeals let i = index" (click)="showDetails(i)">
+                    <a class="col-12 col-lg cardColor pt-2 centered px-1 decorationNone"
+                        *ngFor="let meal of selectedMeals let i = index" (click)="showDetails(i)"
+                        [ngClass]="{'selected': meal.completedMeal}">
                         <img src={{meal.imageLink}} alt="{{meal.mealName}}">
                         <p class="mb-1 m-0">{{meal.mealName}}</p>
                         <small class="m-0 text-dark-emphasis">{{meal.mealTime}}</small>
@@ -228,7 +229,7 @@
                 </div>
             </div>
             <div class="overflow-hidden" style="height: 80vh;" *ngIf="!isStarter && isSelecting">
-                <app-meal-modal [dietaryInfo]="userDietaryInfo"></app-meal-modal>
+                <app-meal-modal [passedObj]="passingObj"></app-meal-modal>
             </div>
         </div>
     </div>

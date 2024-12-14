@@ -45,15 +45,13 @@ export class JwtService {
     return this.http.get<any[]>(`${this.baseUrl}meal-info/mealsById?id=${this.userId}&date=${this.getDate()}`, { headers: this.headers })
   }
 
-  addMealsForDay(mealArray: any[]) {
-    mealArray.forEach(mealObj => {
-      mealObj.userId = this.userId;
-      this.http.post<boolean>(`${this.baseUrl}meal-info/update-meal-info`, mealObj, { headers: this.headers });
-    });
+  addMealsForDay(mealObj: any): Observable<boolean> {
+    console.log("mealArray", mealObj);
+    return this.http.put<boolean>(`${this.baseUrl}meal-info/update-meal-info`, mealObj, { headers: this.headers });
   }
 
-  setMealCompleted(mealName: string, timeCompleted: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.baseUrl}meal-Info/mealCompleted?status=${true}&userId=${this.userId}&mealName=${mealName}&timeCompleted=${timeCompleted}`);
+  setMealCompleted(mealName: string): Observable<boolean> {
+    return this.http.put<boolean>(`${this.baseUrl}meal-info/mealCompleted?status=${true}&userId=${this.userId}&mealName=${mealName}`,null, { headers: this.headers });
   }
 
   validUsername(username: string): Observable<boolean> {

@@ -109,7 +109,7 @@
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable no-scrollbar modal-md">
         <div class="overflow-hidden" style="height: 80vh;" *ngIf="isSelecting">
-            <app-meal-modal [dietaryInfo]="userDietaryInfo"></app-meal-modal>
+            <app-meal-modal [passedObj]="userDietaryInfo"></app-meal-modal>
         </div>
     </div>
 </div>
