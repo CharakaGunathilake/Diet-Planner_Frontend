@@ -135,9 +135,11 @@ export class DashboardHomeComponent implements OnInit {
     this.jwtService.getSelectedMeals().subscribe((data) => {
       this.selectedMeals = data;
       this.selectedMeals.forEach((meal: any) => {
-        if (meal.completedMeal) {
+        if (meal.mealId === 0) {
+          localStorage.setItem("isSelecting", JSON.stringify(true));
+        } else if (meal.completedMeal) {
           this.completedMeals++;
-          console.log(this.completedMeals + " completed meals");
+          localStorage.setItem("isSelecting", JSON.stringify(false));
         }
       })
     });

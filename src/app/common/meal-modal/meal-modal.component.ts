@@ -1,8 +1,9 @@
 import { NgFor, NgIf } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { SpoonacularService } from '../../model/spoonacular.service';
 import { JwtService } from '../../model/jwt.service';
+import { Modal } from 'bootstrap';
 
 @Component({
   selector: 'app-meal-modal',
@@ -13,6 +14,7 @@ import { JwtService } from '../../model/jwt.service';
   providers: [SpoonacularService]
 })
 export class MealModalComponent implements OnInit {
+  @ViewChild('staticBackDrop') logoutModal!: ElementRef;
   @Input() public passedObj: any = {};
   mealTime: string;
   title: string;
@@ -46,23 +48,27 @@ export class MealModalComponent implements OnInit {
             this.currentIndex++;
           }
         });
+        
         this.getThisMeal(this.selectedMeals[this.currentIndex].mealId);
       }
     });
   }
 
+  openModal() {
+    const modal = new Modal(this.logoutModal.nativeElement);
+    modal.show();
+  }
+
   protected setMealRecipe() {
-    if (this.currentIndex != this.selectedMeals.length) {
+    if (this.currentIndex != this.selectedMeals.length-1) {
       this.selectedMeals.at(this.currentIndex).mealId = this.recipe.id;
       this.selectedMeals.at(this.currentIndex).recipeName = this.recipe.title;
       this.selectedMeals.at(this.currentIndex).imageLink = this.recipe.image;
       this.selectedMeals.at(this.currentIndex).cuisines = getSplittedString(2, this.recipe.cuisines);
       this.currentIndex++;
-      console.log(this.selectedMeals);
       this.mealTime = this.selectedMeals[this.currentIndex].mealTime;
       this.getRandomMeal(this.selectedMeals[this.currentIndex].mealName);
     } else {
-      console.log("done");
       this.btnText = "Done!";
       localStorage.setItem("isSelecting", JSON.stringify(false))
       this.selectedMeals.forEach((meal: any) => {
@@ -70,6 +76,7 @@ export class MealModalComponent implements OnInit {
           console.log(data);
         });
       })
+      window.location.reload();
     }
   }
 
@@ -80,6 +87,7 @@ export class MealModalComponent implements OnInit {
       this.jwtService.setMealCompleted(selectedMeal.mealName).subscribe((data) => {
         if (data) {
           alert(`meal ${selectedMeal.mealName} is completed!`);
+          window.location.reload();
         } else {
           alert(`meal ${selectedMeal.mealName} is not completed!`);
         }
